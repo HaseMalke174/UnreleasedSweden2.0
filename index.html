@@ -808,7 +808,11 @@ body.light .track-cover { background: #e8e8e8; }
 
 .plays-line {
   margin-top: 0.25rem;
-  min-height: 1.1rem;
+  min-height: 1.15rem;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
 }
 .pc-badge {
   display: inline-block !important;
@@ -1274,20 +1278,49 @@ function rebuildPlayIndex(tracksObj) {
   playCounts = map;
 }
 
+function applyEmbeddedStats() {
+  if (window.__PLAY_STATS__ && typeof window.__PLAY_STATS__ === 'object') {
+    rebuildPlayIndex(window.__PLAY_STATS__);
+    return true;
+  }
+  return false;
+}
+
 async function fetchPlayStats() {
+  // 1) Server-side injicerat (när sidan serveras av Python /app)
+  if (applyEmbeddedStats()) {
+    if (typeof render === 'function') render();
+  }
+  // 2) Samma origin: /api/stats.js (server-side fil)
   try {
-    const res = await fetch(STATS_API + '/api/stats', { cache: 'no-store', mode: 'cors' });
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = (STATS_API || '') + '/api/stats.js?t=' + Date.now();
+      s.async = true;
+      s.onload = () => { applyEmbeddedStats(); resolve(); };
+      s.onerror = () => reject(new Error('stats.js'));
+      document.head.appendChild(s);
+    });
+    statsLastError = '';
+    if (typeof render === 'function') render();
+    return;
+  } catch (e1) {}
+  // 3) Fallback JSON API
+  try {
+    const res = await fetch((STATS_API || '') + '/api/stats', { cache: 'no-store', mode: 'cors' });
     if (!res.ok) {
       statsLastError = 'stats HTTP ' + res.status;
+      if (typeof render === 'function') render();
       return;
     }
     const data = await res.json();
     rebuildPlayIndex(data.tracks || {});
+    window.__PLAY_STATS__ = data.tracks || {};
     statsLastError = '';
     if (typeof render === 'function') render();
   } catch (e) {
     statsLastError = (e && e.message) || 'stats fetch failed';
-    console.warn('Stats fetch:', statsLastError);
+    if (typeof render === 'function') render();
   }
 }
 
