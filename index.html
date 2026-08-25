@@ -464,10 +464,10 @@ body.light .track-cover { background: #e8e8e8; }
 .queue-panel {
   position: fixed; bottom: calc(var(--player-h) + var(--safe-bottom)); left: 0; right: 0;
   max-height: 0; overflow: hidden; background: var(--bg-card);
-  border-top: 1px solid var(--border); z-index: 280;
+  border-top: 1px solid var(--border); z-index: 150;
   transition: max-height 0.35s var(--ease); box-shadow: 0 -12px 40px rgba(0,0,0,0.3);
 }
-.queue-panel.open { max-height: min(50vh, 420px); }
+.queue-panel.open { max-height: 55vh; }
 .queue-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 1rem 1.35rem; border-bottom: 1px solid var(--border);
@@ -548,7 +548,7 @@ body.light .track-cover { background: #e8e8e8; }
   position: fixed; bottom: calc(var(--player-h) + var(--safe-bottom) + 10px); right: 1.15rem;
   width: min(340px, calc(100vw - 2rem)); background: var(--bg-card);
   border: 1px solid var(--border); border-radius: 16px;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 290;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 250;
   display: none; overflow: hidden;
 }
 .cast-panel.open { display: block; animation: fadeSlide 0.22s var(--ease); }
@@ -777,72 +777,6 @@ body.light .track-cover { background: #e8e8e8; }
 
 @media (max-width: 900px) {
   
-
-@media (max-width: 900px) {
-  html { font-size: 14px; }
-  .topbar-inner { height: 52px; gap: 0.5rem; }
-  .brand-mark { width: 30px; height: 30px; font-size: 0.9rem; border-radius: 8px; }
-  .brand-name { font-size: 0.9rem; }
-  .search-wrap input { padding: 0.5rem 0.9rem 0.5rem 2.2rem; font-size: 0.8rem; }
-  .search-wrap .search-icon { left: 0.85rem; font-size: 0.85rem; }
-  .settings-btn { width: 36px; height: 36px; font-size: 0.95rem; }
-  .main { padding: 0.75rem 0.7rem 1rem; }
-  .hero { padding: 1rem 0.9rem; margin-bottom: 0.9rem; border-radius: 12px; }
-  .hero h1 { font-size: 1.25rem; margin-bottom: 0.3rem; }
-  .hero p { font-size: 0.8rem; }
-  .hero-label { font-size: 0.58rem; margin-bottom: 0.4rem; padding: 0.2rem 0.5rem; }
-  .hero-credit { margin-top: 0.5rem; font-size: 0.7rem; }
-  .view-tabs { gap: 0.3rem; margin-bottom: 0.7rem; }
-  .view-tabs button { padding: 0.35rem 0.7rem; font-size: 0.72rem; }
-  .section-label { margin-bottom: 0.45rem; font-size: 0.62rem; }
-  .filters { gap: 0.3rem; margin-bottom: 0.85rem; }
-  .filters button { padding: 0.32rem 0.65rem; font-size: 0.7rem; }
-  .sort-row { margin-bottom: 0.6rem; gap: 0.35rem; }
-  .sort-row select { padding: 0.35rem 0.6rem; font-size: 0.72rem; }
-  .track-row { padding: 0.55rem 0.65rem; gap: 0.45rem; }
-  .track-cover { width: 40px; height: 40px; border-radius: 6px; }
-  .track-info .title { font-size: 0.85rem; }
-  .track-info .artist { font-size: 0.72rem; }
-  .track-actions button { width: 44px; height: 44px; min-width: 44px; min-height: 44px; font-size: 1rem; }
-  .track-actions button.play-btn { width: 48px; height: 48px; min-width: 48px; min-height: 48px; font-size: 1.1rem; }
-  .heart-btn { width: 36px; height: 36px; min-width: 36px; min-height: 36px; font-size: 1.1rem; }
-  .mobile-tools {
-    gap: 0.35rem; padding: 0.4rem 0.7rem 0;
-  }
-  .mobile-tools button {
-    padding: 0.45rem 0.5rem; font-size: 0.72rem; min-height: 38px; border-radius: 10px;
-  }
-  .player {
-    min-height: auto !important;
-    padding: 0.45rem 0.6rem !important;
-    padding-bottom: calc(0.45rem + var(--safe-bottom)) !important;
-    gap: 0.3rem !important;
-  }
-  .player-art { width: 40px !important; height: 40px !important; }
-  .player-meta .p-title { font-size: 0.8rem; }
-  .player-meta .p-artist { font-size: 0.68rem; }
-  .player-controls button { width: 36px; height: 36px; min-width: 36px; min-height: 36px; font-size: 0.95rem; }
-  .player-controls button.primary { width: 42px; height: 42px; min-width: 42px; min-height: 42px; font-size: 1rem; }
-  .player-right .icon-btn,
-  .player-right #muteBtn { width: 34px; height: 34px; min-width: 34px; min-height: 34px; font-size: 0.85rem; }
-  .timeline { gap: 0.35rem; }
-  .timeline .time { font-size: 0.65rem; min-width: 30px; }
-  .timeline input[type=range] { height: 22px; }
-  .admin-panel { padding: 0.85rem 0.75rem; margin-top: 1.25rem; }
-  .admin-panel h3 { font-size: 0.85rem; margin-bottom: 0.6rem; }
-  .site-footer { margin-top: 1.5rem; padding: 1rem 0.75rem 0; font-size: 0.72rem; }
-  body { padding-bottom: calc(130px + var(--safe-bottom)) !important; }
-  .queue-panel {
-    bottom: calc(118px + var(--safe-bottom)) !important;
-    z-index: 280 !important;
-  }
-  .queue-panel.open { max-height: 45vh !important; }
-  .cast-panel {
-    bottom: calc(125px + var(--safe-bottom)) !important;
-    z-index: 290 !important;
-  }
-}
-
 </style>
 </head>
 <body>
@@ -933,41 +867,23 @@ body.light .track-cover { background: #e8e8e8; }
   </div>
 
   <div class="section-label" id="filterLabel">Filter</div>
-    <div class="filters" id="filterContainer">
+  <div class="filters" id="filterContainer">
     <button class="active" data-filter="all">Alla</button>
     <button data-filter="Einár">Einár</button>
-    <button data-filter="Dree Low">Dree Low</button>
-    <button data-filter="1 Cuz">1 Cuz</button>
-    <button data-filter="Yasin">Yasin</button>
-    <button data-filter="5iftyy">5iftyy</button>
     <button data-filter="23">23</button>
-    <button data-filter="Owen">Owen</button>
-    <button data-filter="K27">K27</button>
-    <button data-filter="Thrife">Thrife</button>
-    <button data-filter="Adaam">Adaam</button>
-    <button data-filter="Lelo">Lelo</button>
-    <button data-filter="Moewgli">Moewgli</button>
+    <button data-filter="5iftyy">5iftyy</button>
+    <button data-filter="Yasin">Yasin</button>
+    <button data-filter="Dree Low">Dree Low</button>
     <button data-filter="Greekazo">Greekazo</button>
     <button data-filter="Hamko">Hamko</button>
     <button data-filter="Haval">Haval</button>
-    <button data-filter="Asme">Asme</button>
-    <button data-filter="Jireel">Jireel</button>
-    <button data-filter="Saretti">Saretti</button>
-    <button data-filter="Sticky">Sticky</button>
-    <button data-filter="Shacki">Shacki</button>
-    <button data-filter="MQ">MQ</button>
-    <button data-filter="Rvzeli">Rvzeli</button>
-    <button data-filter="Ricky Rich">Ricky Rich</button>
-    <button data-filter="Nilo">Nilo</button>
-    <button data-filter="Euroo">Euroo</button>
-    <button data-filter="Sebastian Stakset">Stakset</button>
-    <button data-filter="Dani M">Dani M</button>
-    <button data-filter="KD">KD</button>
-    <button data-filter="Ozzy">Ozzy</button>
-    <button data-filter="Adel">Adel</button>
-    <button data-filter="Ahdam">Ahdam</button>
-    <button data-filter="Rami">Rami</button>
-    <button data-filter="ZE">ZE</button>
+    <button data-filter="Adaam">Adaam</button>
+    <button data-filter="Lelo">Lelo</button>
+    <button data-filter="Moewgli">Moewgli</button>
+    <button data-filter="1.Cuz">1.Cuz</button>
+    <button data-filter="Owen">Owen</button>
+    <button data-filter="Thrife">Thrife</button>
+    <button data-filter="K27">K27</button>
   </div>
 
   <div class="sort-row">
@@ -1146,11 +1062,11 @@ const tracks = [
     { artist: "Jireel - Einár", title: "WIFI", year: "", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Fe3MGnO4GHsLq.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vZTNNR25PNEdIc0xxLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjcwNTgxfX19XX0_%26Signature%3Df80Uj~G6O23n-j4tYb4qD3fPLErVGX67qxJJ-I4-jrRCgvE1~Looif4TYfJbi-gmutweRQiAsd~SxcqeX7Hi-CY7jzMngkDig3RExQrmf8AYUaZlTOfScLF0PNhkBMtUm~nOcKc7W36ezxpmRJjDW92jhVMPIr9ul4O~wOYBP9od6G316Az7BR-Tg4m~7r0NK5RJqR690NA1MDCs9xl3H~u0SR8nx2BuoTklSxJ1dGG0j9tgztaaupZZDFhejgixtpZkYVQI~I1A6~49XBtb8WYcAoZmN7OtkOAKi1tBhUbOKHi4TNIJ8z2c1Vh78GPXlarhFLGpmTRV3tJdeh5yKw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=SAYZ%20-%20Jireel%20%26%20Einar%20-%20Wifi%20(UNRELEASED)%20X%20Prod%20SAYZ.mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Jireel+%26+Einar+-+Wifi+%28UNRELEASED%29+X+Prod+SAYZ+-+Jireel-artwork.jpg" },
     { artist: "1 Cuz - Adel", title: "Vroom Vroom", year: "", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FWDUXprzrG8lP.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vV0RVWHByenJHOGxQLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjcwNTYzfX19XX0_%26Signature%3DQoxnq50he~X67IhW4Zt7WrcpFivlZ-cRVWIpDDr3hbhbSc1VGklKU0WIvVYs-0sG-xBj0kzHtngPiiIfLAQZEh6e3LkCtFTofGbWwUorGHHx9f2R6MtkM8G71B8zWTB5hfTTthotGdFeyYtavpwLvR0I0vQThMw~FbSdSr5zVnnbDNIeURfUTrPgH7FRKJng6CN~0VWqhRGo7qwAdrNccGcwn2xk4njbgepTWED6FITcN3cXs-xWxOJNKc~KEIlZfov-9VDfJp0weALZ1TMFvr7qvCpembVtu0EC0QXDYajNl1j98kS4V9JJJ~D588EcselepvwHU~5VgYzq14E2ew__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ghetto%20Music%20TV%20-%201.cuz%20x%20Adel%20-%20Vroom%20Vroom%20(Osl%C3%A4ppt).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/1.cuz+x+Adel+-+Vroom+Vroom+%28Osl%C3%A4ppt%29+-+-artwork.jpg" },
     { artist: "Asme", title: "Inatt", year: "", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FFdauQTjS0xTk.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vRmRhdVFUalMweFRrLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjcwNjI3fX19XX0_%26Signature%3DFUIzUa2igEgju0~wld1p07If4Orv~nmmWaGECH0oSawR0FSGbTOiypV4JisVQBjlXIEAMyxBixZDxTUCBXGbohZwn-QeKNDFiagc9a7QOe1HLlkpxdciGUgBicynq9IVO2Fpt6gmy6tvVWmBq6CnB2ZvXBHW-NXljCU1siWPE4AmOGvmL3y4UFKw3djv2YIgSGhB2wJdH8hZ-Ze9sLputBJ2DJAnL19BBlSLVy8HyKTjmb362TltdRkg4WsO0iK0Y6U18YNAV~HL4Vo3xsEzfwU1pBB3E08hXTZ1F-1lem32WAbDMsQtQ~aKlx6r4SqhoxUsW0QP44PDxT3Nb5qtwQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=RENA%20VERSIONERNA%20-%20Asme%20-%20Inatt%20(%20osl%C3%A4ppt%20).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Asme+-+Inatt+%28+osl%C3%A4ppt+%29+-+RENA+VERSIONERNA-artwork.jpg" },
-    { artist: "TBA", title: "Coming Soon 16", year: "Snart", url: "", cover: "" },
-    { artist: "TBA", title: "Coming Soon 17", year: "Snart", url: "", cover: "" },
-    { artist: "TBA", title: "Coming Soon 18", year: "Snart", url: "", cover: "" },
-    { artist: "TBA", title: "Coming Soon 19", year: "Snart", url: "", cover: "" },
-    { artist: "TBA", title: "Coming Soon 20", year: "Snart", url: "", cover: "" }
+    { artist: "Einár", title: "Affären", year: "", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FRrhwHjz4EDlY.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vUnJod0hqejRFRGxZLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjgxOTcxfX19XX0_%26Signature%3DUCA4o9dsHPGB2kEsfYyuPTJ922ctPhZGGnT6mlSTNYtHtvCHtk4XuMsreFfF8KpnWjkt~hKU1CpCjtZq3NTvbnrqSQh0hVg3OcALXuGnM6wy48ThvW98lR5Q3OjLhwzy~AO~AQJ~qjGUCFlP9aGTrpsDrwBADCdWvWCgIcnaEX9nNFLFXsaEipKpB0KLyPSu2EgtBTVLo-P2ri3FvTqRoimwwOQ8-029x-C-om4Ak7xO4LYgKmzSy9kNIhY5PdXd2FImZqpyA6ni0FChTuIvWAou-K~siZgBPIVUCT-R3E78HuMw8VFpkLYjxAEjjLhB7SdC8nfpyTut7h42~gdHiA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Cheeko%20-%20Ein%C3%A1r%20-%20Aff%C3%A4ren%20(Osl%C3%A4ppt).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Ein%C3%A1r+-+Aff%C3%A4ren+%28Osl%C3%A4ppt%29+-+-artwork.jpg" },
+    { artist: "Dree low", title: "Audi V2", year: "", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FLfc1QGP0lwO9.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vTGZjMVFHUDBsd085LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjgyMTUyfX19XX0_%26Signature%3DWumq7IxmYGlKGsHuxfZFjWalcHO7JMtpuy9XkEPkXCSHzknKdZRg3AHJZ2RMRor90NQfjfodoasJYoAMs75zsIusO0N9wayiepmaz71y7qeBLtvo9aIG7~n0gq5P9aRWVR~YMQPPLrCsuFsaj~STKxtQFReWwyczvqKtmUe-I6bEz16Z54j2wLd11zafDl82mkmW6FRipdmyyTc~3UY4cup74BhHBHVinrjFSimb09dMs~WGsCyQvrFF3zH7eJaz2UXeF9O2p1jNkwKhVUk~avM4l809Wk6bYAU~dzwng~~h9LIrLqTpMdd1F4gZqCAeLv7oeTHylFGvPvyJnIWQYQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Svensk%20HipHop%20TV%20-%20Dree%20Low%20-%20Audi%20V2%20(b%C3%A4ttre%20kvalit%C3%A9).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Dree+Low+-+Audi+V2+%28b%C3%A4ttre+kvalit%C3%A9%29+-+-artwork.jpg" },
+    { artist: "Einár", title: "NMR 1 Player", year: "", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FEvbl665uwESW.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vRXZibDY2NXV3RVNXLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjgyMjM1fX19XX0_%26Signature%3DZwVJM7dCFNDkXrYP1jUpDqtEWsdHBy25P7T7UBXSd76cKJPbcHoHJvyg9rct~jyZ~cNY2QO-8fQxEBAaLW4KZI-~rUFREe667tJJ4TYW32E-F7yC34u-yJnBiQL0fzkUYvvH8hqRhBT-awlBnO-g4K11NvbgNhsnzauauA8IKRdFoKvEvP-cZxFzDbGX8ky4FHhqNaAPFHIJ-P7ArYJhqVEQKsv-74rsNDRu~caqBietj7z95cZh1TVdQnP648x9pOLOVTpipBdaJrq3qR6StsDc-AJZ5o4~ymoX09MzYdnZbhYR1PG9qDUssvt8YabU2AKh3lfAdji12PAEo3Vrxw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Beverly%20hills%20-%20Einar%20-%20Nmr%201%20Player.mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Einar+-+Nmr+1+Player+-+Einar+-artwork.jpg" },
+    { artist: "Einár x Thrife", title: "Tjugo", year:  "", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Fs1dgk89tH4Vq.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vczFkZ2s4OXRINFZxLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjgyNDMwfX19XX0_%26Signature%3DVw9yMNfE6FnfE6~w-HU6JF8Xl12mX2LOwN9GXfEX7lsPKgMTLKaenDoUu5xIg5Pi4qkymPK5eZfKBdhZwFZW1Sx5DHsSrpM~cLqG4-94tTvcALY9FrQtzGwBCPgEjlr2csOi056JOXKpGQ91bQIhQc2XFsu5KOSUBarslmCQi0STyeJcTDwaD1OtDxIEiIgsp7DgbnAb2jDuXzVMv2jj5SQgblvWrbURaA1PScCVTIB33zNyuUpQvN3cW7ETQlatYyhsgcA3dLu6Nqgu3psx5k7d8eB1aS0VF1~Y0kikl78pg0-mDjmFIMhkNfCIgpWSIYcLJNpdPWoJmWzaZohiPA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ghetto%20Music%20TV%20-%20Einar%20X%20Thrife%20-%20Tjugo.mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Einar+X+Thrife+-+Tjugo+-+-artwork.jpg" },
+    { artist: "Einár ", title: "Aina Får Alarm", year: "", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Fpe0NoBrno8AF.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vcGUwTm9Ccm5vOEFGLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjgyNDA1fX19XX0_%26Signature%3DYLTU8o7SAuDEDAPtLleDILLE~Ybyn2hfwIJVl9HMKtHSN2mi~SK62TdbuHE-LmUTFXFEYytlSYHQeMsN485v6rUVLPV2xrZQ2stVV28KV9Q4oIhq-z~UtR8PUvzuoZeEM669hM6O-yNimgsbBOtWVGZAVx7e87dXxTjJTWV3FKjEA3hiG80rftIm~ozt1sWtHfr3m829xLqwIwH6V3tc3Lu3CQDjlN2UysVuB3Zju9Oz0lVOWHU6h7AgEdfXh6NdKN-lUacM-jqYCewWe7Wb~NyeBCzEc4lwx5Yy54uELwndsqSyusGT2FkvF7BFx4foY8UQ~~GpODjIQwted-IC2g__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Borgen122%20-%20Einar%20-%20Aina%20F%C3%A5r%20Alarm%20(Osl%C3%A4ppt).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Einar+-+Aina+F%C3%A5r+Alarm+%28Osl%C3%A4ppt%29+-+-artwork.jpg" }
 ];
 
 let currentTracks = tracks.filter(t => t && t.title);
@@ -1343,18 +1259,7 @@ function getFiltered() {
     list = recent.map(u => map.get(u)).filter(Boolean);
   } else {
     list = list.filter(t => {
-      if (currentFilter && currentFilter !== 'all') {
-        const art = (t.artist || '').toLowerCase();
-        const f = currentFilter.toLowerCase();
-        const aliases = {
-          '1 cuz': ['1 cuz', '1.cuz', '1. cuz'],
-          'dree low': ['dree low', 'dree low'],
-          'adaam': ['adaam', 'adaam'],
-          'saretti': ['saretti', 'sarettii']
-        };
-        const keys = aliases[f] || [f];
-        if (!keys.some(k => art.includes(k))) return false;
-      }
+      if (currentFilter && currentFilter !== 'all' && !t.artist.toLowerCase().includes(currentFilter.toLowerCase())) return false;
       return true;
     });
   }
@@ -2196,5 +2101,4 @@ console.log('UnreleasedSweden', currentTracks.length);
 </script>
 </body>
 </html> 
-
-
+ 
