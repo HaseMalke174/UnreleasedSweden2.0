@@ -1220,10 +1220,11 @@ const tracks = [
 let currentTracks = tracks.filter(t => t && t.title);
 let queue = [];
 
-/* Byt till din Google Apps Script-webbapp-URL så funkar mobil + PC */
-let STATS_API = (window.STATS_API || 'https://script.google.com/macros/s/AKfycbx5k-SCZBmLu28J8o0WDCBC7Nhb5s68VReSDn7nZruFJs4xp5LYesfNm9DGtpaPeA0EsQ/exec');
-STATS_API = String(STATS_API).replace(/\/$/, '');
+/* Firebase Realtime Database – klistra in din URL (utan avslutande /) */
+let FIREBASE_DB = (window.FIREBASE_DB || (typeof localStorage !== 'undefined' && localStorage.getItem('us_fb_db')) || '').replace(/\/$/, '');
+let STATS_API = FIREBASE_DB; // bakåtkompat
 let playCounts = {};
+
 let statsLastError = '';
 
 function statsKey(url, artist, title) {
@@ -1365,61 +1366,66 @@ async function detectClientGeo() {
 }
 
 async function reportPlay(artist, title, url) {
-  if (!STATS_API || !title && !url) return;
+  if (!title && !url) return;
+  const db = (window.FIREBASE_DB || (typeof localStorage !== 'undefined' && localStorage.getItem('us_fb_db')) || FIREBASE_DB || '').replace(/\/$/, '');
+  if (!db) return;
   try {
     const geo = await detectClientGeo();
     const ua = navigator.userAgent || '';
-    let platform = 'Okänd';
-    const u = ua.toLowerCase();
+    const ul = ua.toLowerCase();
     const device = /mobile|iphone|android/i.test(ua) ? (/ipad|tablet/i.test(ua) ? 'Surfplatta' : 'Mobil') : 'Dator';
-    const os = /android/i.test(u) ? 'Android' : /iphone|ipad|ios/i.test(u) ? 'iOS' : /mac/i.test(u) ? 'macOS' : /win/i.test(u) ? 'Windows' : /linux/i.test(u) ? 'Linux' : 'OS';
-    const br = /edg\//i.test(u) ? 'Edge' : /chrome/i.test(u) && !/edg/i.test(u) ? 'Chrome' : /firefox/i.test(u) ? 'Firefox' : /safari/i.test(u) ? 'Safari' : 'Browser';
-    platform = device + ' · ' + os + ' · ' + br;
+    const os = /android/i.test(ul) ? 'Android' : /iphone|ipad|ios/i.test(ul) ? 'iOS' : /mac/i.test(ul) ? 'macOS' : /win/i.test(ul) ? 'Windows' : 'OS';
+    const br = /edg\//i.test(ul) ? 'Edge' : /chrome/i.test(ul) && !/edg/i.test(ul) ? 'Chrome' : /firefox/i.test(ul) ? 'Firefox' : /safari/i.test(ul) ? 'Safari' : 'Browser';
+    const platform = device + ' · ' + os + ' · ' + br;
+    const key = (url && String(url).trim()) ? String(url).trim() : ((artist || '') + '|' + (title || '')).toLowerCase();
+    const safe = encodeURIComponent(key).replace(/%/g, '_').slice(0, 180);
+    const curRes = await fetch(db + '/counts/' + safe + '.json');
+    const cur = await curRes.json();
+    const plays = (cur && cur.plays ? Number(cur.plays) : 0) + 1;
+    const entry = { artist: artist || (cur && cur.artist) || '', title: title || (cur && cur.title) || '', plays: plays };
+    await fetch(db + '/counts/' + safe + '.json', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry)
+    });
+    await fetch(db + '/events.json', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        at: new Date().toISOString(),
+        artist: entry.artist,
+        title: entry.title,
+        country: geo.country || 'Unknown',
+        city: geo.city || '',
+        platform: platform
+      })
+    });
+    playCounts[key] = entry;
+    playCounts[nameKey(artist, title)] = entry;
+    if (typeof render === 'function') render();
+  } catch (e) {}
+}
 
-    const payload = {
-      action: 'play',
-      artist: artist || '',
-      title: title || '',
-      url: url || '',
-      country: geo.country || '',
-      country_code: geo.country_code || '',
-      city: geo.city || '',
-      platform: platform,
-      ua: ua.slice(0, 300)
-    };
-
-    let res;
-    // Google Apps Script webbapp (HTTPS, funkar på alla enheter)
-    if (/script\.google\.com|googleusercontent\.com/i.test(STATS_API)) {
-      const q = new URLSearchParams({
-        path: 'play',
-        artist: payload.artist || '',
-        title: payload.title || '',
-        url: (payload.url || '').slice(0, 400),
-        country: payload.country || '',
-        city: payload.city || '',
-        platform: payload.platform || '',
-        ua: (payload.ua || '').slice(0, 120)
-      });
-      res = await fetch(STATS_API + (STATS_API.indexOf('?') >= 0 ? '&' : '?') + q.toString(), {
-        method: 'GET', cache: 'no-store', redirect: 'follow'
-      });
-    } else {
-      res = await fetch(STATS_API.replace(/\/$/, '') + '/api/play', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    }
+async function fetchPlayStats() {
+  const db = (window.FIREBASE_DB || (typeof localStorage !== 'undefined' && localStorage.getItem('us_fb_db')) || FIREBASE_DB || '').replace(/\/$/, '');
+  if (!db) {
+    if (typeof render === 'function') render();
+    return;
+  }
+  try {
+    const res = await fetch(db + '/counts.json', { cache: 'no-store' });
     if (!res.ok) return;
-    const data = await res.json();
-    if (data && data.plays != null) {
-      const entry = { artist: artist || '', title: title || '', plays: Number(data.plays) || 0 };
-      const k = data.track_key || statsKey(url, artist, title);
-      playCounts[k] = entry;
-      playCounts[nameKey(artist, title)] = entry;
-      if (typeof render === 'function') render();
-    }
+    const raw = (await res.json()) || {};
+    const map = {};
+    Object.keys(raw).forEach((k) => {
+      const info = raw[k];
+      if (!info) return;
+      const entry = { artist: info.artist || '', title: info.title || '', plays: Number(info.plays) || 0 };
+      map[k] = entry;
+      if (info.artist || info.title) map[nameKey(info.artist, info.title)] = entry;
+    });
+    playCounts = map;
+    if (typeof render === 'function') render();
   } catch (e) {}
 }
 
@@ -2468,3 +2474,4 @@ console.log('UnreleasedSweden', currentTracks.length);
 </script>
 </body>
 </html> 
+ 
