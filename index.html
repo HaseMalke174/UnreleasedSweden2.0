@@ -789,6 +789,20 @@ body.light .track-cover { background: #e8e8e8; }
   opacity: 0.95;
 }
 .play-count:empty { display: none; }
+.pc-badge {
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  vertical-align: middle;
+  color: #0a0612;
+  background: var(--green);
+  box-shadow: 0 0 12px var(--green-glow);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
 .track-row.playing .play-count { color: var(--green); }
 .artist-line { display: flex; align-items: center; flex-wrap: wrap; gap: 0.15rem 0.25rem; }
 </style>
@@ -910,7 +924,7 @@ body.light .track-cover { background: #e8e8e8; }
     <label for="sortSelect">Sortera</label>
     <select id="sortSelect">
       <option value="default">Standard</option>
-      <option value="popular">Mest spelade</option>
+      <option value="popular">Mest spelade (lyssningar)</option>
       <option value="title">Titel A–Ö</option>
       <option value="artist">Artist A–Ö</option>
       <option value="year-new">År (nyast)</option>
@@ -1125,35 +1139,79 @@ const tracks = [
 let currentTracks = tracks.filter(t => t && t.title);
 let queue = [];
 
-const STATS_API = (window.STATS_API || localStorage.getItem('us_stats_api') || 'http://127.0.0.1:5050').replace(/\/$/, '');
+let STATS_API = (window.STATS_API || (typeof localStorage !== 'undefined' && localStorage.getItem('us_stats_api')) || 'http://127.0.0.1:5050');
+STATS_API = String(STATS_API).replace(/\/$/, '');
 let playCounts = {};
+let statsLastError = '';
 
 function statsKey(url, artist, title) {
   if (url && String(url).trim()) return String(url).trim();
-  return ((artist || '') + '|' + (title || '')).toLowerCase();
+  return ((artist || '').trim() + '|' + (title || '').trim()).toLowerCase();
+}
+function nameKey(artist, title) {
+  return ((artist || '').trim() + '|' + (title || '').trim()).toLowerCase();
+}
+
+function indexPlayEntry(map, key, info) {
+  if (!key || !info) return;
+  map[key] = info;
 }
 
 function getPlayCount(url, artist, title) {
-  const k = statsKey(url, artist, title);
-  if (playCounts[k] && playCounts[k].plays != null) return playCounts[k].plays;
-  const alt = ((artist || '') + '|' + (title || '')).toLowerCase();
-  if (playCounts[alt] && playCounts[alt].plays != null) return playCounts[alt].plays;
+  const k1 = statsKey(url, artist, title);
+  if (playCounts[k1] && playCounts[k1].plays != null) return Number(playCounts[k1].plays) || 0;
+  const k2 = nameKey(artist, title);
+  if (playCounts[k2] && playCounts[k2].plays != null) return Number(playCounts[k2].plays) || 0;
+  // fuzzy: match by title only if unique-ish
+  const t = (title || '').trim().toLowerCase();
+  if (t) {
+    for (const info of Object.values(playCounts)) {
+      if (info && String(info.title || '').trim().toLowerCase() === t && info.plays != null) {
+        return Number(info.plays) || 0;
+      }
+    }
+  }
   return 0;
 }
+
 function fmtPlays(n) {
   const x = parseInt(n, 10) || 0;
-  if (x <= 0) return '';
-  return '· ' + x + ' lyssning' + (x === 1 ? '' : 'ar');
+  return '<span class="pc-badge" title="Lyssningar">' + x + ' lyssningar</span>';
+}
+
+function rebuildPlayIndex(tracksObj) {
+  const map = {};
+  const src = tracksObj || {};
+  for (const [key, info] of Object.entries(src)) {
+    if (!info) continue;
+    const entry = {
+      artist: info.artist || '',
+      title: info.title || '',
+      plays: Number(info.plays) || 0
+    };
+    indexPlayEntry(map, key, entry);
+    if (entry.artist || entry.title) {
+      indexPlayEntry(map, nameKey(entry.artist, entry.title), entry);
+    }
+  }
+  playCounts = map;
 }
 
 async function fetchPlayStats() {
   try {
-    const res = await fetch(STATS_API + '/api/stats', { cache: 'no-store' });
-    if (!res.ok) return;
+    const res = await fetch(STATS_API + '/api/stats', { cache: 'no-store', mode: 'cors' });
+    if (!res.ok) {
+      statsLastError = 'stats HTTP ' + res.status;
+      return;
+    }
     const data = await res.json();
-    playCounts = data.tracks || {};
+    rebuildPlayIndex(data.tracks || {});
+    statsLastError = '';
     if (typeof render === 'function') render();
-  } catch (e) {}
+  } catch (e) {
+    statsLastError = (e && e.message) || 'stats fetch failed';
+    console.warn('Lyssnings-API:', statsLastError, STATS_API);
+  }
 }
 
 let cachedClientGeo = null;
@@ -1210,8 +1268,10 @@ async function reportPlay(artist, title, url) {
     if (!res.ok) return;
     const data = await res.json();
     if (data && data.plays != null) {
+      const entry = { artist: artist || '', title: title || '', plays: Number(data.plays) || 0 };
       const k = data.track_key || statsKey(url, artist, title);
-      playCounts[k] = { artist: artist || '', title: title || '', plays: data.plays };
+      playCounts[k] = entry;
+      playCounts[nameKey(artist, title)] = entry;
       if (typeof render === 'function') render();
     }
   } catch (e) {}
@@ -2187,7 +2247,8 @@ const sortSelect = document.getElementById('sortSelect');
 if (sortSelect) {
   sortSelect.addEventListener('change', () => {
     currentSort = sortSelect.value;
-    render();
+    if (currentSort === 'popular') fetchPlayStats().then(() => render());
+    else render();
   });
 }
 
@@ -2267,7 +2328,9 @@ setupMediaSessionHandlers();
 render();
 renderQueue();
 fetchPlayStats();
-setInterval(fetchPlayStats, 20000);
+setInterval(fetchPlayStats, 12000);
+setTimeout(fetchPlayStats, 1500);
+setTimeout(fetchPlayStats, 4000);
 console.log('UnreleasedSweden', currentTracks.length);
 </script>
 </body>
