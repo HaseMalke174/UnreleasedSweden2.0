@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <meta name="description" content="UnreleasedSweden – Osläppta svenska klassiker">
 <meta name="theme-color" content="#07060c" id="themeColorMeta">
-<title>UnreleasedSweden – Osläppta svenska rap klassiker</title>
+<title>UnreleasedSweden – Osläppta svenska klassiker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://i1.sndcdn.com">
@@ -711,6 +711,45 @@ body.light .track-cover { background: #e8e8e8; }
 .player-controls button.primary:hover {
   box-shadow: 0 0 20px var(--green-glow);
 }
+
+.live-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(196,77,255,0.15); border: 1px solid rgba(196,77,255,0.35);
+  color: var(--green-hover); font-size: 0.75rem; font-weight: 700;
+  padding: 0.35rem 0.7rem; border-radius: var(--radius-pill);
+  letter-spacing: 0.02em; white-space: nowrap;
+}
+.live-badge .live-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: #ff2d6a;
+  box-shadow: 0 0 8px #ff2d6a; animation: liveBlink 1.4s ease-in-out infinite;
+}
+@keyframes liveBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.85); }
+}
+.live-badge strong { color: var(--text); font-size: 0.85rem; }
+.sort-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.sort-row label { font-size: 0.75rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+.sort-row select {
+  background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text);
+  padding: 0.45rem 0.75rem; border-radius: var(--radius-pill); font-size: 0.8rem; font-weight: 600;
+  outline: none; cursor: pointer;
+}
+.sort-row select:focus { border-color: var(--green); }
+.share-btn-row {
+  display: inline-flex; gap: 0.4rem; margin-left: 0.25rem;
+}
+.icon-btn.share-on { border-color: var(--accent); color: var(--accent); }
+.hero-stats {
+  display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.15rem; align-items: center;
+}
+@media (max-width: 900px) {
+  .topbar-meta .hide-mobile { display: none; }
+  .live-badge { font-size: 0.7rem; padding: 0.3rem 0.55rem; }
+}
 </style>
 </head>
 <body>
@@ -725,7 +764,10 @@ body.light .track-cover { background: #e8e8e8; }
       <input type="text" id="searchInput" placeholder="Sök låt eller artist…" autocomplete="off">
     </div>
     <div class="topbar-right">
-      <div class="topbar-meta"><strong id="trackCount">0</strong> spår · <strong id="artistCount">0</strong> artister</div>
+      <div class="topbar-meta">
+        <span class="live-badge" id="liveBadge" title="Lyssnare just nu"><span class="live-dot"></span> <strong id="liveCount">1</strong> live</span>
+        <span class="hide-mobile"> · <strong id="trackCount">0</strong> spår · <strong id="artistCount">0</strong> artister</span>
+      </div>
       <button class="settings-btn" id="settingsBtn" title="Inställningar">⚙</button>
     </div>
   </div>
@@ -769,6 +811,10 @@ body.light .track-cover { background: #e8e8e8; }
       <div class="settings-hint">Mellanslag = play/paus · ← → = föregående/nästa · M = mute · L = gilla</div>
     </div>
     <div class="settings-section">
+      <h4>Live-lyssnare</h4>
+      <div class="settings-hint">Visar hur många som har sidan öppen. För global siffra över hela internet: lägg in Firebase-config i koden (FIREBASE_CONFIG). Annars räknas du + andra flikar på samma enhet.</div>
+    </div>
+    <div class="settings-section">
       <h4>Om</h4>
       <div class="settings-hint">Skapat Av Chatru</div>
     </div>
@@ -780,6 +826,7 @@ body.light .track-cover { background: #e8e8e8; }
   <button type="button" id="mobileCastBtn" title="Cast">📡 Cast</button>
   <button type="button" id="mobileSettingsBtn" title="Inställningar">⚙ Inställningar</button>
   <button type="button" id="mobileLikedBtn" title="Gillade">♥ Gillade</button>
+  <button type="button" id="mobileShareBtn" title="Dela">↗ Dela</button>
 </div>
 <main class="main">
   <section class="hero">
@@ -815,6 +862,16 @@ body.light .track-cover { background: #e8e8e8; }
     <button data-filter="K27">K27</button>
   </div>
 
+  <div class="sort-row">
+    <label for="sortSelect">Sortera</label>
+    <select id="sortSelect">
+      <option value="default">Standard</option>
+      <option value="title">Titel A–Ö</option>
+      <option value="artist">Artist A–Ö</option>
+      <option value="year-new">År (nyast)</option>
+      <option value="year-old">År (äldst)</option>
+    </select>
+  </div>
   <div id="messageContainer"></div>
   <div class="track-list" id="trackGrid"></div>
 
@@ -897,6 +954,7 @@ body.light .track-cover { background: #e8e8e8; }
       <button id="muteBtn" title="Mute">🔊</button>
       <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.85">
     </div>
+    <button class="icon-btn" id="shareBtn" title="Dela låt">↗</button>
     <button class="icon-btn" id="queueBtn" title="Kö">☰</button>
     <button class="icon-btn" id="castBtn" title="Cast">📡</button>
     <button class="icon-btn expand-btn" id="expandBtn" title="Expandera">⛶</button>
@@ -1178,7 +1236,7 @@ function getFiltered() {
     });
   }
   if (q) list = list.filter(t => (t.artist + ' ' + t.title + ' ' + t.year).toLowerCase().includes(q));
-  return list;
+  return applySort(list);
 }
 function getNextTrack() {
   if (queue.length > 0) {
@@ -1810,6 +1868,7 @@ if (mobileSettingsBtn) mobileSettingsBtn.addEventListener('click', (e) => {
     castPanel.classList.remove('open');
   }
 });
+if (document.getElementById('mobileShareBtn')) document.getElementById('mobileShareBtn').addEventListener('click', shareCurrentTrack);
 if (mobileLikedBtn) mobileLikedBtn.addEventListener('click', () => {
   viewTabs.querySelectorAll('button').forEach(x => x.classList.remove('active'));
   const likedBtn = viewTabs.querySelector('[data-view="liked"]');
@@ -1819,6 +1878,159 @@ if (mobileLikedBtn) mobileLikedBtn.addEventListener('click', () => {
   const gridEl = document.getElementById('trackGrid');
   if (gridEl) window.scrollTo({ top: gridEl.offsetTop - 80, behavior: 'smooth' });
 });
+
+
+// ========== LIVE LISTENERS ==========
+// Riktig global live kräver Firebase (gratis). Utan config: räknar dig + andra flikar på samma enhet.
+// Sätt din config här: https://console.firebase.google.com → Realtime Database
+const FIREBASE_CONFIG = null; // t.ex. { apiKey:"...", authDomain:"...", databaseURL:"...", projectId:"..." }
+
+let liveCount = 1;
+let liveClientId = null;
+try {
+  liveClientId = sessionStorage.getItem('us_live_id') || (Math.random().toString(36).slice(2) + Date.now().toString(36));
+  sessionStorage.setItem('us_live_id', liveClientId);
+} catch(e) { liveClientId = 'c' + Math.random().toString(36).slice(2); }
+
+const livePresence = new Map(); // id -> lastSeen
+livePresence.set(liveClientId, Date.now());
+
+function updateLiveUI(n) {
+  liveCount = Math.max(1, n|0);
+  const a = document.getElementById('liveCount');
+  const b = document.getElementById('liveCountHero');
+  if (a) a.textContent = String(liveCount);
+  if (b) b.textContent = String(liveCount);
+}
+
+function recomputeLocalLive() {
+  const now = Date.now();
+  for (const [id, t] of [...livePresence.entries()]) {
+    if (now - t > 45000) livePresence.delete(id);
+  }
+  livePresence.set(liveClientId, now);
+  updateLiveUI(livePresence.size);
+}
+
+let liveChannel = null;
+try {
+  liveChannel = new BroadcastChannel('unreleasedsweden_live');
+  liveChannel.onmessage = (ev) => {
+    const d = ev.data || {};
+    if (d.type === 'ping' && d.id) {
+      livePresence.set(d.id, Date.now());
+      recomputeLocalLive();
+    } else if (d.type === 'bye' && d.id) {
+      livePresence.delete(d.id);
+      recomputeLocalLive();
+    }
+  };
+} catch(e) {}
+
+function broadcastLive(type) {
+  try {
+    if (liveChannel) liveChannel.postMessage({
+      type, id: liveClientId, playing: !!(userWantsPlaying && audio && !audio.paused), t: Date.now()
+    });
+  } catch(e) {}
+}
+
+setInterval(() => {
+  broadcastLive('ping');
+  recomputeLocalLive();
+}, 8000);
+broadcastLive('ping');
+recomputeLocalLive();
+window.addEventListener('beforeunload', () => broadcastLive('bye'));
+
+// Optional Firebase global presence
+async function initFirebaseLive() {
+  if (!FIREBASE_CONFIG || !FIREBASE_CONFIG.databaseURL) return;
+  try {
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+    const { getDatabase, ref, set, onValue, onDisconnect, serverTimestamp } =
+      await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
+    const app = initializeApp(FIREBASE_CONFIG);
+    const db = getDatabase(app);
+    const myRef = ref(db, 'presence/' + liveClientId);
+    await set(myRef, { t: serverTimestamp(), playing: true });
+    onDisconnect(myRef).remove();
+    setInterval(() => {
+      set(myRef, { t: serverTimestamp(), playing: !!(userWantsPlaying && !audio.paused) }).catch(()=>{});
+    }, 10000);
+    onValue(ref(db, 'presence'), (snap) => {
+      const v = snap.val() || {};
+      updateLiveUI(Object.keys(v).length || 1);
+    });
+  } catch (err) {
+    console.warn('Firebase live ej aktiv', err);
+  }
+}
+initFirebaseLive();
+
+// ========== SORT ==========
+let currentSort = 'default';
+const sortSelect = document.getElementById('sortSelect');
+if (sortSelect) {
+  sortSelect.addEventListener('change', () => {
+    currentSort = sortSelect.value;
+    render();
+  });
+}
+
+function applySort(list) {
+  const arr = [...list];
+  if (currentSort === 'title') arr.sort((a,b) => (a.title||'').localeCompare(b.title||'', 'sv'));
+  else if (currentSort === 'artist') arr.sort((a,b) => (a.artist||'').localeCompare(b.artist||'', 'sv') || (a.title||'').localeCompare(b.title||'', 'sv'));
+  else if (currentSort === 'year-new') arr.sort((a,b) => String(b.year||'').localeCompare(String(a.year||''), 'sv'));
+  else if (currentSort === 'year-old') arr.sort((a,b) => String(a.year||'').localeCompare(String(b.year||''), 'sv'));
+  return arr;
+}
+
+// ========== SHARE ==========
+async function shareCurrentTrack() {
+  if (!currentPlaying) { showMessage('Välj en låt först'); return; }
+  const t = currentPlaying;
+  const url = new URL(location.href);
+  url.searchParams.set('track', t.title || '');
+  url.searchParams.set('artist', t.artist || '');
+  const text = t.artist + ' – ' + t.title + ' | UnreleasedSweden';
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: t.title, text, url: url.toString() });
+      showMessage('Delat!', 'success');
+      return;
+    }
+  } catch(e) {
+    if (e && e.name === 'AbortError') return;
+  }
+  try {
+    await navigator.clipboard.writeText(text + '\n' + url.toString());
+    showMessage('Länk kopierad!', 'success');
+  } catch(e) {
+    showMessage('Kunde inte dela', 'error');
+  }
+}
+const shareBtn = document.getElementById('shareBtn');
+if (shareBtn) shareBtn.addEventListener('click', shareCurrentTrack);
+
+// Deep link ?track=Title
+(function deepLink() {
+  try {
+    const p = new URLSearchParams(location.search);
+    const title = p.get('track');
+    const artist = p.get('artist');
+    if (!title) return;
+    setTimeout(() => {
+      const found = currentTracks.find(t =>
+        t.title && t.title.trim().toLowerCase() === title.trim().toLowerCase() &&
+        (!artist || (t.artist||'').toLowerCase().includes(artist.toLowerCase()))
+      ) || currentTracks.find(t => t.title && t.title.toLowerCase().includes(title.toLowerCase()));
+      if (found && found.url) playTrack(found.url, found.artist, found.title, found.cover);
+    }, 500);
+  } catch(e) {}
+})();
+
 
 setupMediaSessionHandlers();
 render();
