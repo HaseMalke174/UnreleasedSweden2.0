@@ -583,14 +583,68 @@ body.light .track-cover { background: #e8e8e8; }
   }
   .player {
     grid-template-columns: 1fr auto;
-    height: auto; min-height: calc(80px + var(--safe-bottom));
-    padding: 0.75rem 1rem; padding-bottom: calc(0.75rem + var(--safe-bottom)); gap: 0.5rem;
+    height: auto; min-height: calc(88px + var(--safe-bottom));
+    padding: 0.7rem 0.85rem; padding-bottom: calc(0.7rem + var(--safe-bottom)); gap: 0.45rem 0.5rem;
   }
-  .player-center { grid-column: 1 / -1; order: 3; }
-  .player-right { display: none; }
+  .player-left { grid-column: 1; grid-row: 1; min-width: 0; }
+  .player-right {
+    display: flex !important;
+    grid-column: 2; grid-row: 1;
+    align-items: center; justify-content: flex-end; gap: 0.35rem;
+    flex-shrink: 0;
+  }
+  .player-center {
+    grid-column: 1 / -1; grid-row: 2; order: initial;
+    width: 100%;
+  }
+  .player-right .rate-label { display: none; }
+  .player-right .volume-wrap input[type=range] { display: none; }
+  .player-right .volume-wrap { gap: 0; }
+  .player-right .icon-btn,
+  .player-right #muteBtn {
+    width: 44px; height: 44px; min-width: 44px; min-height: 44px;
+    font-size: 1.05rem;
+  }
   .topbar-meta { display: none; }
-  .player-art { width: 52px; height: 52px; }
-  .expand-btn { display: flex; }
+  .player-art { width: 48px; height: 48px; }
+  .expand-btn { display: flex !important; }
+  .player-controls { gap: 0.35rem; }
+  .player-controls button { width: 42px; height: 42px; min-width: 42px; min-height: 42px; }
+  .player-controls button.primary { width: 50px; height: 50px; min-width: 50px; min-height: 50px; }
+}
+
+.mobile-tools { display: none; }
+@media (max-width: 900px) {
+  .mobile-tools {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.65rem 1rem 0;
+    max-width: 1180px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+  .mobile-tools button {
+    flex: 1;
+    min-width: calc(50% - 0.5rem);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.7rem 0.85rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 48px;
+  }
+  .mobile-tools button:active {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-dim);
+  }
 }
 @media (max-width: 560px) {
   .main { padding: 1.15rem 0.95rem; }
@@ -678,6 +732,12 @@ body.light .track-cover { background: #e8e8e8; }
   </div>
 </div>
 
+<div class="mobile-tools" id="mobileTools">
+  <button type="button" id="mobileQueueBtn" title="Kö">☰ Kö</button>
+  <button type="button" id="mobileCastBtn" title="Cast">📡 Cast</button>
+  <button type="button" id="mobileSettingsBtn" title="Inställningar">⚙ Inställningar</button>
+  <button type="button" id="mobileLikedBtn" title="Gillade">♥ Gillade</button>
+</div>
 <main class="main">
   <section class="hero">
     <div class="hero-label">Officiellt fan-arkiv</div>
@@ -1672,6 +1732,47 @@ document.addEventListener('keydown', (e) => {
   else if (e.key === 'l' || e.key === 'L') {
     if (currentPlaying) toggleLike(currentPlaying.url);
   }
+});
+
+const mobileQueueBtn = document.getElementById('mobileQueueBtn');
+const mobileCastBtn = document.getElementById('mobileCastBtn');
+const mobileSettingsBtn = document.getElementById('mobileSettingsBtn');
+const mobileLikedBtn = document.getElementById('mobileLikedBtn');
+if (mobileQueueBtn) mobileQueueBtn.addEventListener('click', () => {
+  queuePanel.classList.toggle('open');
+  if (queuePanel.classList.contains('open')) {
+    castPanel.classList.remove('open');
+    settingsPanel.classList.remove('open');
+    settingsBtn.classList.remove('active');
+    renderQueue();
+  }
+});
+if (mobileCastBtn) mobileCastBtn.addEventListener('click', () => {
+  castPanel.classList.toggle('open');
+  if (castPanel.classList.contains('open')) {
+    queuePanel.classList.remove('open');
+    settingsPanel.classList.remove('open');
+    settingsBtn.classList.remove('active');
+    refreshAudioOutputs();
+  }
+});
+if (mobileSettingsBtn) mobileSettingsBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  settingsPanel.classList.toggle('open');
+  settingsBtn.classList.toggle('active', settingsPanel.classList.contains('open'));
+  if (settingsPanel.classList.contains('open')) {
+    queuePanel.classList.remove('open');
+    castPanel.classList.remove('open');
+  }
+});
+if (mobileLikedBtn) mobileLikedBtn.addEventListener('click', () => {
+  viewTabs.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+  const likedBtn = viewTabs.querySelector('[data-view="liked"]');
+  if (likedBtn) likedBtn.classList.add('active');
+  currentView = 'liked';
+  render();
+  const gridEl = document.getElementById('trackGrid');
+  if (gridEl) window.scrollTo({ top: gridEl.offsetTop - 80, behavior: 'smooth' });
 });
 
 setupMediaSessionHandlers();
