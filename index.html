@@ -1221,9 +1221,8 @@ let currentTracks = tracks.filter(t => t && t.title);
 let queue = [];
 
 /* Byt till din Google Apps Script-webbapp-URL så funkar mobil + PC */
-let STATS_API = (window.STATS_API || 'PASTE_GOOGLE_SCRIPT_WEBAPP_URL_HERE');
+let STATS_API = (window.STATS_API || 'https://script.google.com/macros/s/AKfycbzA16BdXCsYr-1EU515pZcehD60sb3vNx1xcaXM8wz6hzWQJv0M-f2K0NVP7reQfdpLfA/exec');
 STATS_API = String(STATS_API).replace(/\/$/, '');
-if (STATS_API.indexOf('PASTE_') === 0) STATS_API = '';
 let playCounts = {};
 let statsLastError = '';
 
@@ -1392,10 +1391,18 @@ async function reportPlay(artist, title, url) {
     let res;
     // Google Apps Script webbapp (HTTPS, funkar på alla enheter)
     if (/script\.google\.com|googleusercontent\.com/i.test(STATS_API)) {
-      res = await fetch(STATS_API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
+      const q = new URLSearchParams({
+        path: 'play',
+        artist: payload.artist || '',
+        title: payload.title || '',
+        url: (payload.url || '').slice(0, 400),
+        country: payload.country || '',
+        city: payload.city || '',
+        platform: payload.platform || '',
+        ua: (payload.ua || '').slice(0, 120)
+      });
+      res = await fetch(STATS_API + (STATS_API.indexOf('?') >= 0 ? '&' : '?') + q.toString(), {
+        method: 'GET', cache: 'no-store', redirect: 'follow'
       });
     } else {
       res = await fetch(STATS_API.replace(/\/$/, '') + '/api/play', {
