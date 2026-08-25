@@ -5,9 +5,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-<meta name="description" content="UnreleasedSweden – Osläppta svenska klassiker">
+<meta name="description" content="UnreleasedSweden – osläppt svensk rap">
 <meta name="theme-color" content="#07060c" id="themeColorMeta">
-<title>UnreleasedSweden – Osläppta svenska klassiker</title>
+<title>UnreleasedSweden</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://i1.sndcdn.com">
@@ -90,7 +90,6 @@ body {
 button { font-family: inherit; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 img { max-width: 100%; display: block; }
 
-/* TOPBAR */
 .topbar {
   position: sticky; top: 0; z-index: 100;
   background: var(--topbar-bg);
@@ -146,7 +145,6 @@ img { max-width: 100%; display: block; }
   border-color: var(--green); color: var(--green); background: var(--green-dim);
 }
 
-/* MAIN */
 .main { max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem 2.5rem; }
 
 .hero {
@@ -228,7 +226,6 @@ body.light .message.error { color: #b91c1c; }
   border: 1px solid rgba(29,185,84,0.28);
 }
 
-/* TRACK LIST */
 .track-list {
   background: var(--bg-card); border: 1px solid var(--border);
   border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm);
@@ -349,7 +346,6 @@ body.light .track-cover { background: #e8e8e8; }
 }
 .site-footer strong { color: var(--text-muted); font-weight: 600; }
 
-/* PLAYER */
 .player {
   position: fixed; bottom: 0; left: 0; right: 0;
   height: calc(var(--player-h) + var(--safe-bottom));
@@ -452,7 +448,6 @@ body.light .track-cover { background: #e8e8e8; }
   min-width: 2.2rem; text-align: center;
 }
 
-/* QUEUE */
 .queue-panel {
   position: fixed; bottom: calc(var(--player-h) + var(--safe-bottom)); left: 0; right: 0;
   max-height: 0; overflow: hidden; background: var(--bg-card);
@@ -496,7 +491,6 @@ body.light .track-cover { background: #e8e8e8; }
 }
 .queue-empty { text-align: center; padding: 2.25rem; color: var(--text-dim); font-size: 0.9rem; }
 
-/* SETTINGS */
 .settings-panel {
   position: fixed; top: calc(68px + var(--safe-top) + 10px); right: 1.25rem;
   width: min(360px, calc(100vw - 2rem)); background: var(--bg-card);
@@ -537,7 +531,6 @@ body.light .track-cover { background: #e8e8e8; }
   background: var(--bg-elevated); border-radius: 10px; padding: 0.75rem 0.9rem; margin-top: 0.55rem;
 }
 
-/* CAST */
 .cast-panel {
   position: fixed; bottom: calc(var(--player-h) + var(--safe-bottom) + 10px); right: 1.15rem;
   width: min(340px, calc(100vw - 2rem)); background: var(--bg-card);
@@ -686,7 +679,6 @@ body.light .track-cover { background: #e8e8e8; }
   .settings-panel { right: 0.6rem; left: 0.6rem; width: auto; }
 }
 
-
 .hero-credit {
   margin-top: 1rem; font-size: 0.78rem; font-weight: 600;
   color: var(--text-dim); letter-spacing: 0.04em;
@@ -761,7 +753,7 @@ body.light .track-cover { background: #e8e8e8; }
     </div>
     <div class="search-wrap">
       <span class="search-icon">⌕</span>
-      <input type="text" id="searchInput" placeholder="Sök låt eller artist…" autocomplete="off">
+      <input type="text" id="searchInput" placeholder="Sök..." autocomplete="off">
     </div>
     <div class="topbar-right">
       <div class="topbar-meta">
@@ -804,19 +796,23 @@ body.light .track-cover { background: #e8e8e8; }
         <button type="button" data-sleep="45">45 min</button>
         <button type="button" data-sleep="60">60 min</button>
       </div>
-      <div class="settings-hint">Musiken pausas automatiskt efter vald tid (som i Spotify).</div>
+      <div class="settings-hint">Pausar efter vald tid.</div>
     </div>
     <div class="settings-section">
       <h4>Kortkommandon</h4>
-      <div class="settings-hint">Mellanslag = play/paus · ← → = föregående/nästa · M = mute · L = gilla</div>
+      <div class="settings-hint">Mellanslag play/paus · pilar byter låt · M mute · L gilla</div>
     </div>
     <div class="settings-section">
-      <h4>Live-lyssnare</h4>
-      <div class="settings-hint">Visar hur många som har sidan öppen. För global siffra över hela internet: lägg in Firebase-config i koden (FIREBASE_CONFIG). Annars räknas du + andra flikar på samma enhet.</div>
+      <h4>Shuffle</h4>
+      <div class="settings-hint">Blandar listan och försöker inte köra samma artist rakt efter varandra.</div>
+    </div>
+    <div class="settings-section">
+      <h4>Live</h4>
+      <div class="settings-hint">Hur många som har sidan öppen just nu (på den här enheten / flikarna).</div>
     </div>
     <div class="settings-section">
       <h4>Om</h4>
-      <div class="settings-hint">Skapat Av Chatru</div>
+      <div class="settings-hint">av chatru</div>
     </div>
   </div>
 </div>
@@ -830,10 +826,10 @@ body.light .track-cover { background: #e8e8e8; }
 </div>
 <main class="main">
   <section class="hero">
-    <div class="hero-label">Officiellt fan-arkiv</div>
-    <h1>Osläppta svenska klassiker</h1>
-    <p>Ett curated arkiv för osläppta spår från den svenska scenen. Lyssna, utforska och bevara historien.</p>
-    <p class="hero-credit">Skapat Av Chatru</p>
+    <div class="hero-label">Fan-arkiv</div>
+    <h1>Osläppta grejer</h1>
+    <p>Osläppta spår från den svenska scenen. Inget fancy – bara låtarna.</p>
+    <p class="hero-credit">av chatru</p>
   </section>
 
   <div class="view-tabs" id="viewTabs">
@@ -876,7 +872,7 @@ body.light .track-cover { background: #e8e8e8; }
   <div class="track-list" id="trackGrid"></div>
 
   <div class="admin-panel">
-    <h3><span>＋</span> Lägg till spår</h3>
+    <h3><span>＋</span> Lägg till låt</h3>
     <div class="form-row">
       <input type="text" id="newArtist" placeholder="Artist">
       <input type="text" id="newTitle" placeholder="Låttitel">
@@ -884,13 +880,13 @@ body.light .track-cover { background: #e8e8e8; }
       <input type="text" id="newUrl" placeholder="MP3-URL">
       <button class="btn-add" id="addTrackBtn">Lägg till</button>
     </div>
-    <p class="admin-hint">Använd en permanent MP3-länk.</p>
+    <p class="admin-hint">Klistra in en MP3-länk om du har en.</p>
   </div>
 
   <footer class="site-footer">
-    <p><strong>UnreleasedSweden</strong> · Osläppta svenska klassiker</p>
-    <p>För fans, av fans · Ej affilierat med artister, labels eller rättighetsinnehavare</p>
-    <p class="credit">Skapat Av Chatru</p>
+    <p><strong>UnreleasedSweden</strong></p>
+    <p>Ej kopplat till artister eller labels. Bara ett fan-projekt.</p>
+    <p class="credit">av chatru</p>
   </footer>
 </main>
 
@@ -919,8 +915,8 @@ body.light .track-cover { background: #e8e8e8; }
     </div>
     <div class="cast-section">
       <h4>Wi-Fi-högtalare</h4>
-      <div class="cast-hint"><strong>AirPlay (iPhone/Mac):</strong> Kontrollcenter → AirPlay → välj högtalare</div>
-      <div class="cast-hint" style="margin-top:.6rem"><strong>Android/Windows:</strong> Välj högtalare som systemljud, eller Cast to Sonos-tillägg i Chrome</div>
+      <div class="cast-hint"><strong>AirPlay:</strong> Kontrollcenter → välj högtalare</div>
+      <div class="cast-hint" style="margin-top:.6rem"><strong>Android/Windows:</strong> byt ljudutgång i systemet</div>
     </div>
   </div>
 </div>
@@ -929,8 +925,8 @@ body.light .track-cover { background: #e8e8e8; }
   <div class="player-left">
     <div class="player-art" id="playerArt">♪</div>
     <div class="player-meta">
-      <div class="p-title" id="playerTitle">Välj en låt</div>
-      <div class="p-artist" id="playerArtist">Ingen uppspelning</div>
+      <div class="p-title" id="playerTitle">Ingen låt vald</div>
+      <div class="p-artist" id="playerArtist">—</div>
     </div>
     <button class="heart-btn" id="playerHeart" title="Gilla" style="font-size:1.2rem">♡</button>
   </div>
@@ -1049,13 +1045,16 @@ let currentTracks = tracks.filter(t => t && t.title);
 let queue = [];
 let currentFilter = 'all';
 let currentSearch = '';
-let currentView = 'all'; // all | liked | recent
+let currentView = 'all';
 let currentPlaying = null;
 let isSeeking = false;
 let currentBlobUrl = null;
 let playToken = 0;
 let userWantsPlaying = false;
 let shuffle = false;
+let shuffleBag = [];
+let shuffleRecentArtists = [];
+let shuffleRecentUrls = [];
 let repeatMode = 0;
 let isMuted = false;
 let lastVolume = 0.85;
@@ -1066,7 +1065,7 @@ let currentSinkId = 'default';
 let theme = 'dark';
 let playbackRate = 1;
 let liked = new Set();
-let recent = []; // urls, newest first
+let recent = [];
 let sleepTimerId = null;
 let sleepEndsAt = 0;
 
@@ -1211,7 +1210,7 @@ function pushRecent(url) {
 function addToQueue(track) {
   queue.push({ ...track });
   renderQueue();
-  showMessage('Lade till i kö: ' + track.title, 'success');
+  showMessage('I kö: ' + track.title, 'success');
 }
 function removeFromQueue(index) {
   if (index >= 0 && index < queue.length) { queue.splice(index, 1); renderQueue(); }
@@ -1219,7 +1218,7 @@ function removeFromQueue(index) {
 function clearQueue() {
   queue = [];
   renderQueue();
-  showMessage('Kön rensad', 'success');
+  showMessage('Kö rensad', 'success');
 }
 function getFiltered() {
   const q = (currentSearch || '').trim().toLowerCase();
@@ -1238,31 +1237,126 @@ function getFiltered() {
   if (q) list = list.filter(t => (t.artist + ' ' + t.title + ' ' + t.year).toLowerCase().includes(q));
   return applySort(list);
 }
+function trackKey(t) {
+  return (t && t.url) ? t.url : ((t && t.artist) || '') + '|' + ((t && t.title) || '');
+}
+
+function fisherYates(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function buildShuffleBag(list, excludeUrl) {
+  const pool = (list || []).filter(t => t && (t.url || t.title) && trackKey(t) !== excludeUrl);
+  if (!pool.length) return [];
+
+  const recentSet = new Set(shuffleRecentUrls.slice(-Math.min(12, Math.max(3, Math.floor(pool.length * 0.35)))));
+  const fresh = pool.filter(t => !recentSet.has(trackKey(t)));
+  const stale = pool.filter(t => recentSet.has(trackKey(t)));
+  let bag = fisherYates(fresh).concat(fisherYates(stale));
+
+  if (bag.length > 2) {
+    const out = [];
+    const left = [...bag];
+    let lastArtist = (currentPlaying && currentPlaying.artist) || (shuffleRecentArtists[shuffleRecentArtists.length - 1]) || '';
+    while (left.length) {
+      let idx = left.findIndex(t => (t.artist || '') !== lastArtist);
+      if (idx < 0) idx = 0;
+      const prefer = left.findIndex((t, i) => (t.artist || '') !== lastArtist && !recentSet.has(trackKey(t)));
+      if (prefer >= 0) idx = prefer;
+      const pick = left.splice(idx, 1)[0];
+      out.push(pick);
+      lastArtist = pick.artist || '';
+    }
+    bag = out;
+  }
+  return bag;
+}
+
+function ensureShuffleBag() {
+  const list = getFiltered().filter(t => t && t.url);
+  const exclude = currentPlaying ? trackKey(currentPlaying) : '';
+  if (!shuffleBag.length) {
+    shuffleBag = buildShuffleBag(list, exclude);
+  } else {
+    
+    const valid = new Set(list.map(trackKey));
+    shuffleBag = shuffleBag.filter(t => valid.has(trackKey(t)) && trackKey(t) !== exclude);
+    if (!shuffleBag.length) shuffleBag = buildShuffleBag(list, exclude);
+  }
+}
+
+function rememberShufflePlay(track) {
+  if (!track) return;
+  const k = trackKey(track);
+  shuffleRecentUrls = [...shuffleRecentUrls.filter(u => u !== k), k].slice(-40);
+  if (track.artist) {
+    shuffleRecentArtists = [...shuffleRecentArtists, track.artist].slice(-15);
+  }
+}
+
+function pickSmartFromQueue() {
+  if (!queue.length) return null;
+  if (!shuffle || queue.length === 1) return queue.shift();
+
+  const lastArtist = (currentPlaying && currentPlaying.artist) || '';
+  const recent = new Set(shuffleRecentUrls.slice(-8));
+  let bestIdx = 0;
+  let bestScore = -1e9;
+  for (let i = 0; i < queue.length; i++) {
+    const t = queue[i];
+    let s = Math.random() * 2;
+    if (t.artist && t.artist === lastArtist) s -= 8;
+    if (recent.has(trackKey(t))) s -= 5;
+    s -= i * 0.15;
+    if (s > bestScore) { bestScore = s; bestIdx = i; }
+  }
+  return queue.splice(bestIdx, 1)[0];
+}
+
 function getNextTrack() {
   if (queue.length > 0) {
-    if (shuffle && queue.length > 1) {
-      const idx = Math.floor(Math.random() * queue.length);
-      return queue.splice(idx, 1)[0];
-    }
-    return queue.shift();
+    return pickSmartFromQueue();
   }
+
   const list = getFiltered();
   if (!list.length) return null;
+
   if (repeatMode === 1 && currentPlaying) return currentPlaying;
+
+  if (shuffle) {
+    const playable = list.filter(t => t && t.url);
+    if (!playable.length) return null;
+    ensureShuffleBag();
+    if (!shuffleBag.length) {
+      if (repeatMode === 2) {
+        shuffleBag = buildShuffleBag(playable, currentPlaying ? trackKey(currentPlaying) : '');
+      } else {
+        return null;
+      }
+    }
+    
+    let idx = 0;
+    if (currentPlaying && currentPlaying.artist && shuffleBag.length > 1) {
+      const alt = shuffleBag.findIndex(t => (t.artist || '') !== currentPlaying.artist);
+      if (alt >= 0) idx = alt;
+    }
+    const next = shuffleBag.splice(idx, 1)[0] || shuffleBag.shift();
+    return next || null;
+  }
+
   let idx = 0;
   if (currentPlaying) {
-    idx = list.findIndex(t => t.url === currentPlaying.url);
+    idx = list.findIndex(t => trackKey(t) === trackKey(currentPlaying));
     idx = idx < 0 ? 0 : idx + 1;
   }
   if (idx >= list.length) {
     if (repeatMode === 2) return list[0];
     return null;
-  }
-  if (shuffle && list.length > 1) {
-    let r;
-    do { r = Math.floor(Math.random() * list.length); }
-    while (list[r].url === (currentPlaying && currentPlaying.url) && list.length > 1);
-    return list[r];
   }
   return list[idx];
 }
@@ -1288,7 +1382,7 @@ function playNextTrack() {
     userWantsPlaying = false;
     render();
     renderQueue();
-    showMessage('Spellistan är slut', 'success');
+    showMessage('Slut på låtar', 'success');
     return;
   }
   if (currentPlaying) playHistory.push(currentPlaying);
@@ -1413,7 +1507,7 @@ function updatePlayerCover(track) {
 function renderQueue() {
   queueCount.textContent = queue.length ? `(${queue.length})` : '';
   if (!queue.length) {
-    queueList.innerHTML = '<div class="queue-empty">Kön är tom. Klicka ＋ på en låt för att lägga till.</div>';
+    queueList.innerHTML = '<div class="queue-empty">Kön är tom.</div>';
     return;
   }
   queueList.innerHTML = queue.map((t, i) => {
@@ -1439,8 +1533,8 @@ function render() {
   document.getElementById('filterLabel').style.display = showFilters ? '' : 'none';
 
   if (!filtered.length) {
-    const msg = currentView === 'liked' ? 'Inga gillade låtar än. Tryck ♡ på en låt.' :
-      currentView === 'recent' ? 'Inget spelat än.' : 'Inga spår matchar';
+    const msg = currentView === 'liked' ? 'Inga gillade låtar.' :
+      currentView === 'recent' ? 'Inget spelat än' : 'Inget hittat';
     grid.innerHTML = `<div class="empty-state"><div class="icon">♪</div><h3>${msg}</h3></div>`;
     updatePlayerHeart();
     return;
@@ -1481,7 +1575,7 @@ function render() {
 
 async function playTrack(url, artist, title, cover) {
   if (!url || !String(url).trim()) {
-    showMessage('Coming Soon – ingen ljudfil ännu. Lägg till URL i koden senare.', 'error');
+    showMessage('Coming soon – ingen fil än.', 'error');
     return;
   }
   const track = { url, artist, title, cover: cover || null };
@@ -1489,6 +1583,11 @@ async function playTrack(url, artist, title, cover) {
   if (found) Object.assign(track, found);
 
   currentPlaying = track;
+  rememberShufflePlay(track);
+  if (shuffle && shuffleBag.length) {
+    const k = trackKey(track);
+    shuffleBag = shuffleBag.filter(t => trackKey(t) !== k);
+  }
   pushRecent(url);
   const token = ++playToken;
   isSeeking = false;
@@ -1541,11 +1640,11 @@ async function playTrack(url, artist, title, cover) {
   } catch (err2) { console.warn('Blob failed', err2); }
 
   playPauseBtn.textContent = '▶';
-  showMessage('Kunde inte spela upp. Prova Chrome eller stäng av adblock/DNS-skydd tillfälligt.', 'error');
+  showMessage('Kunde inte spela. Prova Chrome eller stäng av adblock.', 'error');
 }
 
 function togglePlay() {
-  if (!audio.src) { showMessage('Välj en låt först'); return; }
+  if (!audio.src) { showMessage('Ingen låt vald först'); return; }
   if (audio.paused) {
     userWantsPlaying = true;
     audio.play().catch(() => showMessage('Kunde inte spela upp'));
@@ -1569,7 +1668,7 @@ function seekTo(percent) {
 
 async function refreshAudioOutputs() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-    castDeviceList.innerHTML = '<div class="cast-hint">Välj högtalare via AirPlay eller systemets ljudinställningar.</div>';
+    castDeviceList.innerHTML = '<div class="cast-hint">AirPlay eller systemets ljud.</div>';
     return;
   }
   try {
@@ -1577,7 +1676,7 @@ async function refreshAudioOutputs() {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const outputs = devices.filter(d => d.kind === 'audiooutput');
     if (!outputs.length) {
-      castDeviceList.innerHTML = '<div class="cast-hint">Inga extra utgångar. Använd AirPlay / systemljud.</div>';
+      castDeviceList.innerHTML = '<div class="cast-hint">Inga extra utgångar.</div>';
       return;
     }
     castDeviceList.innerHTML = outputs.map(d => {
@@ -1599,7 +1698,6 @@ async function setAudioOutput(deviceId) {
   } catch (err) { showMessage('Kunde inte byta ljudutgång', 'error'); }
 }
 
-// Events
 settingsBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   settingsPanel.classList.toggle('open');
@@ -1630,6 +1728,7 @@ viewTabs.addEventListener('click', (e) => {
   viewTabs.querySelectorAll('button').forEach(x => x.classList.remove('active'));
   b.classList.add('active');
   currentView = b.dataset.view;
+  shuffleBag = [];
   render();
 });
 
@@ -1638,6 +1737,7 @@ filterContainer.addEventListener('click', (e) => {
     filterContainer.querySelectorAll('button').forEach(b => b.classList.remove('active'));
     e.target.classList.add('active');
     currentFilter = e.target.dataset.filter;
+    shuffleBag = [];
     render();
   }
 });
@@ -1710,8 +1810,16 @@ queueBtn.addEventListener('click', () => {
 shuffleBtn.addEventListener('click', () => {
   shuffle = !shuffle;
   shuffleBtn.classList.toggle('active', shuffle);
+  if (shuffle) {
+    shuffleBag = [];
+    ensureShuffleBag();
+    showMessage('Shuffle på', 'success');
+  } else {
+    shuffleBag = [];
+    showMessage('Shuffle av', 'success');
+  }
   saveSettings();
-  showMessage(shuffle ? 'Shuffle på' : 'Shuffle av', 'success');
+  render();
 });
 repeatBtn.addEventListener('click', () => {
   repeatMode = (repeatMode + 1) % 3;
@@ -1883,11 +1991,7 @@ if (mobileLikedBtn) mobileLikedBtn.addEventListener('click', () => {
   if (gridEl) window.scrollTo({ top: gridEl.offsetTop - 80, behavior: 'smooth' });
 });
 
-
-// ========== LIVE LISTENERS (uppdateras kontinuerligt) ==========
-// Flikar på samma enhet: BroadcastChannel + localStorage (live varje sekund).
-// Globalt över internet: sätt FIREBASE_CONFIG (gratis Firebase Realtime Database).
-const FIREBASE_CONFIG = null; // { apiKey, authDomain, databaseURL, projectId }
+const FIREBASE_CONFIG = null;
 
 let liveCount = 1;
 let liveClientId = null;
@@ -1898,7 +2002,7 @@ try {
 } catch(e) { liveClientId = 'c' + Math.random().toString(36).slice(2); }
 
 const LIVE_KEY = 'us_live_presence_v2';
-const LIVE_TTL = 20000; // ms – räknas bort om ingen ping
+const LIVE_TTL = 20000;
 
 function updateLiveUI(n) {
   liveCount = Math.max(1, parseInt(n, 10) || 1);
@@ -1928,7 +2032,6 @@ function touchMyPresence() {
     t: now,
     playing: !!(typeof userWantsPlaying !== 'undefined' && userWantsPlaying && audio && !audio.paused)
   };
-  // prune stale
   for (const id of Object.keys(map)) {
     if (!map[id] || (now - (map[id].t || 0)) > LIVE_TTL) delete map[id];
   }
@@ -1946,7 +2049,7 @@ function countPresence(map) {
 }
 
 function refreshLiveLocal() {
-  if (liveFirebaseActive) return; // Firebase driver UI
+  if (liveFirebaseActive) return;
   const map = touchMyPresence();
   updateLiveUI(countPresence(map));
 }
@@ -1958,7 +2061,6 @@ try {
     if (liveFirebaseActive) return;
     const d = ev.data || {};
     if (d.type === 'sync' && d.map) {
-      // merge remote tab snapshot
       const local = readPresenceMap();
       const merged = { ...local, ...d.map };
       const now = Date.now();
@@ -1993,7 +2095,6 @@ function broadcastLiveBye() {
   } catch(e) {}
 }
 
-// Kontinuerlig uppdatering: UI varje 1s, presence-ping var 2s
 setInterval(refreshLiveLocal, 1000);
 setInterval(broadcastLiveSync, 2000);
 broadcastLiveSync();
@@ -2013,7 +2114,6 @@ window.addEventListener('focus', () => { broadcastLiveSync(); refreshLiveLocal()
 window.addEventListener('beforeunload', broadcastLiveBye);
 window.addEventListener('pagehide', broadcastLiveBye);
 
-// Hook play/pause so count feels live when people listen
 const _liveOrigPlay = null;
 document.addEventListener('us:playing-changed', () => broadcastLiveSync());
 
@@ -2045,7 +2145,6 @@ async function initFirebaseLive() {
 }
 initFirebaseLive();
 
-// ========== SORT ==========
 let currentSort = 'default';
 const sortSelect = document.getElementById('sortSelect');
 if (sortSelect) {
@@ -2064,9 +2163,8 @@ function applySort(list) {
   return arr;
 }
 
-// ========== SHARE ==========
 async function shareCurrentTrack() {
-  if (!currentPlaying) { showMessage('Välj en låt först'); return; }
+  if (!currentPlaying) { showMessage('Ingen låt vald först'); return; }
   const t = currentPlaying;
   const url = new URL(location.href);
   url.searchParams.set('track', t.title || '');
@@ -2091,7 +2189,6 @@ async function shareCurrentTrack() {
 const shareBtn = document.getElementById('shareBtn');
 if (shareBtn) shareBtn.addEventListener('click', shareCurrentTrack);
 
-// Deep link ?track=Title
 (function deepLink() {
   try {
     const p = new URLSearchParams(location.search);
@@ -2108,11 +2205,10 @@ if (shareBtn) shareBtn.addEventListener('click', shareCurrentTrack);
   } catch(e) {}
 })();
 
-
 setupMediaSessionHandlers();
 render();
 renderQueue();
-console.log('UnreleasedSweden – ' + currentTracks.length + ' spår (utan EQ, med Spotify-features)');
+console.log('UnreleasedSweden', currentTracks.length);
 </script>
 </body>
 </html>
