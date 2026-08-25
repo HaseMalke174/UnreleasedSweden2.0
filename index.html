@@ -829,7 +829,7 @@ body.light .track-cover { background: #e8e8e8; }
     <div class="hero-label">Fan-arkiv</div>
     <h1>Osläppta låtar av svenska rap artister</h1>
     <p>Osläppta spår från den svenska rap scenen.</p>
-    <p class="hero-credit">av chatru</p>
+    <p class="hero-credit">Skapad Av Chatru o</p>
   </section>
 
   <div class="view-tabs" id="viewTabs">
@@ -1573,7 +1573,7 @@ function render() {
   updatePlayerHeart();
 }
 
-async function playTrack(url, artist, title, cover) {
+  async function playTrack(url, artist, title, cover) {
   if (!url || !String(url).trim()) {
     showMessage('Coming soon – ingen fil än.', 'error');
     return;
@@ -1615,29 +1615,10 @@ async function playTrack(url, artist, title, cover) {
     showMessage('Spelar: ' + artist + ' – ' + title, 'success');
     updateMediaSession(currentPlaying);
     updatePositionState();
+    updateTimeline();
     render();
     return;
   } catch (err1) { console.warn('Direct play failed', err1); }
-
-  try {
-    const res = await fetch(url, { mode: 'cors', credentials: 'omit' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const blob = await res.blob();
-    if (token !== playToken) return;
-    revokeBlob();
-    currentBlobUrl = URL.createObjectURL(blob);
-    audio.src = currentBlobUrl;
-    audio.playbackRate = playbackRate;
-    audio.load();
-    await audio.play();
-    if (token !== playToken) return;
-    playPauseBtn.textContent = '⏸';
-    showMessage('Spelar: ' + artist + ' – ' + title, 'success');
-    updateMediaSession(currentPlaying);
-    updatePositionState();
-    render();
-    return;
-  } catch (err2) { console.warn('Blob failed', err2); }
 
   playPauseBtn.textContent = '▶';
   showMessage('Kunde inte spela. Prova Chrome eller stäng av adblock.', 'error');
@@ -1661,9 +1642,22 @@ function seekTo(percent) {
   if (!audio.src) return false;
   const duration = audio.duration;
   if (!duration || !isFinite(duration) || duration <= 0) return false;
-  const newTime = Math.min(Math.max(0, (percent / 100) * duration), Math.max(0, duration - 0.15));
-  try { audio.currentTime = newTime; currentTimeDisplay.textContent = formatTime(newTime); return true; }
-  catch(e){ return false; }
+  const newTime = Math.min(Math.max(0, (percent / 100) * duration), Math.max(0, duration - 0.05));
+  try {
+    if (typeof audio.fastSeek === 'function') audio.fastSeek(newTime);
+    else audio.currentTime = newTime;
+    currentTimeDisplay.textContent = formatTime(newTime);
+    timeSlider.value = String((newTime / duration) * 100);
+    return true;
+  } catch (e) {
+    try {
+      audio.currentTime = newTime;
+      currentTimeDisplay.textContent = formatTime(newTime);
+      return true;
+    } catch (e2) {
+      return false;
+    }
+  }
 }
 
 async function refreshAudioOutputs() {
@@ -1876,27 +1870,29 @@ document.addEventListener('click', (e) => {
   }
 });
 
+timeSlider.addEventListener('pointerdown', () => { if (audio.src) isSeeking = true; });
 timeSlider.addEventListener('mousedown', () => { if (audio.src) isSeeking = true; });
 timeSlider.addEventListener('touchstart', () => { if (audio.src) isSeeking = true; }, { passive: true });
 timeSlider.addEventListener('input', () => {
   if (!audio.src) return;
   isSeeking = true;
-  const percent = parseFloat(timeSlider.value);
-  if (audio.duration && isFinite(audio.duration)) {
-    const t = (percent / 100) * audio.duration;
-    currentTimeDisplay.textContent = formatTime(t);
-    try { audio.currentTime = t; } catch(e){}
+  const percent = parseFloat(timeSlider.value) || 0;
+  const d = audio.duration;
+  if (d && isFinite(d) && d > 0) {
+    currentTimeDisplay.textContent = formatTime((percent / 100) * d);
   }
 });
 function endSeek() {
-  if (!isSeeking) return;
-  seekTo(parseFloat(timeSlider.value));
+  if (!audio.src) { isSeeking = false; return; }
+  seekTo(parseFloat(timeSlider.value) || 0);
   isSeeking = false;
   updateTimeline();
 }
 timeSlider.addEventListener('change', endSeek);
 timeSlider.addEventListener('mouseup', endSeek);
 timeSlider.addEventListener('touchend', endSeek);
+timeSlider.addEventListener('pointerup', endSeek);
+timeSlider.addEventListener('pointercancel', endSeek);
 
 audio.addEventListener('loadedmetadata', updateTimeline);
 audio.addEventListener('durationchange', updateTimeline);
@@ -2211,6 +2207,6 @@ renderQueue();
 console.log('UnreleasedSweden', currentTracks.length);
 </script>
 </body>
-</html> lån?
+</html> 
 
 
