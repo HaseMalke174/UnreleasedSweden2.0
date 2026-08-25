@@ -910,6 +910,7 @@ body.light .track-cover { background: #e8e8e8; }
     <label for="sortSelect">Sortera</label>
     <select id="sortSelect">
       <option value="default">Standard</option>
+      <option value="popular">Mest spelade</option>
       <option value="title">Titel A–Ö</option>
       <option value="artist">Artist A–Ö</option>
       <option value="year-new">År (nyast)</option>
@@ -1155,13 +1156,56 @@ async function fetchPlayStats() {
   } catch (e) {}
 }
 
+let cachedClientGeo = null;
+async function detectClientGeo() {
+  if (cachedClientGeo) return cachedClientGeo;
+  try {
+    const res = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
+    if (res.ok) {
+      const d = await res.json();
+      if (d && (d.country_name || d.country)) {
+        cachedClientGeo = {
+          country: d.country_name || d.country || '',
+          country_code: d.country_code || d.country || '',
+          city: d.city || ''
+        };
+        return cachedClientGeo;
+      }
+    }
+  } catch (e) {}
+  try {
+    const res = await fetch('https://ip-api.com/json/?fields=status,country,countryCode,city', { cache: 'no-store' });
+    if (res.ok) {
+      const d = await res.json();
+      if (d && d.status === 'success') {
+        cachedClientGeo = {
+          country: d.country || '',
+          country_code: d.countryCode || '',
+          city: d.city || ''
+        };
+        return cachedClientGeo;
+      }
+    }
+  } catch (e) {}
+  cachedClientGeo = { country: '', country_code: '', city: '' };
+  return cachedClientGeo;
+}
+
 async function reportPlay(artist, title, url) {
   if (!title && !url) return;
   try {
+    const geo = await detectClientGeo();
     const res = await fetch(STATS_API + '/api/play', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ artist: artist || '', title: title || '', url: url || '' })
+      body: JSON.stringify({
+        artist: artist || '',
+        title: title || '',
+        url: url || '',
+        country: geo.country || '',
+        country_code: geo.country_code || '',
+        city: geo.city || ''
+      })
     });
     if (!res.ok) return;
     const data = await res.json();
@@ -2149,7 +2193,14 @@ if (sortSelect) {
 
 function applySort(list) {
   const arr = [...list];
-  if (currentSort === 'title') arr.sort((a,b) => (a.title||'').localeCompare(b.title||'', 'sv'));
+  if (currentSort === 'popular') {
+    arr.sort((a, b) => {
+      const pb = getPlayCount(b.url, b.artist, b.title);
+      const pa = getPlayCount(a.url, a.artist, a.title);
+      if (pb !== pa) return pb - pa;
+      return (a.title || '').localeCompare(b.title || '', 'sv');
+    });
+  } else if (currentSort === 'title') arr.sort((a,b) => (a.title||'').localeCompare(b.title||'', 'sv'));
   else if (currentSort === 'artist') arr.sort((a,b) => (a.artist||'').localeCompare(b.artist||'', 'sv') || (a.title||'').localeCompare(b.title||'', 'sv'));
   else if (currentSort === 'year-new') arr.sort((a,b) => String(b.year||'').localeCompare(String(a.year||''), 'sv'));
   else if (currentSort === 'year-old') arr.sort((a,b) => String(a.year||'').localeCompare(String(b.year||''), 'sv'));
