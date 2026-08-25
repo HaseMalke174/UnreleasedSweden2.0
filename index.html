@@ -409,15 +409,28 @@ body.light .track-cover { background: #e8e8e8; }
   font-size: 0.7rem; color: var(--text-dim); min-width: 36px; text-align: center;
   font-variant-numeric: tabular-nums; font-weight: 500;
 }
+.timeline { position: relative; z-index: 5; }
 .timeline input[type=range] {
-  flex: 1; -webkit-appearance: none; appearance: none; height: 4px;
-  border-radius: 2px; background: var(--border); outline: none; cursor: pointer;
+  flex: 1; -webkit-appearance: none; appearance: none; height: 28px;
+  margin: 0; border-radius: 4px; background: transparent; outline: none;
+  cursor: pointer; touch-action: none; position: relative; z-index: 6;
+}
+.timeline input[type=range]::-webkit-slider-runnable-track {
+  height: 6px; border-radius: 3px; background: var(--border);
 }
 .timeline input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
-  background: var(--text); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--green); cursor: grab; box-shadow: 0 0 10px var(--green-glow);
+  margin-top: -6px; border: 2px solid #fff;
 }
-.timeline input[type=range]:hover::-webkit-slider-thumb { background: var(--green); }
+.timeline input[type=range]:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.12); }
+.timeline input[type=range]::-moz-range-track {
+  height: 6px; border-radius: 3px; background: var(--border);
+}
+.timeline input[type=range]::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%; background: var(--green);
+  border: 2px solid #fff; cursor: grab;
+}
 .player-right { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
 .volume-wrap { display: flex; align-items: center; gap: 0.4rem; }
 .volume-wrap button {
@@ -1605,10 +1618,15 @@ function render() {
   renderQueue();
 
   try {
+    const res = await fetch(url, { mode: 'cors', credentials: 'omit', cache: 'force-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const blob = await res.blob();
+    if (token !== playToken) return;
     revokeBlob();
-    audio.src = url;
+    currentBlobUrl = URL.createObjectURL(blob);
+    audio.src = currentBlobUrl;
     audio.playbackRate = playbackRate;
-    audio.load();
+    try { audio.preload = 'auto'; } catch (e) {}
     await audio.play();
     if (token !== playToken) return;
     playPauseBtn.textContent = '⏸';
@@ -1618,7 +1636,22 @@ function render() {
     updateTimeline();
     render();
     return;
-  } catch (err1) { console.warn('Direct play failed', err1); }
+  } catch (err1) { console.warn('Blob play failed', err1); }
+
+  try {
+    revokeBlob();
+    audio.src = url;
+    audio.playbackRate = playbackRate;
+    await audio.play();
+    if (token !== playToken) return;
+    playPauseBtn.textContent = '⏸';
+    showMessage('Spelar: ' + artist + ' – ' + title, 'success');
+    updateMediaSession(currentPlaying);
+    updatePositionState();
+    updateTimeline();
+    render();
+    return;
+  } catch (err2) { console.warn('Direct play failed', err2); }
 
   playPauseBtn.textContent = '▶';
   showMessage('Kunde inte spela. Prova Chrome eller stäng av adblock.', 'error');
@@ -1644,19 +1677,18 @@ function seekTo(percent) {
   if (!duration || !isFinite(duration) || duration <= 0) return false;
   const newTime = Math.min(Math.max(0, (percent / 100) * duration), Math.max(0, duration - 0.05));
   try {
-    if (typeof audio.fastSeek === 'function') audio.fastSeek(newTime);
-    else audio.currentTime = newTime;
+    audio.currentTime = newTime;
     currentTimeDisplay.textContent = formatTime(newTime);
-    timeSlider.value = String((newTime / duration) * 100);
     return true;
   } catch (e) {
     try {
-      audio.currentTime = newTime;
-      currentTimeDisplay.textContent = formatTime(newTime);
-      return true;
-    } catch (e2) {
-      return false;
-    }
+      if (typeof audio.fastSeek === 'function') {
+        audio.fastSeek(newTime);
+        currentTimeDisplay.textContent = formatTime(newTime);
+        return true;
+      }
+    } catch (e2) {}
+    return false;
   }
 }
 
@@ -1870,23 +1902,23 @@ document.addEventListener('click', (e) => {
   }
 });
 
-timeSlider.addEventListener('pointerdown', () => { if (audio.src) isSeeking = true; });
+timeSlider.addEventListener('pointerdown', (e) => {
+  if (!audio.src) return;
+  isSeeking = true;
+  try { timeSlider.setPointerCapture(e.pointerId); } catch (err) {}
+});
 timeSlider.addEventListener('mousedown', () => { if (audio.src) isSeeking = true; });
 timeSlider.addEventListener('touchstart', () => { if (audio.src) isSeeking = true; }, { passive: true });
 timeSlider.addEventListener('input', () => {
   if (!audio.src) return;
   isSeeking = true;
-  const percent = parseFloat(timeSlider.value) || 0;
-  const d = audio.duration;
-  if (d && isFinite(d) && d > 0) {
-    currentTimeDisplay.textContent = formatTime((percent / 100) * d);
-  }
+  seekTo(parseFloat(timeSlider.value) || 0);
 });
 function endSeek() {
   if (!audio.src) { isSeeking = false; return; }
   seekTo(parseFloat(timeSlider.value) || 0);
   isSeeking = false;
-  updateTimeline();
+  setTimeout(updateTimeline, 30);
 }
 timeSlider.addEventListener('change', endSeek);
 timeSlider.addEventListener('mouseup', endSeek);
@@ -1926,6 +1958,7 @@ audio.addEventListener('ended', () => {
 });
 audio.addEventListener('error', () => {
   if (playPauseBtn.textContent === '⏳') return;
+  if (isSeeking) { isSeeking = false; return; }
   showMessage('Fel – hoppar till nästa', 'error');
   setTimeout(() => playNextTrack(), 600);
 });
