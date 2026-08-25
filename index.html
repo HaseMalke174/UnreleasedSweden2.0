@@ -805,6 +805,89 @@ body.light .track-cover { background: #e8e8e8; }
 }
 .track-row.playing .play-count { color: var(--green); }
 .artist-line { display: flex; align-items: center; flex-wrap: wrap; gap: 0.15rem 0.25rem; }
+
+.plays-line {
+  margin-top: 0.25rem;
+  min-height: 1.1rem;
+}
+.pc-badge {
+  display: inline-block !important;
+  margin-left: 0 !important;
+  padding: 0.18rem 0.5rem !important;
+  border-radius: 999px !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  color: #0a0612 !important;
+  background: var(--green) !important;
+  box-shadow: 0 0 10px var(--green-glow);
+  white-space: nowrap;
+}
+.track-info .title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 900px) {
+  html { font-size: 13.5px; }
+  body { padding-bottom: calc(125px + var(--safe-bottom)) !important; }
+  .topbar-inner { height: 50px !important; gap: 0.4rem !important; }
+  .brand-mark { width: 28px !important; height: 28px !important; font-size: 0.85rem !important; }
+  .brand-name { font-size: 0.85rem !important; }
+  .search-wrap input { padding: 0.42rem 0.75rem 0.42rem 2rem !important; font-size: 0.78rem !important; }
+  .settings-btn { width: 34px !important; height: 34px !important; font-size: 0.9rem !important; }
+  .main { padding: 0.65rem 0.6rem 0.9rem !important; }
+  .hero { padding: 0.85rem 0.75rem !important; margin-bottom: 0.75rem !important; border-radius: 10px !important; }
+  .hero h1 { font-size: 1.15rem !important; }
+  .hero p, .hero-credit { font-size: 0.75rem !important; }
+  .view-tabs { gap: 0.25rem !important; margin-bottom: 0.55rem !important; }
+  .view-tabs button { padding: 0.3rem 0.55rem !important; font-size: 0.68rem !important; }
+  .filters { gap: 0.25rem !important; margin-bottom: 0.65rem !important; }
+  .filters button { padding: 0.28rem 0.5rem !important; font-size: 0.65rem !important; }
+  .sort-row { margin-bottom: 0.5rem !important; }
+  .sort-row select { font-size: 0.7rem !important; padding: 0.3rem 0.5rem !important; }
+  .track-row {
+    grid-template-columns: 22px 40px 1fr auto !important;
+    padding: 0.5rem 0.55rem !important;
+    gap: 0.4rem !important;
+  }
+  .track-cover { width: 40px !important; height: 40px !important; }
+  .track-info .title { font-size: 0.82rem !important; }
+  .track-info .artist { font-size: 0.68rem !important; }
+  .pc-badge { font-size: 0.62rem !important; padding: 0.12rem 0.4rem !important; }
+  .track-actions { gap: 0.35rem !important; }
+  .track-actions button {
+    width: 42px !important; height: 42px !important;
+    min-width: 42px !important; min-height: 42px !important;
+    font-size: 0.95rem !important;
+  }
+  .track-actions button.play-btn {
+    width: 46px !important; height: 46px !important;
+    min-width: 46px !important; min-height: 46px !important;
+    font-size: 1.05rem !important;
+  }
+  .heart-btn { width: 34px !important; height: 34px !important; min-width: 34px !important; min-height: 34px !important; font-size: 1rem !important; }
+  .mobile-tools { gap: 0.3rem !important; padding: 0.35rem 0.55rem 0 !important; }
+  .mobile-tools button { padding: 0.4rem 0.4rem !important; font-size: 0.68rem !important; min-height: 36px !important; }
+  .player {
+    min-height: auto !important;
+    padding: 0.4rem 0.5rem !important;
+    padding-bottom: calc(0.4rem + var(--safe-bottom)) !important;
+  }
+  .player-art { width: 36px !important; height: 36px !important; }
+  .player-meta .p-title { font-size: 0.78rem !important; }
+  .player-meta .p-artist { font-size: 0.65rem !important; }
+  .player-controls button { width: 34px !important; height: 34px !important; min-width: 34px !important; min-height: 34px !important; }
+  .player-controls button.primary { width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; }
+  .player-right .icon-btn, .player-right #muteBtn {
+    width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; font-size: 0.8rem !important;
+  }
+  .topbar-meta { display: flex !important; font-size: 0.65rem !important; }
+  .queue-panel { z-index: 280 !important; bottom: calc(110px + var(--safe-bottom)) !important; }
+  .admin-panel { padding: 0.7rem !important; margin-top: 1rem !important; }
+  .site-footer { font-size: 0.7rem !important; margin-top: 1.2rem !important; padding: 0.75rem !important; }
+}
+
 </style>
 </head>
 <body>
@@ -861,12 +944,6 @@ body.light .track-cover { background: #e8e8e8; }
     <div class="settings-section">
       <h4>Kortkommandon</h4>
       <div class="settings-hint">Mellanslag play/paus · pilar byter låt · M mute · L gilla</div>
-    </div>
-    <div class="settings-section">
-      <h4>Lyssnings-API</h4>
-      <div class="settings-hint">Adress till Python-servern (t.ex. http://127.0.0.1:5050)</div>
-      <input type="text" id="statsApiInput" placeholder="http://127.0.0.1:5050" style="width:100%;margin-top:0.5rem;padding:0.55rem 0.7rem;border-radius:10px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text);font-size:0.85rem;" />
-      <button type="button" id="statsApiSave" style="margin-top:0.5rem;padding:0.45rem 0.9rem;border-radius:999px;border:1px solid var(--green);background:var(--green-dim);color:var(--green);font-weight:700;cursor:pointer;">Spara &amp; hämta</button>
     </div>
     <div class="settings-section">
       <h4>Shuffle</h4>
@@ -1139,7 +1216,7 @@ const tracks = [
 let currentTracks = tracks.filter(t => t && t.title);
 let queue = [];
 
-let STATS_API = (window.STATS_API || (typeof localStorage !== 'undefined' && localStorage.getItem('us_stats_api')) || 'http://127.0.0.1:5050');
+let STATS_API = (window.STATS_API || 'http://127.0.0.1:5050');
 STATS_API = String(STATS_API).replace(/\/$/, '');
 let playCounts = {};
 let statsLastError = '';
@@ -1210,7 +1287,7 @@ async function fetchPlayStats() {
     if (typeof render === 'function') render();
   } catch (e) {
     statsLastError = (e && e.message) || 'stats fetch failed';
-    console.warn('Lyssnings-API:', statsLastError, STATS_API);
+    console.warn('Stats fetch:', statsLastError);
   }
 }
 
@@ -1786,8 +1863,9 @@ function render() {
       <div class="idx">${isPlaying && !audio.paused ? '♪' : (i + 1)}</div>
       <div>${coverImgHtml(t, 44)}</div>
       <div class="track-info">
-        <div class="title">${escapeHtml(t.title)} <span class="play-count" title="Lyssningar">${fmtPlays(getPlayCount(t.url, t.artist, t.title))}</span></div>
+        <div class="title">${escapeHtml(t.title)}</div>
         <div class="artist artist-line">${escapeHtml(t.artist)}</div>
+        <div class="plays-line">${fmtPlays(getPlayCount(t.url, t.artist, t.title))}</div>
       </div>
       <div class="track-year">${escapeHtml(t.year)}</div>
       <div><button class="heart-btn${heartOn}" data-url="${escapeHtml(t.url)}" title="Gilla">${heart}</button></div>
@@ -2310,20 +2388,6 @@ if (shareBtn) shareBtn.addEventListener('click', shareCurrentTrack);
   } catch(e) {}
 })();
 
-(function setupStatsApiUi() {
-  const inp = document.getElementById('statsApiInput');
-  const btn = document.getElementById('statsApiSave');
-  if (inp) inp.value = STATS_API;
-  if (btn) btn.addEventListener('click', () => {
-    const v = (inp && inp.value || '').trim().replace(/\/$/, '');
-    if (!v) { showMessage('Skriv in API-adress'); return; }
-    try { localStorage.setItem('us_stats_api', v); } catch (e) {}
-    window.STATS_API = v;
-    // update runtime const via reassignment not possible - use window
-    showMessage('Sparat. Ladda om sidan för full effekt.', 'success');
-    location.reload();
-  });
-})();
 setupMediaSessionHandlers();
 render();
 renderQueue();
