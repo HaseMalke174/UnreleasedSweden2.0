@@ -1220,8 +1220,10 @@ const tracks = [
 let currentTracks = tracks.filter(t => t && t.title);
 let queue = [];
 
-let STATS_API = (window.STATS_API || 'http://127.0.0.1:5050');
+/* Byt till din Google Apps Script-webbapp-URL så funkar mobil + PC */
+let STATS_API = (window.STATS_API || 'PASTE_GOOGLE_SCRIPT_WEBAPP_URL_HERE');
 STATS_API = String(STATS_API).replace(/\/$/, '');
+if (STATS_API.indexOf('PASTE_') === 0) STATS_API = '';
 let playCounts = {};
 let statsLastError = '';
 
@@ -1287,41 +1289,45 @@ function applyEmbeddedStats() {
 }
 
 async function fetchPlayStats() {
-  // 1) Server-side injicerat (när sidan serveras av Python /app)
   if (applyEmbeddedStats()) {
     if (typeof render === 'function') render();
   }
-  // 2) Samma origin: /api/stats.js (server-side fil)
-  try {
-    await new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = (STATS_API || '') + '/api/stats.js?t=' + Date.now();
-      s.async = true;
-      s.onload = () => { applyEmbeddedStats(); resolve(); };
-      s.onerror = () => reject(new Error('stats.js'));
-      document.head.appendChild(s);
-    });
-    statsLastError = '';
+  if (!STATS_API) {
     if (typeof render === 'function') render();
     return;
-  } catch (e1) {}
-  // 3) Fallback JSON API
+  }
   try {
-    const res = await fetch((STATS_API || '') + '/api/stats', { cache: 'no-store', mode: 'cors' });
-    if (!res.ok) {
-      statsLastError = 'stats HTTP ' + res.status;
-      if (typeof render === 'function') render();
-      return;
+    let data = null;
+    if (/script\.google\.com|googleusercontent\.com/i.test(STATS_API)) {
+      const res = await fetch(STATS_API + (STATS_API.indexOf('?') >= 0 ? '&' : '?') + 'path=stats&t=' + Date.now(), { cache: 'no-store' });
+      if (res.ok) data = await res.json();
+    } else {
+      try {
+        await new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = STATS_API.replace(/\/$/, '') + '/api/stats.js?t=' + Date.now();
+          s.async = true;
+          s.onload = () => resolve();
+          s.onerror = () => reject(new Error('stats.js'));
+          document.head.appendChild(s);
+        });
+        if (applyEmbeddedStats()) {
+          if (typeof render === 'function') render();
+          return;
+        }
+      } catch (e1) {}
+      const res = await fetch(STATS_API.replace(/\/$/, '') + '/api/stats', { cache: 'no-store', mode: 'cors' });
+      if (res.ok) data = await res.json();
     }
-    const data = await res.json();
-    rebuildPlayIndex(data.tracks || {});
-    window.__PLAY_STATS__ = data.tracks || {};
-    statsLastError = '';
-    if (typeof render === 'function') render();
+    if (data && data.tracks) {
+      rebuildPlayIndex(data.tracks);
+      window.__PLAY_STATS__ = data.tracks;
+      statsLastError = '';
+    }
   } catch (e) {
     statsLastError = (e && e.message) || 'stats fetch failed';
-    if (typeof render === 'function') render();
   }
+  if (typeof render === 'function') render();
 }
 
 let cachedClientGeo = null;
@@ -1360,21 +1366,44 @@ async function detectClientGeo() {
 }
 
 async function reportPlay(artist, title, url) {
-  if (!title && !url) return;
+  if (!STATS_API || !title && !url) return;
   try {
     const geo = await detectClientGeo();
-    const res = await fetch(STATS_API + '/api/play', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        artist: artist || '',
-        title: title || '',
-        url: url || '',
-        country: geo.country || '',
-        country_code: geo.country_code || '',
-        city: geo.city || ''
-      })
-    });
+    const ua = navigator.userAgent || '';
+    let platform = 'Okänd';
+    const u = ua.toLowerCase();
+    const device = /mobile|iphone|android/i.test(ua) ? (/ipad|tablet/i.test(ua) ? 'Surfplatta' : 'Mobil') : 'Dator';
+    const os = /android/i.test(u) ? 'Android' : /iphone|ipad|ios/i.test(u) ? 'iOS' : /mac/i.test(u) ? 'macOS' : /win/i.test(u) ? 'Windows' : /linux/i.test(u) ? 'Linux' : 'OS';
+    const br = /edg\//i.test(u) ? 'Edge' : /chrome/i.test(u) && !/edg/i.test(u) ? 'Chrome' : /firefox/i.test(u) ? 'Firefox' : /safari/i.test(u) ? 'Safari' : 'Browser';
+    platform = device + ' · ' + os + ' · ' + br;
+
+    const payload = {
+      action: 'play',
+      artist: artist || '',
+      title: title || '',
+      url: url || '',
+      country: geo.country || '',
+      country_code: geo.country_code || '',
+      city: geo.city || '',
+      platform: platform,
+      ua: ua.slice(0, 300)
+    };
+
+    let res;
+    // Google Apps Script webbapp (HTTPS, funkar på alla enheter)
+    if (/script\.google\.com|googleusercontent\.com/i.test(STATS_API)) {
+      res = await fetch(STATS_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+    } else {
+      res = await fetch(STATS_API.replace(/\/$/, '') + '/api/play', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    }
     if (!res.ok) return;
     const data = await res.json();
     if (data && data.plays != null) {
