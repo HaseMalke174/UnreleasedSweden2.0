@@ -1797,6 +1797,8 @@ audio.addEventListener('play', () => {
   playPauseBtn.textContent = '⏸';
   updateMediaSession(currentPlaying);
   render();
+  try { document.dispatchEvent(new Event('us:playing-changed')); } catch(e) {}
+  try { if (typeof broadcastLiveSync === 'function') broadcastLiveSync(); } catch(e) {}
 });
 audio.addEventListener('pause', () => {
   if (document.hidden && userWantsPlaying && audio.src) {
@@ -1809,6 +1811,8 @@ audio.addEventListener('pause', () => {
   if (!document.hidden) userWantsPlaying = false;
   updateMediaSession(currentPlaying);
   render();
+  try { document.dispatchEvent(new Event('us:playing-changed')); } catch(e) {}
+  try { if (typeof broadcastLiveSync === 'function') broadcastLiveSync(); } catch(e) {}
 });
 audio.addEventListener('ended', () => {
   timeSlider.value = 0;
@@ -1880,70 +1884,139 @@ if (mobileLikedBtn) mobileLikedBtn.addEventListener('click', () => {
 });
 
 
-// ========== LIVE LISTENERS ==========
-// Riktig global live kräver Firebase (gratis). Utan config: räknar dig + andra flikar på samma enhet.
-// Sätt din config här: https://console.firebase.google.com → Realtime Database
-const FIREBASE_CONFIG = null; // t.ex. { apiKey:"...", authDomain:"...", databaseURL:"...", projectId:"..." }
+// ========== LIVE LISTENERS (uppdateras kontinuerligt) ==========
+// Flikar på samma enhet: BroadcastChannel + localStorage (live varje sekund).
+// Globalt över internet: sätt FIREBASE_CONFIG (gratis Firebase Realtime Database).
+const FIREBASE_CONFIG = null; // { apiKey, authDomain, databaseURL, projectId }
 
 let liveCount = 1;
 let liveClientId = null;
+let liveFirebaseActive = false;
 try {
   liveClientId = sessionStorage.getItem('us_live_id') || (Math.random().toString(36).slice(2) + Date.now().toString(36));
   sessionStorage.setItem('us_live_id', liveClientId);
 } catch(e) { liveClientId = 'c' + Math.random().toString(36).slice(2); }
 
-const livePresence = new Map(); // id -> lastSeen
-livePresence.set(liveClientId, Date.now());
+const LIVE_KEY = 'us_live_presence_v2';
+const LIVE_TTL = 20000; // ms – räknas bort om ingen ping
 
 function updateLiveUI(n) {
-  liveCount = Math.max(1, n|0);
+  liveCount = Math.max(1, parseInt(n, 10) || 1);
   const a = document.getElementById('liveCount');
   const b = document.getElementById('liveCountHero');
   if (a) a.textContent = String(liveCount);
   if (b) b.textContent = String(liveCount);
+  const badge = document.getElementById('liveBadge');
+  if (badge) badge.title = liveCount + ' lyssnar just nu' + (liveFirebaseActive ? ' (globalt)' : ' (denna enhet / flikar)');
 }
 
-function recomputeLocalLive() {
+function readPresenceMap() {
+  try {
+    const raw = localStorage.getItem(LIVE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch(e) { return {}; }
+}
+
+function writePresenceMap(map) {
+  try { localStorage.setItem(LIVE_KEY, JSON.stringify(map)); } catch(e) {}
+}
+
+function touchMyPresence() {
   const now = Date.now();
-  for (const [id, t] of [...livePresence.entries()]) {
-    if (now - t > 45000) livePresence.delete(id);
+  const map = readPresenceMap();
+  map[liveClientId] = {
+    t: now,
+    playing: !!(typeof userWantsPlaying !== 'undefined' && userWantsPlaying && audio && !audio.paused)
+  };
+  // prune stale
+  for (const id of Object.keys(map)) {
+    if (!map[id] || (now - (map[id].t || 0)) > LIVE_TTL) delete map[id];
   }
-  livePresence.set(liveClientId, now);
-  updateLiveUI(livePresence.size);
+  writePresenceMap(map);
+  return map;
+}
+
+function countPresence(map) {
+  const now = Date.now();
+  let n = 0;
+  for (const id of Object.keys(map || {})) {
+    if (map[id] && (now - (map[id].t || 0)) <= LIVE_TTL) n++;
+  }
+  return Math.max(1, n);
+}
+
+function refreshLiveLocal() {
+  if (liveFirebaseActive) return; // Firebase driver UI
+  const map = touchMyPresence();
+  updateLiveUI(countPresence(map));
 }
 
 let liveChannel = null;
 try {
-  liveChannel = new BroadcastChannel('unreleasedsweden_live');
+  liveChannel = new BroadcastChannel('unreleasedsweden_live_v2');
   liveChannel.onmessage = (ev) => {
+    if (liveFirebaseActive) return;
     const d = ev.data || {};
-    if (d.type === 'ping' && d.id) {
-      livePresence.set(d.id, Date.now());
-      recomputeLocalLive();
+    if (d.type === 'sync' && d.map) {
+      // merge remote tab snapshot
+      const local = readPresenceMap();
+      const merged = { ...local, ...d.map };
+      const now = Date.now();
+      for (const id of Object.keys(merged)) {
+        if (!merged[id] || (now - (merged[id].t || 0)) > LIVE_TTL) delete merged[id];
+      }
+      writePresenceMap(merged);
+      updateLiveUI(countPresence(merged));
     } else if (d.type === 'bye' && d.id) {
-      livePresence.delete(d.id);
-      recomputeLocalLive();
+      const map = readPresenceMap();
+      delete map[d.id];
+      writePresenceMap(map);
+      updateLiveUI(countPresence(map));
     }
   };
 } catch(e) {}
 
-function broadcastLive(type) {
+function broadcastLiveSync() {
   try {
-    if (liveChannel) liveChannel.postMessage({
-      type, id: liveClientId, playing: !!(userWantsPlaying && audio && !audio.paused), t: Date.now()
-    });
+    const map = touchMyPresence();
+    if (liveChannel) liveChannel.postMessage({ type: 'sync', map, id: liveClientId });
+    if (!liveFirebaseActive) updateLiveUI(countPresence(map));
   } catch(e) {}
 }
 
-setInterval(() => {
-  broadcastLive('ping');
-  recomputeLocalLive();
-}, 8000);
-broadcastLive('ping');
-recomputeLocalLive();
-window.addEventListener('beforeunload', () => broadcastLive('bye'));
+function broadcastLiveBye() {
+  try {
+    const map = readPresenceMap();
+    delete map[liveClientId];
+    writePresenceMap(map);
+    if (liveChannel) liveChannel.postMessage({ type: 'bye', id: liveClientId });
+  } catch(e) {}
+}
 
-// Optional Firebase global presence
+// Kontinuerlig uppdatering: UI varje 1s, presence-ping var 2s
+setInterval(refreshLiveLocal, 1000);
+setInterval(broadcastLiveSync, 2000);
+broadcastLiveSync();
+refreshLiveLocal();
+
+window.addEventListener('storage', (e) => {
+  if (e.key === LIVE_KEY && !liveFirebaseActive) {
+    try {
+      const map = e.newValue ? JSON.parse(e.newValue) : {};
+      updateLiveUI(countPresence(map));
+    } catch(err) {}
+  }
+});
+
+document.addEventListener('visibilitychange', () => { broadcastLiveSync(); refreshLiveLocal(); });
+window.addEventListener('focus', () => { broadcastLiveSync(); refreshLiveLocal(); });
+window.addEventListener('beforeunload', broadcastLiveBye);
+window.addEventListener('pagehide', broadcastLiveBye);
+
+// Hook play/pause so count feels live when people listen
+const _liveOrigPlay = null;
+document.addEventListener('us:playing-changed', () => broadcastLiveSync());
+
 async function initFirebaseLive() {
   if (!FIREBASE_CONFIG || !FIREBASE_CONFIG.databaseURL) return;
   try {
@@ -1953,17 +2026,21 @@ async function initFirebaseLive() {
     const app = initializeApp(FIREBASE_CONFIG);
     const db = getDatabase(app);
     const myRef = ref(db, 'presence/' + liveClientId);
-    await set(myRef, { t: serverTimestamp(), playing: true });
+    liveFirebaseActive = true;
+    const push = () => set(myRef, {
+      t: serverTimestamp(),
+      playing: !!(typeof userWantsPlaying !== 'undefined' && userWantsPlaying && audio && !audio.paused)
+    }).catch(()=>{});
+    await push();
     onDisconnect(myRef).remove();
-    setInterval(() => {
-      set(myRef, { t: serverTimestamp(), playing: !!(userWantsPlaying && !audio.paused) }).catch(()=>{});
-    }, 10000);
+    setInterval(push, 3000);
     onValue(ref(db, 'presence'), (snap) => {
       const v = snap.val() || {};
       updateLiveUI(Object.keys(v).length || 1);
     });
   } catch (err) {
     console.warn('Firebase live ej aktiv', err);
+    liveFirebaseActive = false;
   }
 }
 initFirebaseLive();
