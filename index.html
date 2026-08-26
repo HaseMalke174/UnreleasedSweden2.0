@@ -1366,28 +1366,57 @@ async function fetchPlayStats() {
 
 
 
-let listenSession = { url: '', artist: '', title: '', startedAt: 0, maxPos: 0, reported: false };
+
+let listenSession = {
+  url: '', artist: '', title: '',
+  maxPos: 0,
+  lastSent: 0,
+  heartbeatTimer: null
+};
+
+function clearListenHeartbeat() {
+  if (listenSession.heartbeatTimer) {
+    clearInterval(listenSession.heartbeatTimer);
+    listenSession.heartbeatTimer = null;
+  }
+}
 
 function resetListenSession(track) {
+  clearListenHeartbeat();
   listenSession = {
     url: (track && track.url) || '',
     artist: (track && track.artist) || '',
     title: (track && track.title) || '',
-    startedAt: Date.now(),
     maxPos: 0,
-    reported: false
+    lastSent: 0,
+    heartbeatTimer: null
   };
+  listenSession.heartbeatTimer = setInterval(function () {
+    if (typeof audio !== 'undefined' && audio && !audio.paused) {
+      try {
+        if (audio.currentTime > listenSession.maxPos) listenSession.maxPos = audio.currentTime;
+      } catch (e) {}
+      reportListenDuration(false);
+    }
+  }, 10000);
 }
 
-async function reportListenDuration(force) {
-  if (!STATS_API || !listenSession.title && !listenSession.url) return;
-  if (listenSession.reported && !force) return;
-  const listened = Math.max(listenSession.maxPos || 0, 0);
-  if (listened < 3 && !force) return; // ignore tiny blips
-  listenSession.reported = true;
+async function reportListenDuration(forceEnd) {
+  if (!STATS_API) return;
+  if (!listenSession.title && !listenSession.url) return;
   try {
-    const trackDur = (audio && isFinite(audio.duration)) ? audio.duration : 0;
-    const completed = trackDur > 0 && listened >= trackDur * 0.9;
+    if (typeof audio !== 'undefined' && audio) {
+      if (audio.currentTime > listenSession.maxPos) listenSession.maxPos = audio.currentTime;
+    }
+  } catch (e) {}
+  const maxPos = Math.max(0, Number(listenSession.maxPos) || 0);
+  const delta = Math.max(0, maxPos - (Number(listenSession.lastSent) || 0));
+  if (delta < 2 && !forceEnd) return;
+  if (delta < 0.5) return;
+  listenSession.lastSent = maxPos;
+  try {
+    const trackDur = (typeof audio !== 'undefined' && audio && isFinite(audio.duration)) ? audio.duration : 0;
+    const completed = forceEnd && trackDur > 0 && maxPos >= trackDur * 0.85;
     await fetch(STATS_API.replace(/\/$/, '') + '/api/listen', {
       method: 'POST',
       headers: {
@@ -1399,13 +1428,14 @@ async function reportListenDuration(force) {
         artist: listenSession.artist || '',
         title: listenSession.title || '',
         url: listenSession.url || '',
-        duration_sec: Math.round(listened),
+        duration_sec: Math.round(delta),
         track_duration_sec: Math.round(trackDur || 0),
         completed: !!completed
       }),
       keepalive: true
     });
   } catch (e) {}
+  if (forceEnd) clearListenHeartbeat();
 }
 
 
@@ -2337,6 +2367,8 @@ audio.addEventListener('play', () => {
   render();
 });
 audio.addEventListener('pause', () => {
+  reportListenDuration(false);
+
   if (document.hidden && userWantsPlaying && audio.src) {
     setTimeout(() => {
       if (userWantsPlaying && audio.paused) audio.play().catch(()=>{});
@@ -2349,6 +2381,9 @@ audio.addEventListener('pause', () => {
   render();
 });
 audio.addEventListener('ended', () => {
+  try { if (audio.duration) listenSession.maxPos = audio.duration; } catch (e) {}
+  reportListenDuration(true);
+
   timeSlider.value = 0;
   currentTimeDisplay.textContent = '0:00';
   isSeeking = false;
@@ -2525,6 +2560,8 @@ if (shareBtn) shareBtn.addEventListener('click', shareCurrentTrack);
   } catch(e) {}
 })();
 
+window.addEventListener('pagehide', function () { try { reportListenDuration(true); } catch (e) {} });
+window.addEventListener('beforeunload', function () { try { reportListenDuration(true); } catch (e) {} });
 setupMediaSessionHandlers();
 loadCachedPlayCounts();
 render();
