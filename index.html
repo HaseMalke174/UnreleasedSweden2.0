@@ -1306,34 +1306,54 @@ async function fetchPlayStats() {
     return false;
   }
   const base = STATS_API.replace(/\/$/, '');
-  const url = base + '/api/stats?t=' + Date.now();
-  const tryOnce = async (withNgrokHeader) => {
-    const headers = { 'Accept': 'application/json' };
-    if (withNgrokHeader) headers['ngrok-skip-browser-warning'] = '1';
-    const res = await fetch(url, { cache: 'no-store', mode: 'cors', credentials: 'omit', headers });
+
+  // 1) JSONP – ingen CORS, funkar med ngrok + Vercel
+  const jsonpOk = await new Promise((resolve) => {
+    const cbName = 'usStats_' + String(Date.now()) + '_' + Math.floor(Math.random() * 1e6);
+    let done = false;
+    const finish = (ok) => {
+      if (done) return;
+      done = true;
+      try { delete window[cbName]; } catch (e) {}
+      try { if (script && script.parentNode) script.parentNode.removeChild(script); } catch (e) {}
+      resolve(ok);
+    };
+    window[cbName] = function (data) {
+      try {
+        const raw = (data && data.tracks) || {};
+        rebuildPlayIndex(raw);
+        statsLastError = '';
+        if (typeof render === 'function') render();
+        finish(true);
+      } catch (e) {
+        finish(false);
+      }
+    };
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = base + '/api/stats?callback=' + encodeURIComponent(cbName) + '&t=' + Date.now();
+    script.onerror = function () { finish(false); };
+    document.head.appendChild(script);
+    setTimeout(function () { finish(false); }, 8000);
+  });
+  if (jsonpOk) return true;
+
+  // 2) Fallback: vanlig fetch
+  try {
+    const res = await fetch(base + '/api/stats?t=' + Date.now(), {
+      cache: 'no-store',
+      mode: 'cors',
+      credentials: 'omit',
+      headers: {
+        'Accept': 'application/json',
+        'ngrok-skip-browser-warning': '1'
+      }
+    });
     const text = await res.text();
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    // must be JSON
-    if (text.trim().charAt(0) !== '{' && text.trim().charAt(0) !== '[') {
-      throw new Error('not json');
-    }
-    return JSON.parse(text);
-  };
-  try {
-    let data = null;
-    try {
-      data = await tryOnce(true);
-    } catch (e1) {
-      try {
-        data = await tryOnce(false);
-      } catch (e2) {
-        statsLastError = String(e2 && e2.message || e2);
-        if (typeof render === 'function') render();
-        return false;
-      }
-    }
-    const raw = (data && data.tracks) || {};
-    rebuildPlayIndex(raw);
+    if (text.trim().charAt(0) !== '{') throw new Error('not json');
+    const data = JSON.parse(text);
+    rebuildPlayIndex((data && data.tracks) || {});
     statsLastError = '';
     if (typeof render === 'function') render();
     return true;
