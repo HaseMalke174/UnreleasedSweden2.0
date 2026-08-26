@@ -1396,38 +1396,15 @@ async function reportPlay(artist, title, url) {
       const nk = ((artist || '').trim() + '|' + (title || '').trim()).toLowerCase();
       if (nk !== '|') playCounts[nk] = entry;
       if (title) playCounts[String(title).trim().toLowerCase()] = entry;
+      try { localStorage.setItem('us_play_counts_cache', JSON.stringify(playCounts)); } catch (err) {}
       if (typeof render === 'function') render();
+      setTimeout(function () { fetchPlayStats(); }, 500);
     }
   } catch (e) {
     console.warn('reportPlay', e);
   }
 }
 
-
-async function fetchPlayStats() {
-  if (!STATS_API) {
-    if (typeof render === 'function') render();
-    return;
-  }
-  try {
-    const res = await fetch(STATS_API.replace(/\/$/, '') + '/api/stats', { cache: 'no-store', mode: 'cors' });
-    if (!res.ok) return;
-    const data = await res.json();
-    const raw = (data && data.tracks) || {};
-    const map = {};
-    Object.keys(raw).forEach((k) => {
-      const info = raw[k];
-      if (!info) return;
-      const entry = { artist: info.artist || '', title: info.title || '', plays: Number(info.plays) || 0 };
-      map[k] = entry;
-      if (typeof nameKey === 'function' && (info.artist || info.title)) {
-        map[nameKey(info.artist, info.title)] = entry;
-      }
-    });
-    playCounts = map;
-    if (typeof render === 'function') render();
-  } catch (e) {}
-}
 
 let currentFilter = 'all';
 let currentSearch = '';
@@ -2508,14 +2485,16 @@ loadCachedPlayCounts();
 render();
 renderQueue();
 (async function bootStats() {
+  loadCachedPlayCounts();
+  render();
   await fetchPlayStats();
   render();
-  renderQueue();
-  setInterval(function () { fetchPlayStats(); }, 2000);
+  setInterval(function () { fetchPlayStats(); }, 1500);
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden) fetchPlayStats();
   });
   window.addEventListener('pageshow', function () { fetchPlayStats(); });
+  window.addEventListener('focus', function () { fetchPlayStats(); });
 })();
 setTimeout(fetchPlayStats, 1000);
 setTimeout(fetchPlayStats, 3000);
