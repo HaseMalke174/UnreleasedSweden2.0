@@ -1365,7 +1365,52 @@ async function fetchPlayStats() {
 }
 
 
+
+let listenSession = { url: '', artist: '', title: '', startedAt: 0, maxPos: 0, reported: false };
+
+function resetListenSession(track) {
+  listenSession = {
+    url: (track && track.url) || '',
+    artist: (track && track.artist) || '',
+    title: (track && track.title) || '',
+    startedAt: Date.now(),
+    maxPos: 0,
+    reported: false
+  };
+}
+
+async function reportListenDuration(force) {
+  if (!STATS_API || !listenSession.title && !listenSession.url) return;
+  if (listenSession.reported && !force) return;
+  const listened = Math.max(listenSession.maxPos || 0, 0);
+  if (listened < 3 && !force) return; // ignore tiny blips
+  listenSession.reported = true;
+  try {
+    const trackDur = (audio && isFinite(audio.duration)) ? audio.duration : 0;
+    const completed = trackDur > 0 && listened >= trackDur * 0.9;
+    await fetch(STATS_API.replace(/\/$/, '') + '/api/listen', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'ngrok-skip-browser-warning': '1'
+      },
+      body: JSON.stringify({
+        artist: listenSession.artist || '',
+        title: listenSession.title || '',
+        url: listenSession.url || '',
+        duration_sec: Math.round(listened),
+        track_duration_sec: Math.round(trackDur || 0),
+        completed: !!completed
+      }),
+      keepalive: true
+    });
+  } catch (e) {}
+}
+
+
 async function reportPlay(artist, title, url) {
+  if (typeof resetListenSession === 'function') resetListenSession({ artist: artist, title: title, url: url });
   if (!STATS_API || (!title && !url)) return;
   try {
     let geo = { country: '', city: '' };
