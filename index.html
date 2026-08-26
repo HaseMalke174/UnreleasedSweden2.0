@@ -1220,15 +1220,10 @@ const tracks = [
 let currentTracks = tracks.filter(t => t && t.title);
 let queue = [];
 
-/* Firebase Realtime Database – klistra in din URL (utan avslutande /) */
 let FIREBASE_DB = '';
-/* ===== BYT TILL DIN NGROK/RENDER-URL SÅ ALLA ENHETER FUNKAR ===== */
-let STATS_API = (window.STATS_API || localStorage.getItem('us_stats_api') || 'http://127.0.0.1:5050').replace(/\/$/, '');
-/* Exempel: let STATS_API = 'https://xxxx.ngrok-free.app'; */ // bakåtkompat
+let STATS_API = 'https://3cf0-46-194-121-148.ngrok-free.app';
 let playCounts = {};
-
 let statsLastError = '';
-
 function statsKey(url, artist, title) {
   if (url && String(url).trim()) return String(url).trim();
   return ((artist || '').trim() + '|' + (title || '').trim()).toLowerCase();
