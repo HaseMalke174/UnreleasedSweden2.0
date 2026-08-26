@@ -1227,22 +1227,25 @@ function nameKey(artist, title) {
   return ((artist || '').trim() + '|' + (title || '').trim()).toLowerCase();
 }
 
-function indexPlayEntry(map, key, info) {
-  if (!key || !info) return;
-  map[key] = info;
-}
-
 function getPlayCount(url, artist, title) {
+  if (!playCounts || typeof playCounts !== 'object') return 0;
   const u = url && String(url).trim();
   if (u && playCounts[u] && playCounts[u].plays != null) return Number(playCounts[u].plays) || 0;
+  // try without query string noise
+  if (u) {
+    const base = u.split('&filename=')[0];
+    if (playCounts[base] && playCounts[base].plays != null) return Number(playCounts[base].plays) || 0;
+  }
   const nk = ((artist || '').trim() + '|' + (title || '').trim()).toLowerCase();
   if (nk !== '|' && playCounts[nk] && playCounts[nk].plays != null) return Number(playCounts[nk].plays) || 0;
   const t = (title || '').trim().toLowerCase();
   if (t && playCounts[t] && playCounts[t].plays != null) return Number(playCounts[t].plays) || 0;
-  // scan all entries by title match
+  // fuzzy: any entry with same title
   if (t) {
-    for (const info of Object.values(playCounts)) {
-      if (info && String(info.title || '').trim().toLowerCase() === t && info.plays != null) {
+    for (const k of Object.keys(playCounts)) {
+      const info = playCounts[k];
+      if (!info) continue;
+      if (String(info.title || '').trim().toLowerCase() === t && info.plays != null) {
         return Number(info.plays) || 0;
       }
     }
@@ -1250,10 +1253,14 @@ function getPlayCount(url, artist, title) {
   return 0;
 }
 
-
 function fmtPlays(n) {
   const x = parseInt(n, 10) || 0;
   return '<span class="pc-badge" title="Lyssningar">' + x + ' lyssningar</span>';
+}
+
+function indexPlayEntry(map, key, info) {
+  if (!key || !info) return;
+  map[key] = info;
 }
 
 function rebuildPlayIndex(tracksObj) {
@@ -1267,81 +1274,76 @@ function rebuildPlayIndex(tracksObj) {
       plays: Number(info.plays) || 0
     };
     indexPlayEntry(map, key, entry);
+    if (key && key.indexOf('&filename=') > 0) {
+      indexPlayEntry(map, key.split('&filename=')[0], entry);
+    }
     if (entry.artist || entry.title) {
       indexPlayEntry(map, nameKey(entry.artist, entry.title), entry);
     }
+    if (entry.title) {
+      indexPlayEntry(map, String(entry.title).trim().toLowerCase(), entry);
+    }
   }
   playCounts = map;
+  try {
+    localStorage.setItem('us_play_counts_cache', JSON.stringify(map));
+  } catch (e) {}
 }
 
-
+function loadCachedPlayCounts() {
+  try {
+    const raw = localStorage.getItem('us_play_counts_cache');
+    if (!raw) return;
+    const map = JSON.parse(raw);
+    if (map && typeof map === 'object') playCounts = map;
+  } catch (e) {}
+}
 
 async function fetchPlayStats() {
+  loadCachedPlayCounts();
   if (!STATS_API) {
     if (typeof render === 'function') render();
-    return;
+    return false;
   }
+  const base = STATS_API.replace(/\/$/, '');
+  const url = base + '/api/stats?t=' + Date.now();
+  const tryOnce = async (withNgrokHeader) => {
+    const headers = { 'Accept': 'application/json' };
+    if (withNgrokHeader) headers['ngrok-skip-browser-warning'] = '1';
+    const res = await fetch(url, { cache: 'no-store', mode: 'cors', credentials: 'omit', headers });
+    const text = await res.text();
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    // must be JSON
+    if (text.trim().charAt(0) !== '{' && text.trim().charAt(0) !== '[') {
+      throw new Error('not json');
+    }
+    return JSON.parse(text);
+  };
   try {
-    const res = await fetch(STATS_API.replace(/\/$/, '') + '/api/stats', {
-      cache: 'no-store',
-      mode: 'cors'
-    });
-    if (!res.ok) return;
-    const data = await res.json();
+    let data = null;
+    try {
+      data = await tryOnce(true);
+    } catch (e1) {
+      try {
+        data = await tryOnce(false);
+      } catch (e2) {
+        statsLastError = String(e2 && e2.message || e2);
+        if (typeof render === 'function') render();
+        return false;
+      }
+    }
     const raw = (data && data.tracks) || {};
-    const map = {};
-    Object.keys(raw).forEach((key) => {
-      const info = raw[key];
-      if (!info) return;
-      const entry = {
-        artist: info.artist || '',
-        title: info.title || '',
-        plays: Number(info.plays) || 0
-      };
-      map[key] = entry;
-      if (typeof nameKey === 'function' && (info.artist || info.title)) {
-        map[nameKey(info.artist, info.title)] = entry;
-      }
-    });
-    playCounts = map;
+    rebuildPlayIndex(raw);
+    statsLastError = '';
     if (typeof render === 'function') render();
-  } catch (e) {}
+    return true;
+  } catch (e) {
+    statsLastError = String(e && e.message || e);
+    if (typeof render === 'function') render();
+    return false;
+  }
 }
 
-
-async function detectClientGeo() {
-  if (cachedClientGeo) return cachedClientGeo;
-  try {
-    const res = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
-    if (res.ok) {
-      const d = await res.json();
-      if (d && (d.country_name || d.country)) {
-        cachedClientGeo = {
-          country: d.country_name || d.country || '',
-          country_code: d.country_code || d.country || '',
-          city: d.city || ''
-        };
-        return cachedClientGeo;
-      }
-    }
-  } catch (e) {}
-  try {
-    const res = await fetch('https://ip-api.com/json/?fields=status,country,countryCode,city', { cache: 'no-store' });
-    if (res.ok) {
-      const d = await res.json();
-      if (d && d.status === 'success') {
-        cachedClientGeo = {
-          country: d.country || '',
-          country_code: d.countryCode || '',
-          city: d.city || ''
-        };
-        return cachedClientGeo;
-      }
-    }
-  } catch (e) {}
-  cachedClientGeo = { country: '', country_code: '', city: '' };
-  return cachedClientGeo;
-}
 
 async function reportPlay(artist, title, url) {
   if (!STATS_API || (!title && !url)) return;
@@ -1352,7 +1354,11 @@ async function reportPlay(artist, title, url) {
     }
     const res = await fetch(STATS_API.replace(/\/$/, '') + '/api/play', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'ngrok-skip-browser-warning': 'true'
+      },
       body: JSON.stringify({
         artist: artist || '',
         title: title || '',
@@ -2478,10 +2484,22 @@ if (shareBtn) shareBtn.addEventListener('click', shareCurrentTrack);
 })();
 
 setupMediaSessionHandlers();
+loadCachedPlayCounts();
 render();
 renderQueue();
-fetchPlayStats();
-setInterval(fetchPlayStats, 2000);
+(async function bootStats() {
+  await fetchPlayStats();
+  render();
+  renderQueue();
+  setInterval(function () { fetchPlayStats(); }, 2000);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) fetchPlayStats();
+  });
+  window.addEventListener('pageshow', function () { fetchPlayStats(); });
+})();
+setTimeout(fetchPlayStats, 1000);
+setTimeout(fetchPlayStats, 3000);
+
 setTimeout(fetchPlayStats, 1500);
 setTimeout(fetchPlayStats, 4000);
 console.log('UnreleasedSweden', currentTracks.length);
