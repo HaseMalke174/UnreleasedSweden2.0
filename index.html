@@ -411,6 +411,10 @@ body.light .track-cover { background: #e8e8e8; }
 }
 .timeline { position: relative; z-index: 5; }
 .timeline input[type=range] {
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 20;
+
   flex: 1; -webkit-appearance: none; appearance: none; height: 28px;
   margin: 0; border-radius: 4px; background: transparent; outline: none;
   cursor: pointer; touch-action: none; position: relative; z-index: 6;
@@ -1829,15 +1833,15 @@ function revokeBlob() {
   if (currentBlobUrl) { try { URL.revokeObjectURL(currentBlobUrl); } catch(e){} currentBlobUrl = null; }
 }
 function updateTimeline() {
-  if (!audio.src) return;
-  const d = audio.duration, c = audio.currentTime || 0;
-  if (d && isFinite(d)) {
-    durationTimeDisplay.textContent = formatTime(d);
-    if (!isSeeking) {
-      timeSlider.value = String((c / d) * 100);
-      currentTimeDisplay.textContent = formatTime(c);
-    }
+  if (!audio || !audio.src) return;
+  var d = (typeof getSeekDuration === 'function') ? getSeekDuration() : audio.duration;
+  var c = audio.currentTime || 0;
+  if (durationTimeDisplay) durationTimeDisplay.textContent = (d && isFinite(d) && d > 0) ? formatTime(d) : '0:00';
+  if (isSeeking) return;
+  if (timeSlider && d && isFinite(d) && d > 0) {
+    timeSlider.value = String(Math.min(100, Math.max(0, (c / d) * 100)));
   }
+  if (currentTimeDisplay) currentTimeDisplay.textContent = formatTime(c);
 }
 function hashColor(str) {
   let h = 0;
@@ -1964,13 +1968,17 @@ function render() {
 
   const src = (typeof resolveTrackUrl === 'function') ? resolveTrackUrl(url) : url;
 
-  // Direct stream play (works for sctomp3 / CDN)
+  // 1) Blob first = full file in memory = seek/scrub works (as before)
   try {
+    const res = await fetch(src, { mode: 'cors', credentials: 'omit', cache: 'force-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const blob = await res.blob();
+    if (token !== playToken) return;
     if (typeof revokeBlob === 'function') revokeBlob();
-    audio.src = src;
+    currentBlobUrl = URL.createObjectURL(blob);
+    audio.src = currentBlobUrl;
     audio.playbackRate = (typeof playbackRate !== 'undefined') ? playbackRate : 1;
     try { audio.preload = 'auto'; } catch (e) {}
-    audio.load();
     await audio.play();
     if (token !== playToken) return;
     if (playPauseBtn) playPauseBtn.textContent = '⏸';
@@ -1982,32 +1990,30 @@ function render() {
     render();
     return;
   } catch (err1) {
-    console.warn('Direct play failed', err1);
+    console.warn('Blob play failed, trying direct', err1);
   }
 
-  // Fallback: blob fetch if CORS allows
+  // 2) Direct stream fallback
   try {
-    const res = await fetch(src, { mode: 'cors', credentials: 'omit', cache: 'default' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const blob = await res.blob();
-    if (token !== playToken) return;
     if (typeof revokeBlob === 'function') revokeBlob();
-    currentBlobUrl = URL.createObjectURL(blob);
-    audio.src = currentBlobUrl;
+    audio.src = src;
+    audio.playbackRate = (typeof playbackRate !== 'undefined') ? playbackRate : 1;
+    try { audio.preload = 'auto'; } catch (e) {}
     await audio.play();
     if (token !== playToken) return;
     if (playPauseBtn) playPauseBtn.textContent = '⏸';
     showMessage('Spelar: ' + artist + ' – ' + title, 'success');
     if (typeof updateMediaSession === 'function') updateMediaSession(currentPlaying);
+    if (typeof updateTimeline === 'function') updateTimeline();
     if (typeof reportPlay === 'function') reportPlay(artist, title, url);
     render();
     return;
   } catch (err2) {
-    console.warn('Blob play failed', err2);
+    console.warn('Direct play failed', err2);
   }
 
   if (playPauseBtn) playPauseBtn.textContent = '▶';
-  showMessage('Kunde inte spela – länken kan vara utgången. Prova en annan låt.', 'error');
+  showMessage('Kunde inte spela – länken kan vara utgången.', 'error');
 }
 
 function togglePlay() {
@@ -2024,23 +2030,44 @@ function togglePlay() {
   updateMediaSession(currentPlaying);
   render();
 }
+function getSeekDuration() {
+  var d = audio.duration;
+  if (d && isFinite(d) && d > 0) return d;
+  try {
+    if (audio.seekable && audio.seekable.length > 0) {
+      var end = audio.seekable.end(audio.seekable.length - 1);
+      if (end && isFinite(end) && end > 0) return end;
+    }
+  } catch (e) {}
+  return 0;
+}
 function seekTo(percent) {
   if (!audio.src) return false;
-  const duration = audio.duration;
-  if (!duration || !isFinite(duration) || duration <= 0) return false;
-  const newTime = Math.min(Math.max(0, (percent / 100) * duration), Math.max(0, duration - 0.05));
+  var duration = getSeekDuration();
+  if (!duration || duration <= 0) return false;
+  var pct = Math.min(100, Math.max(0, parseFloat(percent) || 0));
+  var newTime = (pct / 100) * duration;
+  if (newTime >= duration) newTime = Math.max(0, duration - 0.25);
+  if (newTime < 0) newTime = 0;
+  var wasPlaying = !audio.paused && userWantsPlaying;
   try {
+    // Do not reload src — only move playhead
+    if (wasPlaying) {
+      try { audio.pause(); } catch (e) {}
+    }
     audio.currentTime = newTime;
-    currentTimeDisplay.textContent = formatTime(newTime);
+    if (currentTimeDisplay) currentTimeDisplay.textContent = formatTime(newTime);
+    if (timeSlider) timeSlider.value = String(pct);
+    if (wasPlaying) {
+      var p = audio.play();
+      if (p && typeof p.catch === 'function') p.catch(function () {});
+    }
     return true;
   } catch (e) {
-    try {
-      if (typeof audio.fastSeek === 'function') {
-        audio.fastSeek(newTime);
-        currentTimeDisplay.textContent = formatTime(newTime);
-        return true;
-      }
-    } catch (e2) {}
+    console.warn('seek failed', e);
+    if (wasPlaying) {
+      try { audio.play(); } catch (e2) {}
+    }
     return false;
   }
 }
@@ -2258,29 +2285,79 @@ document.addEventListener('click', (e) => {
   }
 });
 
-timeSlider.addEventListener('pointerdown', (e) => {
-  if (!audio.src) return;
-  isSeeking = true;
-  try { timeSlider.setPointerCapture(e.pointerId); } catch (err) {}
-});
-timeSlider.addEventListener('mousedown', () => { if (audio.src) isSeeking = true; });
-timeSlider.addEventListener('touchstart', () => { if (audio.src) isSeeking = true; }, { passive: true });
-timeSlider.addEventListener('input', () => {
-  if (!audio.src) return;
-  isSeeking = true;
-  seekTo(parseFloat(timeSlider.value) || 0);
-});
-function endSeek() {
-  if (!audio.src) { isSeeking = false; return; }
-  seekTo(parseFloat(timeSlider.value) || 0);
-  isSeeking = false;
-  setTimeout(updateTimeline, 30);
-}
-timeSlider.addEventListener('change', endSeek);
-timeSlider.addEventListener('mouseup', endSeek);
-timeSlider.addEventListener('touchend', endSeek);
-timeSlider.addEventListener('pointerup', endSeek);
-timeSlider.addEventListener('pointercancel', endSeek);
+// Seek slider: preview while dragging, commit only on release (avoids restart)
+(function setupSeekSlider() {
+  if (!timeSlider) return;
+  var dragging = false;
+  var previewPct = 0;
+
+  function previewOnly() {
+    if (!audio.src) return;
+    previewPct = parseFloat(timeSlider.value) || 0;
+    var d = getSeekDuration();
+    if (d > 0 && currentTimeDisplay) {
+      currentTimeDisplay.textContent = formatTime((previewPct / 100) * d);
+    }
+  }
+
+  function commit() {
+    if (!audio.src) {
+      dragging = false;
+      isSeeking = false;
+      return;
+    }
+    var pct = parseFloat(timeSlider.value);
+    if (isNaN(pct)) pct = previewPct;
+    var ok = seekTo(pct);
+    dragging = false;
+    isSeeking = false;
+    // keep label honest after seek
+    setTimeout(function () {
+      isSeeking = false;
+      if (typeof updateTimeline === 'function') updateTimeline();
+    }, 80);
+    return ok;
+  }
+
+  timeSlider.addEventListener('pointerdown', function () {
+    if (!audio.src) return;
+    dragging = true;
+    isSeeking = true;
+  });
+  timeSlider.addEventListener('mousedown', function () {
+    if (!audio.src) return;
+    dragging = true;
+    isSeeking = true;
+  });
+  timeSlider.addEventListener('touchstart', function () {
+    if (!audio.src) return;
+    dragging = true;
+    isSeeking = true;
+  }, { passive: true });
+
+  // IMPORTANT: do NOT set audio.currentTime on every input (restarts streams)
+  timeSlider.addEventListener('input', function () {
+    if (!audio.src) return;
+    dragging = true;
+    isSeeking = true;
+    previewOnly();
+  });
+
+  timeSlider.addEventListener('change', commit);
+  timeSlider.addEventListener('mouseup', commit);
+  timeSlider.addEventListener('pointerup', commit);
+  timeSlider.addEventListener('pointercancel', function () {
+    dragging = false;
+    isSeeking = false;
+  });
+  timeSlider.addEventListener('touchend', commit);
+  timeSlider.addEventListener('keyup', function (e) {
+    if (['ArrowLeft','ArrowRight','Home','End'].indexOf(e.key) >= 0) {
+      isSeeking = true;
+      commit();
+    }
+  });
+})();
 
 audio.addEventListener('loadedmetadata', updateTimeline);
 audio.addEventListener('durationchange', updateTimeline);
@@ -2311,6 +2388,10 @@ audio.addEventListener('ended', () => {
 audio.addEventListener('error', () => {
   if (playPauseBtn.textContent === '⏳') return;
   if (isSeeking) { isSeeking = false; return; }
+  // Don't auto-skip on transient stream glitches while user is scrubbing
+  if (userWantsPlaying && audio.src && audio.currentTime > 0.5) {
+    try { audio.play().catch(function(){}); return; } catch (e) {}
+  }
   showMessage('Fel – hoppar till nästa', 'error');
   setTimeout(() => playNextTrack(), 600);
 });
