@@ -1213,7 +1213,7 @@ let queue = [];
 /* Firebase Realtime Database – klistra in din URL (utan avslutande /) */
 let FIREBASE_DB = '';
 /* ===== BYT TILL DIN NGROK/RENDER-URL SÅ ALLA ENHETER FUNKAR ===== */
-let STATS_API = (window.STATS_API || localStorage.getItem('us_stats_api') || 'https://7d15-46-194-121-148.ngrok-free.app -> http://localhost:5050 ').replace(/\/$/, '');
+let STATS_API = (window.STATS_API || localStorage.getItem('us_stats_api') || 'https://7d15-46-194-121-148.ngrok-free.app').replace(/\/$/, '');
 /* Exempel: let STATS_API = 'https://xxxx.ngrok-free.app'; */ // bakåtkompat
 let playCounts = {};
 
@@ -1439,7 +1439,15 @@ async function reportListenDuration(forceEnd) {
 }
 
 
+let lastReportPlayAt = 0;
+let lastReportPlayKey = '';
 async function reportPlay(artist, title, url) {
+  const rk = (url || '') + '|' + (title || '');
+  const now = Date.now();
+  if (rk === lastReportPlayKey && now - lastReportPlayAt < 8000) return; // max 1 play count / 8s per track
+  lastReportPlayKey = rk;
+  lastReportPlayAt = now;
+
   if (typeof resetListenSession === 'function') resetListenSession({ artist: artist, title: title, url: url });
   if (!STATS_API || (!title && !url)) return;
   try {
