@@ -1,0 +1,2528 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<meta name="description" content="UnreleasedSweden – osläppt svensk rap">
+<meta name="theme-color" content="#07060c" id="themeColorMeta">
+<title>UnreleasedSweden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://i1.sndcdn.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --bg: #07060c;
+  --bg-elevated: #120f1c;
+  --bg-card: #14101f;
+  --bg-hover: #1e1830;
+  --border: #2e2548;
+  --border-subtle: rgba(180,100,255,0.08);
+  --text: #f8f5ff;
+  --text-muted: #b8a8d4;
+  --text-dim: #7a6b9a;
+  --green: #c44dff;
+  --green-hover: #e070ff;
+  --green-dim: rgba(196,77,255,0.16);
+  --green-glow: rgba(196,77,255,0.35);
+  --accent: #00f0ff;
+  --accent-dim: rgba(0,240,255,0.14);
+  --accent-glow: rgba(0,240,255,0.3);
+  --pink: #ff2d95;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-pill: 999px;
+  --player-h: 96px;
+  --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --shadow: 0 8px 40px rgba(80,0,120,0.45);
+  --shadow-sm: 0 2px 12px rgba(100,40,180,0.25);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --topbar-bg: rgba(7,6,12,0.92);
+  --player-bg: #0e0b16;
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+body.light {
+  --bg: #f4f0ff;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --bg-hover: #ebe4ff;
+  --border: #d4c8f0;
+  --border-subtle: rgba(100,40,180,0.08);
+  --text: #1a1028;
+  --text-muted: #5a4a78;
+  --text-dim: #9585b0;
+  --green: #9b2de8;
+  --green-hover: #b44dff;
+  --green-dim: rgba(155,45,232,0.12);
+  --green-glow: rgba(155,45,232,0.22);
+  --accent: #0099aa;
+  --accent-dim: rgba(0,153,170,0.12);
+  --accent-glow: rgba(0,153,170,0.2);
+  --pink: #e01a7a;
+  --shadow: 0 8px 32px rgba(100,40,180,0.12);
+  --shadow-sm: 0 2px 8px rgba(100,40,180,0.08);
+  --topbar-bg: rgba(255,255,255,0.94);
+  --player-bg: #ffffff;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 100% 60% at 50% -20%, rgba(196,77,255,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 100% 50%, rgba(0,240,255,0.04) 0%, transparent 40%);
+  color: var(--text);
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-bottom: calc(var(--player-h) + var(--safe-bottom) + 24px);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background 0.3s var(--ease), color 0.3s var(--ease);
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+}
+button { font-family: inherit; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+img { max-width: 100%; display: block; }
+
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--topbar-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 1.5rem;
+  padding-top: var(--safe-top);
+}
+.topbar-inner {
+  max-width: 1180px; margin: 0 auto; height: 68px;
+  display: flex; align-items: center; justify-content: space-between; gap: 1.25rem;
+}
+.brand { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+.brand-mark {
+  width: 40px; height: 40px; border-radius: 11px;
+  background: linear-gradient(145deg, #e070ff 0%, #c44dff 40%, #00f0ff 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; font-weight: 800; color: #0a0612;
+  box-shadow: 0 0 20px var(--green-glow), 0 0 40px var(--accent-glow);
+  letter-spacing: -0.04em;
+}
+.brand-name {
+  font-size: 1.15rem; font-weight: 800; letter-spacing: -0.04em;
+}
+.brand-name span { color: var(--green); }
+.search-wrap { flex: 1; max-width: 420px; position: relative; }
+.search-wrap input {
+  width: 100%; background: var(--bg-elevated); border: 1px solid var(--border);
+  color: var(--text); padding: 0.72rem 1.15rem 0.72rem 2.7rem;
+  border-radius: var(--radius-pill); font-size: 0.9rem; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-wrap input:focus {
+  border-color: rgba(29,185,84,0.55);
+  box-shadow: 0 0 0 3px var(--green-dim);
+}
+.search-wrap input::placeholder { color: var(--text-dim); }
+.search-wrap .search-icon {
+  position: absolute; left: 1.05rem; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); pointer-events: none; font-size: 0.95rem;
+}
+.topbar-right { display: flex; align-items: center; gap: 0.65rem; flex-shrink: 0; }
+.topbar-meta { font-size: 0.78rem; color: var(--text-muted); white-space: nowrap; font-weight: 500; }
+.topbar-meta strong { color: var(--green); font-weight: 700; }
+.settings-btn, .nav-chip {
+  width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--bg-elevated); color: var(--text-muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+  transition: all 0.2s var(--ease);
+}
+.settings-btn:hover, .settings-btn.active, .nav-chip:hover, .nav-chip.active {
+  border-color: var(--green); color: var(--green); background: var(--green-dim);
+}
+
+.main { max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem 2.5rem; }
+
+.hero {
+  margin-bottom: 1.75rem; padding: 2.25rem 2rem; border-radius: 16px;
+  background:
+    radial-gradient(ellipse 90% 100% at 100% -10%, rgba(196,77,255,0.35) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 80% at 0% 100%, rgba(0,240,255,0.12) 0%, transparent 45%),
+    linear-gradient(160deg, #1a0f2e 0%, var(--bg-card) 48%, var(--bg) 100%);
+  border: 1px solid rgba(196,77,255,0.25);
+  box-shadow: 0 0 40px rgba(196,77,255,0.12), var(--shadow-sm);
+  position: relative; overflow: hidden;
+}
+body.light .hero {
+  background:
+    radial-gradient(ellipse 90% 100% at 100% -10%, rgba(155,45,232,0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 80% at 0% 100%, rgba(0,153,170,0.1) 0%, transparent 45%),
+    linear-gradient(160deg, #f0e8ff 0%, #fff 50%, #f4f0ff 100%);
+  border-color: rgba(155,45,232,0.2);
+}
+.hero-label {
+  display: inline-block;
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--green); margin-bottom: 0.65rem;
+  padding: 0.28rem 0.65rem; border-radius: var(--radius-pill);
+  background: var(--green-dim); border: 1px solid rgba(29,185,84,0.2);
+}
+.hero h1 {
+  font-size: clamp(1.65rem, 3.4vw, 2.25rem); font-weight: 800;
+  letter-spacing: -0.045em; margin-bottom: 0.5rem; line-height: 1.15;
+}
+.hero p {
+  color: var(--text-muted); font-size: 0.95rem; max-width: 520px; line-height: 1.6;
+  font-weight: 450;
+}
+
+.view-tabs { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1.35rem; }
+.view-tabs button {
+  background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+  padding: 0.48rem 1.05rem; border-radius: var(--radius-pill); cursor: pointer;
+  font-size: 0.8rem; font-weight: 600; transition: all 0.18s var(--ease);
+}
+.view-tabs button:hover { background: var(--bg-hover); color: var(--text); border-color: #3a3a3a; }
+.view-tabs button.active {
+  background: var(--green); border-color: var(--green); color: #000;
+  box-shadow: 0 2px 12px var(--green-glow);
+}
+
+.section-label {
+  font-size: 0.68rem; font-weight: 700; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.75rem;
+}
+.filters { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.6rem; }
+.filters button {
+  background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+  padding: 0.42rem 0.95rem; border-radius: var(--radius-pill); cursor: pointer;
+  font-size: 0.78rem; font-weight: 600; transition: all 0.18s var(--ease);
+}
+.filters button:hover { border-color: #444; color: var(--text); background: var(--bg-hover); }
+.filters button.active {
+  background: var(--text); border-color: var(--text); color: var(--bg);
+}
+
+#messageContainer { min-height: 0; }
+.message {
+  padding: 0.85rem 1.15rem; border-radius: var(--radius); margin-bottom: 1rem;
+  font-size: 0.85rem; font-weight: 500; animation: fadeSlide 0.28s var(--ease);
+}
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.message.error {
+  background: rgba(233,20,41,0.1); color: #ff8a95;
+  border: 1px solid rgba(233,20,41,0.22);
+}
+body.light .message.error { color: #b91c1c; }
+.message.success {
+  background: var(--green-dim); color: var(--green);
+  border: 1px solid rgba(29,185,84,0.28);
+}
+
+.track-list {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm);
+}
+.track-list-header {
+  display: grid;
+  grid-template-columns: 40px 52px minmax(0,1fr) 64px 48px 150px;
+  gap: 0.75rem; padding: 0.85rem 1.25rem;
+  font-size: 0.65rem; font-weight: 700; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2);
+}
+body.light .track-list-header { background: rgba(0,0,0,0.02); }
+.track-row {
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 40px 52px minmax(0,1fr) 64px 48px 150px;
+  gap: 0.75rem; align-items: center; padding: 0.8rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 0.15s var(--ease);
+}
+.track-row:last-child { border-bottom: none; }
+.track-row:hover { background: var(--bg-hover); }
+.track-row.playing { background: var(--green-dim); }
+.track-row.soon { opacity: 0.7; }
+.track-row.soon .title::after {
+  content: " · Coming Soon"; font-size: 0.68rem; font-weight: 600;
+  color: var(--text-dim); letter-spacing: 0.02em;
+}
+.track-row .idx {
+  color: var(--text-dim); font-size: 0.85rem; text-align: center;
+  font-variant-numeric: tabular-nums; font-weight: 500;
+}
+.track-row.playing .idx { color: var(--green); font-weight: 700; }
+.track-cover {
+  width: 48px; height: 48px; border-radius: 8px; object-fit: cover;
+  background: #1e1e1e; flex-shrink: 0; box-shadow: var(--shadow-sm);
+}
+body.light .track-cover { background: #e8e8e8; }
+.track-cover.placeholder {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; font-weight: 700; color: #000;
+}
+.track-info { min-width: 0; }
+.track-info .title {
+  font-weight: 600; font-size: 0.95rem; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.02em;
+}
+.track-row.playing .title { color: var(--green); }
+.track-info .artist {
+  font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.track-year { font-size: 0.8rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.heart-btn {
+  background: none; border: none; cursor: pointer; font-size: 1.3rem; color: var(--text-dim);
+  padding: 0.35rem; width: 44px; height: 44px; min-width: 44px; min-height: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: color 0.15s, transform 0.15s;
+}
+.heart-btn.on { color: var(--green); }
+.heart-btn:hover { color: var(--green); transform: scale(1.1); }
+.track-actions {
+  display: flex; gap: 0.55rem; justify-content: flex-end; align-items: center;
+}
+.track-actions button {
+  background: transparent; border: 1.5px solid var(--border); color: var(--text-muted);
+  width: 52px; height: 52px; min-width: 52px; min-height: 52px; border-radius: 50%;
+  cursor: pointer; font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  transition: all 0.18s var(--ease);
+}
+.track-actions button:hover, .track-actions button:active {
+  border-color: var(--green); color: var(--green); background: var(--green-dim);
+}
+.track-actions button.play-btn {
+  background: var(--green) !important; border-color: var(--green) !important; color: #000 !important;
+  font-size: 1.3rem; width: 56px; height: 56px; min-width: 56px; min-height: 56px;
+  box-shadow: 0 4px 16px var(--green-glow); font-weight: 700;
+}
+.track-actions button.play-btn:hover, .track-actions button.play-btn:active {
+  background: var(--green-hover) !important; transform: scale(1.06);
+}
+
+.empty-state { text-align: center; padding: 4rem 1.5rem; color: var(--text-muted); }
+.empty-state .icon { font-size: 2.75rem; margin-bottom: 0.85rem; opacity: 0.4; }
+.empty-state h3 { color: var(--text); font-weight: 700; margin-bottom: 0.35rem; letter-spacing: -0.02em; }
+
+.admin-panel {
+  margin-top: 2.25rem; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem 1.6rem; box-shadow: var(--shadow-sm);
+}
+.admin-panel h3 {
+  font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 0.45rem; letter-spacing: -0.02em;
+}
+.admin-panel h3 span { color: var(--green); }
+.form-row { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+.admin-panel input {
+  background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text);
+  padding: 0.65rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem;
+  outline: none; flex: 1 1 110px; transition: border-color 0.2s;
+}
+.admin-panel input:focus { border-color: var(--green); }
+.admin-panel .btn-add {
+  background: var(--green); border: none; color: #000; font-weight: 700;
+  padding: 0.65rem 1.4rem; border-radius: var(--radius-pill); cursor: pointer; font-size: 0.85rem;
+  transition: background 0.15s, transform 0.15s;
+}
+.admin-panel .btn-add:hover { background: var(--green-hover); transform: translateY(-1px); }
+.admin-hint { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.7rem; }
+
+.site-footer {
+  max-width: 1180px; margin: 3rem auto 0; padding: 1.75rem 1.5rem 0;
+  border-top: 1px solid var(--border); text-align: center; color: var(--text-dim);
+  font-size: 0.8rem; line-height: 1.7;
+}
+.site-footer strong { color: var(--text-muted); font-weight: 600; }
+
+.player {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: calc(var(--player-h) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: var(--player-bg); border-top: 1px solid var(--border); z-index: 200;
+  display: grid; grid-template-columns: 1fr 1.5fr 1fr;
+  align-items: center; padding-left: 1.25rem; padding-right: 1.25rem; gap: 1rem;
+  box-shadow: 0 -8px 40px rgba(0,0,0,0.35);
+  transition: height 0.3s var(--ease), background 0.3s;
+}
+.player.expanded {
+  height: auto; min-height: 72vh; padding-top: 1.75rem;
+  grid-template-columns: 1fr; grid-template-rows: auto auto auto; align-content: start;
+}
+.player-left { display: flex; align-items: center; gap: 0.95rem; min-width: 0; }
+.player.expanded .player-left { flex-direction: column; text-align: center; gap: 1.1rem; }
+.player-art {
+  width: 58px; height: 58px; border-radius: 8px; overflow: hidden;
+  background: var(--bg-hover); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; color: var(--text-dim); box-shadow: var(--shadow-sm);
+}
+.player.expanded .player-art {
+  width: 240px; height: 240px; border-radius: 14px; box-shadow: var(--shadow);
+}
+.player-art img { width: 100%; height: 100%; object-fit: cover; }
+.player-meta { min-width: 0; }
+.player.expanded .player-meta { text-align: center; }
+.player-meta .p-title {
+  font-weight: 700; font-size: 0.92rem; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.02em;
+}
+.player.expanded .player-meta .p-title { font-size: 1.4rem; white-space: normal; }
+.player-meta .p-artist {
+  font-size: 0.78rem; color: var(--text-muted); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; margin-top: 0.12rem;
+}
+.player.expanded .player-meta .p-artist { font-size: 1rem; margin-top: 0.35rem; }
+.player-center { display: flex; flex-direction: column; align-items: center; gap: 0.45rem; }
+.player.expanded .player-center { width: 100%; max-width: 520px; margin: 0 auto; }
+.player-controls { display: flex; align-items: center; gap: 0.45rem; }
+.player-controls button {
+  background: none; border: none; color: var(--text-muted); cursor: pointer;
+  font-size: 1.15rem; width: 44px; height: 44px; min-width: 44px; min-height: 44px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  transition: color 0.15s, transform 0.12s;
+}
+.player-controls button:hover { color: var(--text); }
+.player-controls button.primary {
+  background: var(--text); color: var(--bg);
+  width: 52px; height: 52px; min-width: 52px; min-height: 52px; font-size: 1.2rem;
+}
+.player-controls button.primary:hover {
+  transform: scale(1.07); background: var(--green); color: #000;
+}
+.player-controls button.active { color: var(--green); }
+.timeline {
+  display: flex; align-items: center; gap: 0.55rem; width: 100%; max-width: 540px;
+}
+.timeline .time {
+  font-size: 0.7rem; color: var(--text-dim); min-width: 36px; text-align: center;
+  font-variant-numeric: tabular-nums; font-weight: 500;
+}
+.timeline { position: relative; z-index: 5; }
+.timeline input[type=range] {
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 20;
+
+  flex: 1; -webkit-appearance: none; appearance: none; height: 28px;
+  margin: 0; border-radius: 4px; background: transparent; outline: none;
+  cursor: pointer; touch-action: none; position: relative; z-index: 6;
+}
+.timeline input[type=range]::-webkit-slider-runnable-track {
+  height: 6px; border-radius: 3px; background: var(--border);
+}
+.timeline input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--green); cursor: grab; box-shadow: 0 0 10px var(--green-glow);
+  margin-top: -6px; border: 2px solid #fff;
+}
+.timeline input[type=range]:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.12); }
+.timeline input[type=range]::-moz-range-track {
+  height: 6px; border-radius: 3px; background: var(--border);
+}
+.timeline input[type=range]::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%; background: var(--green);
+  border: 2px solid #fff; cursor: grab;
+}
+.player-right { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
+.volume-wrap { display: flex; align-items: center; gap: 0.4rem; }
+.volume-wrap button {
+  background: none; border: none; color: var(--text-muted); cursor: pointer;
+  font-size: 1rem; width: 36px; height: 36px;
+}
+.volume-wrap input[type=range] {
+  width: 92px; -webkit-appearance: none; appearance: none; height: 4px;
+  border-radius: 2px; background: var(--border); outline: none; cursor: pointer;
+}
+.volume-wrap input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--text); cursor: pointer;
+}
+.icon-btn {
+  background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+  width: 42px; height: 42px; min-width: 42px; min-height: 42px; border-radius: 50%;
+  cursor: pointer; font-size: 0.95rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.18s var(--ease);
+}
+.icon-btn:hover, .icon-btn.active {
+  border-color: var(--green); color: var(--green); background: var(--green-dim);
+}
+.expand-btn { display: none; }
+.rate-label {
+  font-size: 0.7rem; font-weight: 700; color: var(--text-muted);
+  min-width: 2.2rem; text-align: center;
+}
+
+.queue-panel {
+  position: fixed; bottom: calc(var(--player-h) + var(--safe-bottom)); left: 0; right: 0;
+  max-height: 0; overflow: hidden; background: var(--bg-card);
+  border-top: 1px solid var(--border); z-index: 150;
+  transition: max-height 0.35s var(--ease); box-shadow: 0 -12px 40px rgba(0,0,0,0.3);
+}
+.queue-panel.open { max-height: 55vh; }
+.queue-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.35rem; border-bottom: 1px solid var(--border);
+}
+.queue-header h3 { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.02em; }
+.queue-header button {
+  background: none; border: none; color: var(--text-muted); cursor: pointer;
+  font-size: 0.88rem; font-weight: 600; padding: 0.5rem 0.75rem; min-height: 44px;
+}
+.queue-header button:hover { color: var(--green); }
+.queue-list { overflow-y: auto; max-height: calc(55vh - 56px); padding: 0.5rem 0; }
+.queue-item {
+  display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 1.35rem;
+  cursor: pointer; min-height: 58px; transition: background 0.15s;
+}
+.queue-item:hover { background: var(--bg-hover); }
+.queue-item.current { background: var(--green-dim); }
+.queue-item img, .queue-item .q-placeholder {
+  width: 42px; height: 42px; border-radius: 6px; object-fit: cover; flex-shrink: 0;
+}
+.queue-item .q-placeholder {
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.8rem; color: #000;
+}
+.queue-item .q-info { min-width: 0; flex: 1; }
+.queue-item .q-title {
+  font-size: 0.9rem; font-weight: 600; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.queue-item .q-artist { font-size: 0.75rem; color: var(--text-muted); }
+.queue-item .q-remove {
+  background: none; border: none; color: var(--text-dim); cursor: pointer;
+  font-size: 1.35rem; min-width: 44px; min-height: 44px; padding: 0.5rem;
+}
+.queue-empty { text-align: center; padding: 2.25rem; color: var(--text-dim); font-size: 0.9rem; }
+
+.settings-panel {
+  position: fixed; top: calc(68px + var(--safe-top) + 10px); right: 1.25rem;
+  width: min(360px, calc(100vw - 2rem)); background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5); z-index: 300;
+  display: none; overflow: hidden;
+}
+.settings-panel.open { display: block; animation: fadeSlide 0.22s var(--ease); }
+.settings-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.2rem; border-bottom: 1px solid var(--border);
+}
+.settings-header h3 { font-size: 1rem; font-weight: 700; letter-spacing: -0.02em; }
+.settings-header button {
+  background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.15rem;
+}
+.settings-body { padding: 1.1rem 1.2rem 1.35rem; max-height: min(70vh, 520px); overflow-y: auto; }
+.settings-section { margin-bottom: 1.4rem; }
+.settings-section:last-child { margin-bottom: 0; }
+.settings-section h4 {
+  font-size: 0.68rem; font-weight: 700; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.7rem;
+}
+.theme-toggle, .chip-row {
+  display: flex; background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: var(--radius-pill); padding: 3px; gap: 2px; flex-wrap: wrap;
+}
+.theme-toggle button, .chip-row button {
+  flex: 1; border: none; background: transparent; color: var(--text-muted);
+  padding: 0.52rem 0.65rem; border-radius: var(--radius-pill); cursor: pointer;
+  font-size: 0.8rem; font-weight: 600; min-width: 3.5rem; transition: all 0.15s;
+}
+.theme-toggle button.active, .chip-row button.active {
+  background: var(--green); color: #000; box-shadow: 0 2px 10px var(--green-glow);
+}
+.settings-hint {
+  font-size: 0.75rem; color: var(--text-dim); line-height: 1.5;
+  background: var(--bg-elevated); border-radius: 10px; padding: 0.75rem 0.9rem; margin-top: 0.55rem;
+}
+
+.cast-panel {
+  position: fixed; bottom: calc(var(--player-h) + var(--safe-bottom) + 10px); right: 1.15rem;
+  width: min(340px, calc(100vw - 2rem)); background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 250;
+  display: none; overflow: hidden;
+}
+.cast-panel.open { display: block; animation: fadeSlide 0.22s var(--ease); }
+.cast-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.95rem 1.15rem; border-bottom: 1px solid var(--border);
+}
+.cast-header h3 { font-size: 0.95rem; font-weight: 700; }
+.cast-header button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; }
+.cast-body { padding: 0.95rem 1.15rem 1.2rem; max-height: 50vh; overflow-y: auto; }
+.cast-section { margin-bottom: 1.1rem; }
+.cast-section h4 {
+  font-size: 0.68rem; font-weight: 700; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.55rem;
+}
+.cast-device {
+  display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 0.75rem;
+  border-radius: 10px; cursor: pointer; transition: background 0.15s;
+}
+.cast-device:hover { background: var(--bg-hover); }
+.cast-device.active { background: var(--green-dim); color: var(--green); }
+.cast-hint {
+  font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;
+  background: var(--bg-elevated); border-radius: 10px; padding: 0.75rem 0.9rem; margin-top: 0.4rem;
+}
+.cast-hint strong { color: var(--text); }
+
+.sleep-banner {
+  position: fixed; bottom: calc(var(--player-h) + var(--safe-bottom) + 10px);
+  left: 50%; transform: translateX(-50%);
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-pill); padding: 0.5rem 1.15rem;
+  font-size: 0.8rem; font-weight: 600; color: var(--green); z-index: 180;
+  display: none; box-shadow: var(--shadow);
+}
+.sleep-banner.on { display: block; }
+
+@media (max-width: 900px) {
+  .track-list-header { display: none; }
+  .track-row {
+    grid-template-columns: 28px 48px 1fr auto;
+    padding: 1rem 0.9rem; gap: 0.6rem;
+  }
+  .track-year { display: none; }
+  .track-actions { gap: 0.7rem; }
+  .track-actions button {
+    width: 56px; height: 56px; min-width: 56px; min-height: 56px; font-size: 1.25rem;
+  }
+  .track-actions button.play-btn {
+    width: 62px; height: 62px; min-width: 62px; min-height: 62px; font-size: 1.4rem;
+    background: var(--green) !important; color: #000 !important;
+  }
+  .player {
+    grid-template-columns: 1fr auto;
+    height: auto;
+    min-height: calc(120px + var(--safe-bottom));
+    padding: 0.65rem 0.85rem;
+    padding-bottom: calc(0.65rem + var(--safe-bottom));
+    gap: 0.4rem 0.5rem;
+  }
+  .player-left { grid-column: 1; grid-row: 1; min-width: 0; }
+  .player-right {
+    display: flex !important;
+    flex-wrap: wrap;
+    grid-column: 1 / -1;
+    grid-row: 3;
+    align-items: center; justify-content: center; gap: 0.4rem;
+    flex-shrink: 0;
+    max-width: 100%;
+    width: 100%;
+    padding-top: 0.25rem;
+  }
+  .player-center {
+    grid-column: 1 / -1; grid-row: 2;
+    width: 100%;
+  }
+  .player-right .rate-label {
+    display: inline-block !important;
+    font-size: 0.72rem;
+    min-width: auto;
+    padding: 0 0.2rem;
+  }
+  .player-right .volume-wrap {
+    display: flex !important;
+    gap: 0.25rem;
+    width: 100%;
+    order: 10;
+    margin-top: 0.15rem;
+  }
+  .player-right .volume-wrap input[type=range] {
+    display: block !important;
+    width: 100%;
+    min-width: 70px;
+    flex: 1;
+  }
+  .player-right .icon-btn,
+  .player-right #muteBtn {
+    width: 40px; height: 40px; min-width: 40px; min-height: 40px;
+    font-size: 1rem;
+  }
+  .topbar-meta {
+    display: flex !important;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.7rem;
+    max-width: 42vw;
+    overflow: hidden;
+  }
+  .topbar-meta .hide-mobile { display: inline !important; }
+  .player-art { width: 48px; height: 48px; }
+  .expand-btn { display: flex !important; }
+  .player-controls { gap: 0.35rem; flex-wrap: wrap; justify-content: center; }
+  .player-controls button { width: 42px; height: 42px; min-width: 42px; min-height: 42px; }
+  .player-controls button.primary { width: 50px; height: 50px; min-width: 50px; min-height: 50px; }
+  .settings-btn { width: 40px; height: 40px; }
+  .sort-row { display: flex !important; }
+  .admin-panel { display: block !important; }
+}
+
+.mobile-tools { display: none; }
+@media (max-width: 900px) {
+  .mobile-tools {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.65rem 1rem 0;
+    max-width: 1180px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+  .mobile-tools button {
+    flex: 1;
+    min-width: calc(50% - 0.5rem);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.7rem 0.85rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 48px;
+  }
+  .mobile-tools button:active {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-dim);
+  }
+}
+@media (max-width: 900px) {
+  body { padding-bottom: calc(140px + var(--safe-bottom)); }
+}
+@media (max-width: 560px) {
+  .main { padding: 1.15rem 0.95rem; }
+  .hero { padding: 1.5rem 1.2rem; border-radius: 14px; }
+  .topbar { padding: 0 0.75rem; }
+  .topbar-inner { gap: 0.5rem; height: 60px; }
+  .search-wrap { max-width: none; flex: 1; min-width: 0; }
+  .brand-name { font-size: 0.95rem; }
+  .brand-mark { width: 34px; height: 34px; font-size: 1rem; }
+  .topbar-right { flex-shrink: 0; }
+  .settings-btn { width: 40px; height: 40px; min-width: 40px; }
+  .filters button, .view-tabs button { padding: 0.45rem 0.85rem; font-size: 0.76rem; }
+  .track-row {
+    gap: 0.55rem; padding: 1.05rem 0.8rem;
+    grid-template-columns: 24px 48px 1fr auto;
+  }
+  .track-cover { width: 48px; height: 48px; }
+  .track-actions { gap: 0.75rem; }
+  .track-actions button {
+    width: 58px; height: 58px; min-width: 58px; min-height: 58px; font-size: 1.3rem;
+  }
+  .track-actions button.play-btn {
+    width: 66px; height: 66px; min-width: 66px; min-height: 66px; font-size: 1.5rem;
+    background: var(--green) !important; color: #000 !important;
+  }
+  .admin-panel { padding: 1.2rem 1rem; }
+  .form-row { flex-direction: column; }
+  .player.expanded .player-art { width: 200px; height: 200px; }
+  .settings-panel { right: 0.6rem; left: 0.6rem; width: auto; }
+}
+
+.hero-credit {
+  margin-top: 1rem; font-size: 0.78rem; font-weight: 600;
+  color: var(--text-dim); letter-spacing: 0.04em;
+}
+.site-footer .credit {
+  margin-top: 0.75rem; font-size: 0.8rem; font-weight: 600;
+  color: var(--text-muted); letter-spacing: 0.03em;
+}
+
+@keyframes neonPulse {
+  0%, 100% { box-shadow: 0 0 16px var(--green-glow), 0 0 32px rgba(0,240,255,0.15); }
+  50% { box-shadow: 0 0 28px var(--green-glow), 0 0 48px var(--accent-glow); }
+}
+.brand-mark { animation: neonPulse 3s ease-in-out infinite; }
+.track-row.playing {
+  box-shadow: inset 3px 0 0 var(--green), inset 0 0 24px rgba(196,77,255,0.06);
+}
+.player {
+  border-top: 1px solid rgba(196,77,255,0.2) !important;
+  box-shadow: 0 -8px 40px rgba(80,0,120,0.35), 0 -1px 0 rgba(0,240,255,0.1) !important;
+}
+.player-controls button.primary:hover {
+  box-shadow: 0 0 20px var(--green-glow);
+}
+
+
+
+
+
+.sort-row label { font-size: 0.75rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+.sort-row select {
+  background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text);
+  padding: 0.45rem 0.75rem; border-radius: var(--radius-pill); font-size: 0.8rem; font-weight: 600;
+  outline: none; cursor: pointer;
+}
+.sort-row select:focus { border-color: var(--green); }
+.share-btn-row {
+  display: inline-flex; gap: 0.4rem; margin-left: 0.25rem;
+}
+.icon-btn.share-on { border-color: var(--accent); color: var(--accent); }
+
+@media (max-width: 900px) {
+  
+
+.play-count {
+  display: inline-block;
+  margin-left: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  opacity: 0.95;
+}
+.play-count:empty { display: none; }
+.pc-badge {
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  vertical-align: middle;
+  color: #0a0612;
+  background: var(--green);
+  box-shadow: 0 0 12px var(--green-glow);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.track-row.playing .play-count { color: var(--green); }
+.artist-line { display: flex; align-items: center; flex-wrap: wrap; gap: 0.15rem 0.25rem; }
+
+.plays-line {
+  margin-top: 0.25rem;
+  min-height: 1.15rem;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+}
+.pc-badge {
+  display: inline-block !important;
+  margin-left: 0 !important;
+  padding: 0.18rem 0.5rem !important;
+  border-radius: 999px !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  color: #0a0612 !important;
+  background: var(--green) !important;
+  box-shadow: 0 0 10px var(--green-glow);
+  white-space: nowrap;
+}
+.track-info .title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 900px) {
+  html { font-size: 13.5px; }
+  body { padding-bottom: calc(125px + var(--safe-bottom)) !important; }
+  .topbar-inner { height: 50px !important; gap: 0.4rem !important; }
+  .brand-mark { width: 28px !important; height: 28px !important; font-size: 0.85rem !important; }
+  .brand-name { font-size: 0.85rem !important; }
+  .search-wrap input { padding: 0.42rem 0.75rem 0.42rem 2rem !important; font-size: 0.78rem !important; }
+  .settings-btn { width: 34px !important; height: 34px !important; font-size: 0.9rem !important; }
+  .main { padding: 0.65rem 0.6rem 0.9rem !important; }
+  .hero { padding: 0.85rem 0.75rem !important; margin-bottom: 0.75rem !important; border-radius: 10px !important; }
+  .hero h1 { font-size: 1.15rem !important; }
+  .hero p, .hero-credit { font-size: 0.75rem !important; }
+  .view-tabs { gap: 0.25rem !important; margin-bottom: 0.55rem !important; }
+  .view-tabs button { padding: 0.3rem 0.55rem !important; font-size: 0.68rem !important; }
+  .filters { gap: 0.25rem !important; margin-bottom: 0.65rem !important; }
+  .filters button { padding: 0.28rem 0.5rem !important; font-size: 0.65rem !important; }
+  .sort-row { margin-bottom: 0.5rem !important; }
+  .sort-row select { font-size: 0.7rem !important; padding: 0.3rem 0.5rem !important; }
+  .track-row {
+    grid-template-columns: 22px 40px 1fr auto !important;
+    padding: 0.5rem 0.55rem !important;
+    gap: 0.4rem !important;
+  }
+  .track-cover { width: 40px !important; height: 40px !important; }
+  .track-info .title { font-size: 0.82rem !important; }
+  .track-info .artist { font-size: 0.68rem !important; }
+  .pc-badge { font-size: 0.62rem !important; padding: 0.12rem 0.4rem !important; }
+  .track-actions { gap: 0.35rem !important; }
+  .track-actions button {
+    width: 42px !important; height: 42px !important;
+    min-width: 42px !important; min-height: 42px !important;
+    font-size: 0.95rem !important;
+  }
+  .track-actions button.play-btn {
+    width: 46px !important; height: 46px !important;
+    min-width: 46px !important; min-height: 46px !important;
+    font-size: 1.05rem !important;
+  }
+  .heart-btn { width: 34px !important; height: 34px !important; min-width: 34px !important; min-height: 34px !important; font-size: 1rem !important; }
+  .mobile-tools { gap: 0.3rem !important; padding: 0.35rem 0.55rem 0 !important; }
+  .mobile-tools button { padding: 0.4rem 0.4rem !important; font-size: 0.68rem !important; min-height: 36px !important; }
+  .player {
+    min-height: auto !important;
+    padding: 0.4rem 0.5rem !important;
+    padding-bottom: calc(0.4rem + var(--safe-bottom)) !important;
+  }
+  .player-art { width: 36px !important; height: 36px !important; }
+  .player-meta .p-title { font-size: 0.78rem !important; }
+  .player-meta .p-artist { font-size: 0.65rem !important; }
+  .player-controls button { width: 34px !important; height: 34px !important; min-width: 34px !important; min-height: 34px !important; }
+  .player-controls button.primary { width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; }
+  .player-right .icon-btn, .player-right #muteBtn {
+    width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; font-size: 0.8rem !important;
+  }
+  .topbar-meta { display: flex !important; font-size: 0.65rem !important; }
+  .queue-panel { z-index: 280 !important; bottom: calc(110px + var(--safe-bottom)) !important; }
+  .admin-panel { padding: 0.7rem !important; margin-top: 1rem !important; }
+  .site-footer { font-size: 0.7rem !important; margin-top: 1.2rem !important; padding: 0.75rem !important; }
+}
+
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark">U</div>
+      <div class="brand-name">Unreleased<span>Sweden</span></div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="searchInput" placeholder="Sök..." autocomplete="off">
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-meta"><strong id="trackCount">0</strong> spår · <strong id="artistCount">0</strong> artister</div>
+      <button class="settings-btn" id="settingsBtn" title="Inställningar">⚙</button>
+    </div>
+  </div>
+</header>
+
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-header">
+    <h3>Inställningar</h3>
+    <button id="closeSettingsBtn">✕</button>
+  </div>
+  <div class="settings-body">
+    <div class="settings-section">
+      <h4>Tema</h4>
+      <div class="theme-toggle">
+        <button type="button" id="themeDarkBtn" class="active">Mörkt</button>
+        <button type="button" id="themeLightBtn">Ljust</button>
+      </div>
+    </div>
+    <div class="settings-section">
+      <h4>Uppspelningshastighet</h4>
+      <div class="chip-row" id="rateRow">
+        <button type="button" data-rate="0.75">0.75×</button>
+        <button type="button" data-rate="1" class="active">1×</button>
+        <button type="button" data-rate="1.25">1.25×</button>
+        <button type="button" data-rate="1.5">1.5×</button>
+      </div>
+    </div>
+    <div class="settings-section">
+      <h4>Sleep timer</h4>
+      <div class="chip-row" id="sleepRow">
+        <button type="button" data-sleep="0" class="active">Av</button>
+        <button type="button" data-sleep="15">15 min</button>
+        <button type="button" data-sleep="30">30 min</button>
+        <button type="button" data-sleep="45">45 min</button>
+        <button type="button" data-sleep="60">60 min</button>
+      </div>
+      <div class="settings-hint">Pausar efter vald tid.</div>
+    </div>
+    <div class="settings-section">
+      <h4>Kortkommandon</h4>
+      <div class="settings-hint">Mellanslag play/paus · pilar byter låt · M mute · L gilla</div>
+    </div>
+    <div class="settings-section">
+      <h4>Shuffle</h4>
+      <div class="settings-hint">Blandar listan och försöker inte köra samma artist rakt efter varandra.</div>
+    </div>
+    <div class="settings-section">
+      <h4>Om</h4>
+      <div class="settings-hint">av chatru</div>
+    </div>
+  </div>
+</div>
+
+<div class="mobile-tools" id="mobileTools">
+  <button type="button" id="mobileQueueBtn" title="Kö">☰ Kö</button>
+  <button type="button" id="mobileCastBtn" title="Cast">📡 Cast</button>
+  <button type="button" id="mobileSettingsBtn" title="Inställningar">⚙ Inställningar</button>
+  <button type="button" id="mobileLikedBtn" title="Gillade">♥ Gillade</button>
+  <button type="button" id="mobileShareBtn" title="Dela">↗ Dela</button>
+</div>
+<main class="main">
+  <section class="hero">
+    <div class="hero-label">Fan-arkiv</div>
+    <h1>Osläppta låtar av svenska rap artister</h1>
+    <p>Osläppta spår från den svenska rap scenen.</p>
+    <p class="hero-credit">Skapad Av Chatru o</p>
+  </section>
+
+  <div class="view-tabs" id="viewTabs">
+    <button class="active" data-view="all">Alla</button>
+    <button data-view="liked">♥ Gillade</button>
+    <button data-view="recent">Nyligen spelade</button>
+  </div>
+
+  <div class="section-label" id="filterLabel">Filter</div>
+  <div class="filters" id="filterContainer">
+    <button class="active" data-filter="all">Alla</button>
+    <button data-filter="Einár">Einár</button>
+    <button data-filter="23">23</button>
+    <button data-filter="5iftyy">5iftyy</button>
+    <button data-filter="Yasin">Yasin</button>
+    <button data-filter="Dree Low">Dree Low</button>
+    <button data-filter="Greekazo">Greekazo</button>
+    <button data-filter="Hamko">Hamko</button>
+    <button data-filter="Haval">Haval</button>
+    <button data-filter="Adaam">Adaam</button>
+    <button data-filter="Lelo">Lelo</button>
+    <button data-filter="Moewgli">Moewgli</button>
+    <button data-filter="1.Cuz">1.Cuz</button>
+    <button data-filter="Owen">Owen</button>
+    <button data-filter="Thrife">Thrife</button>
+    <button data-filter="K27">K27</button>
+  </div>
+
+  <div class="sort-row">
+    <label for="sortSelect">Sortera</label>
+    <select id="sortSelect">
+      <option value="default">Standard</option>
+      <option value="popular">Mest spelade (lyssningar)</option>
+      <option value="title">Titel A–Ö</option>
+      <option value="artist">Artist A–Ö</option>
+      <option value="year-new">År (nyast)</option>
+      <option value="year-old">År (äldst)</option>
+    </select>
+  </div>
+  <div id="messageContainer"></div>
+  <div class="track-list" id="trackGrid"></div>
+
+  <div class="admin-panel">
+    <h3><span>＋</span> Lägg till låt</h3>
+    <div class="form-row">
+      <input type="text" id="newArtist" placeholder="Artist">
+      <input type="text" id="newTitle" placeholder="Låttitel">
+      <input type="text" id="newYear" placeholder="År">
+      <input type="text" id="newUrl" placeholder="MP3-URL">
+      <button class="btn-add" id="addTrackBtn">Lägg till</button>
+    </div>
+    <p class="admin-hint">Klistra in en MP3-länk om du har en.</p>
+  </div>
+
+  <footer class="site-footer">
+    <p><strong>UnreleasedSweden</strong></p>
+    <p>Ej kopplat till artister eller labels. Bara ett fan-projekt.</p>
+    <p class="credit">av chatru</p>
+  </footer>
+</main>
+
+<div class="sleep-banner" id="sleepBanner">Sleep timer aktiv</div>
+
+<div class="queue-panel" id="queuePanel">
+  <div class="queue-header">
+    <h3>Kö <span id="queueCount" style="color:var(--text-dim);font-weight:500"></span></h3>
+    <div style="display:flex;gap:1rem">
+      <button id="clearQueueBtn">Rensa</button>
+      <button id="closeQueueBtn">Stäng</button>
+    </div>
+  </div>
+  <div class="queue-list" id="queueList"></div>
+</div>
+
+<div class="cast-panel" id="castPanel">
+  <div class="cast-header">
+    <h3>Högtalare & Cast</h3>
+    <button id="closeCastBtn">✕</button>
+  </div>
+  <div class="cast-body">
+    <div class="cast-section">
+      <h4>Tillgängliga utgångar</h4>
+      <div id="castDeviceList"><div class="cast-hint">Laddar enheter…</div></div>
+    </div>
+    <div class="cast-section">
+      <h4>Wi-Fi-högtalare</h4>
+      <div class="cast-hint"><strong>AirPlay:</strong> Kontrollcenter → välj högtalare</div>
+      <div class="cast-hint" style="margin-top:.6rem"><strong>Android/Windows:</strong> byt ljudutgång i systemet</div>
+    </div>
+  </div>
+</div>
+
+<div class="player" id="player">
+  <div class="player-left">
+    <div class="player-art" id="playerArt">♪</div>
+    <div class="player-meta">
+      <div class="p-title" id="playerTitle">Ingen låt vald</div>
+      <div class="p-artist" id="playerArtist">—</div>
+    </div>
+    <button class="heart-btn" id="playerHeart" title="Gilla" style="font-size:1.2rem">♡</button>
+  </div>
+  <div class="player-center">
+    <div class="player-controls">
+      <button id="shuffleBtn" class="icon-btn" title="Shuffle">🔀</button>
+      <button id="prevBtn" title="Föregående">⏮</button>
+      <button id="playPauseBtn" class="primary" title="Play/Pause">▶</button>
+      <button id="nextBtn" title="Nästa">⏭</button>
+      <button id="repeatBtn" class="icon-btn" title="Repeat">🔁</button>
+    </div>
+    <div class="timeline">
+      <span class="time current" id="currentTime">0:00</span>
+      <input type="range" id="timeSlider" min="0" max="100" value="0" step="0.1">
+      <span class="time" id="durationTime">0:00</span>
+    </div>
+  </div>
+  <div class="player-right">
+    <span class="rate-label" id="rateLabel">1×</span>
+    <div class="volume-wrap">
+      <button id="muteBtn" title="Mute">🔊</button>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.85">
+    </div>
+    <button class="icon-btn" id="shareBtn" title="Dela låt">↗</button>
+    <button class="icon-btn" id="queueBtn" title="Kö">☰</button>
+    <button class="icon-btn" id="castBtn" title="Cast">📡</button>
+    <button class="icon-btn expand-btn" id="expandBtn" title="Expandera">⛶</button>
+  </div>
+</div>
+
+<script>
+const tracks = [
+            { artist: "Einár", title: "Trapstar", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F7zVn7yHQKn2L.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vN3pWbjd5SFFLbjJMLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDI3NzAyfX19XX0_%26Signature%3DeZBnM-TZ5MSl9hlfD4ce2roLrUDcWn86D0fTsDhu-q-Gn39VQwVN1abXXXtQY2uCcnW4uSidQ70Yzf28OIOb-TT-Vt1O7Hes0Yksod5H9aBQL5O0mTuikiC5IilA9wMCIKhc7wevKRtwvCiw8jIKVMia1hftNjnIvVM3ntlcZ2pmupCDFt5g~yusgpGUAppWHTpqayttTteKF1ZdCEHpKOWVRzLsOVu2joXHKMWRgOUsSHT86dYc0zUp-DHAFyHLy0B-36QJc2mWg1PDthU4PqxfBnmZhOKghk0993FwhVEpJJDxJONq47bMX-tC9ffkbstT8wvZMWcNHfqgtBj7Yg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ghetto%20HSS%20-%20Einar%20-%20Trapstar%20(Osl%C3%A4ppt).mp3", cover: "https://i1.sndcdn.com/artworks-000597851714-6u4nc2-t500x500.jpg" },
+            { artist: "Einár", title: "Tugga", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FR3zcE1eVjlCB.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vUjN6Y0UxZVZqbENCLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDI3NzEzfX19XX0_%26Signature%3DC0YZ-MD1dUJBzDNaUCNgTrjkcKWMtIkRhsOYgyBZJcBjrdcDFklVLuMtzbX6LRRIVKDWV8naAH8ga~y32EoCJc82fRCrY-PiylDDPMJMhk59HyJZjt7D~ZVBzg24H77ugz9AeQaYDv2wrfK63TqZAtlODgcySFdgtQe~GffO4wU46BGythv-2o0u4C9e6qjv353iw~zauPPv7X7hihQRgwu~QVQHcMXI6rnGYsJBBtS8TAAuYLErrqckX3PE22ocx00-IaYIcmZgVmQ5x7Cy3frgoUsIHAjQDHzdH--uPGAYTVmgoB2qUEJbAUQyrqKp85hE2T~OcHVk~apDAjpKsw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ghetto%20HSS%20-%20Einar%20-%20Tugga%20(Osl%C3%A4ppt).mp3", cover: "https://i1.sndcdn.com/artworks-QiyNMBhEq4RsIoV5-cEQxzw-t500x500.jpg" },
+            { artist: "Yasin x Dree Low x Einár", title: "Go Kart", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FlcBoCvqwFOSI.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vbGNCb0N2cXdGT1NJLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDI3Nzk3fX19XX0_%26Signature%3DQnJ1QkaFtJ4cY8bC5FahOw0ApMAhKglukSr2c282Atx5OmyldIwaJwpoWnrmXk6KlkSEIz5XlQ9o70wxSzr6E34GjZQIltVlGJa9ag05JOBvcJK2HX5G8bycomo1GBhxuQXu1KWOyYCjC8h7ysvGOqV2DP7QI6yZwEey6EaI5DkY0rqRt090dfYB0YUC~ql~1eIb5GejsRDQcEhewIYhd1R6fDNuI81uXCLlY7uLkYlaut6PmqLdi5BqVHArcgkiqYpSCVYZwWaOPqRgembvfqlA3R5-oYWpkrt7AROPrPVUEEHnImThPvkbHekYSqUaa1dq62fuak2xbyfr5E2o9Q__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Talangsverige%20-%20Yasin%20X%20Dree%20Low%20X%20Eina%CC%81r%20-%20Go%20Kart%20(OFFICIAL%20OSLA%CC%88PPT).mp3", cover: "https://i1.sndcdn.com/artworks-s3YJUIYYc0IeyGpz-AhJnOw-t500x500.jpg" },
+            { artist: "Einár", title: "Sushi", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FyvUU3BTbKJz5.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20veXZVVTNCVGJLSno1LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDMxMjcxfX19XX0_%26Signature%3DKJL~kgJnbcQDsnzY3WKX-v8-eKH3KeEtMwerngIAlymk4l97lcg1sq49JtIqj94BKy0HvRKG5Hh3FDCwUAAvUqiXnzf8bG7lGnOxrzjSbr~ZQLgesCWcbyvsZLzthoew6n~KHF01fhBkoazx0lHYKCWHIlHq7ikzS8kA9kn9N9gfCxAhWvyD6ziRpK9QM7qXvp4vU~w-Xnk2fRFEr0WutbijLDUC~-xUPwS-fP8pWEPAP76zXD6BF0bj53HisAqFPoXp~HRVgm4Ev0Pwuvv9RtF2WLOwMubp0lWZCo0LWpmOXcaDfhGB9asAhMGP3RNe-~rwku9MNUIYKh0ptOk2xQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Lightaaa%20-%20Ein%C3%A1r%20-%20Sushi%20(Osl%C3%A4ppt).mp3", cover: "https://i1.sndcdn.com/artworks-p1AIkqfsMt4uCz7y-3o1Bmw-t500x500.png" },
+            { artist: "Einár x Greekazo", title: "Psykopater", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FN5hF5p641nsS.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vTjVoRjVwNjQxbnNTLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDMxMzEzfX19XX0_%26Signature%3DUwHG5IQ~r2JdjkzCmMYQasMUo6xbYxH37r1SDNptt0VB77d2iYjlEb2RTP-i9Ft84pJaRSlSPOANnjkZaOm3x3L66g1azVjMLdv4OilN4UyzuVrBKzMwHqNo3tKuKplYYeAW2rIkAYlX1FRaG-JSJGX~AKha968anPcVqdZQc4mXnOuoubU-10KZfRGWWsZt1Jw21P-JkxY9~rY-dJVZafP~Wpfner8EPVKhFX8RM4VNVyq1Exz4QkwaXqWSzM4lhk5gJzoMciwQt13QOg8lePVabRJCxGtgynrsffudLnv7f4R6jEl~3ue6c6MCYW50kbI7lSBOgj04JouKK8Zb5w__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Einar%20-%20Einar%20X%20Greekazo%20-%20Psykopater%20(Official%20Osl%C3%A4ppt%20Audio)%20SJUK%20L%C3%85T!!!.mp3", cover: "https://i1.sndcdn.com/artworks-m43aRSrysQ6CZAb5-tf4iLQ-t500x500.jpg" },
+            { artist: "Einár", title: "Christian Dior", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Ft1GY6Q09qRwu.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vdDFHWTZRMDlxUnd1LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDMxNDAzfX19XX0_%26Signature%3DDKtjTIhFqMyc9UCaCJc4v3Y6SiiFYlowdDEho6AryZhhBCIL3I1Yr~34ND7Lb4qXYVMRLNfywq8NueVkoi3nSL9zRQGfmvLn43GisJFyeFdV6fLXf-w1TTdFY~AIVb3gomX5rpnCJH6WJqDmX6ysxzDqHF67yuULs6aWOIkRAzjz2XwSaSKhbOF7ZJ-XsSScB31rlxHlNl6ImCE8as-Qo6hH7V33nv6OPk~lKajD0SL76xdz8OKMIKInvhXQTeQXHfHfIAK0kLXSQ9ICiBbB~opS34n2riKK4~VIILIliZsYhN7uKZzJZDTt0VUbsv~Xr3NIZWD27YGqwt0qud2rdA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ns1Einar%20-%20Christian%20Dior-Einar%20(osl%C3%A4ppt).mp3", cover: "https://i1.sndcdn.com/artworks-9W2v1E2Z8PUvujvZ-WuzbRg-t500x500.jpg" },
+            { artist: "Einár x Hamko", title: "Stars", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F5X8SI17jkCWI.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vNVg4U0kxN2prQ1dJLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDMxNDEyfX19XX0_%26Signature%3DUV8Rm~X~GARsBF9dkXGr7F76PFUEjSHmaZtc4Rtjlnbw1YnMzmSxv5ON-38KXKhZfAA6f3fZG104WXLVhRkNuPGKp1D2ax0QNFKIS7FWXucFm9vt5CFV4Onw6Mj5EkQHZYJqgMSiVBCZwyi1MsMAL7ICMOwnTHdw2V-SufThmqRRtuCsAn5L-xffvKdDYUwNaaWzzMkNRaOGvrpZDG7zp-ryDkscnDN7~oo~McXe3fsYDXpv-0ekkNmUjTZM9yhotAT92h3ugFRc~0GSiZcHd8rcaIKYMJSWz73JifjKWQ8OATwJF22PTdWgNAZWLVvt0wk7vPUjzMWxtpVS7rTgZg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=x3pasasa%20-%20Ein%C3%A1r%20X%20Hamko%20-%20Stars%20(Jag%20Och%20Nisse%20Du%20Vet%20Vi%20E%20Stars)%20-(OSL%C3%84PPT).mp3", cover: "https://i1.sndcdn.com/artworks-dKALvicjpLxlYIPy-HIGfqA-t500x500.jpg" },
+            { artist: "Yasin x Haval", title: "Häktad", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FD50h7hO3fCqW.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vRDUwaDdoTzNmQ3FXLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDgzNTg4fX19XX0_%26Signature%3DKkScxN6wmQer-ms8XNTVkZmWIJ6zhk93O5XXyI4P8iJwlX8Zeriual1W8iDtKBp1lhBg-Lwi4TS5-DS2yqJzV49Tj~EOdxjYe2axlydO25ZAsg7A0zgcBzE0tvj2LTJi1Xd5LE9FjVRGV9xw49SXTlgfGaIJN8gzqnlhiKugdTDndwYgLlIdh7-swVVNuf6JJzBjKa9sfvAiQ2jdICA5BcZx4gba1Y4c6TGsBrgpebyji9BR~XQ-Xg9kQ~fJTSj9spfLkjTCbqFfWzR0GwGVUQ8dVNwqtCzT3n~ljq49szlGWE05pplt7Idio41N4rAymRcfr5Rxf7DstpCHlcNnZw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Eric%20Anderson%20-%20YASIN%20X%20HAVAL%20-%20HA%CC%88KTAD.mp3", cover: "https://i1.sndcdn.com/avatars-NeHskFHuiqLGpEmo-r6SaPA-t500x500.jpg" },
+            { artist: "Thrife x Rami x 2.Clock", title: "Welcome To The Party", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Fr95W7wIANM6v.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vcjk1Vzd3SUFOTTZ2LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDgzNzI3fX19XX0_%26Signature%3DDexyaiP0Mgb~Jvu6z08H6dU~G9FJKbfaliRxmbeIdlYUGXVUwb5glWn~TGiPMsdJIv812TJiAKP8vdrHG9iZpnmlMLwP-e0Kn7OAhaxRJRQTVL3hivDvnPobVITUsXeuPz7IldDndma~QtyJ42SZjctp4tiMswfRXbCy4JtMdanQmwwVW5qn6wYyljx07rkx0YBaCbsWdKdG57g8z9Fy62mh0W0A9XttHZ6Qn3xMz5JMRMB9ZhyFOZPhb9A5c-3BG7FW~SKIgYQMZJhaxm5H9PKIYUPgxChoRnYkqNjRGncomxdwi5QOq01RG3KCD-fZg4Mp2nb-kyTQqrOfcOm7Pg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Osl%C3%A4ppta%20-%20THRIFE%20X%20RAMI%20X%202.CLOCK%20-%20Welcome%20To%20The%20Party%20(OSL%C3%84PPT).mp3", cover: "https://i1.sndcdn.com/artworks-8QMxBgNAHRUcr8XF-BiIEJw-t500x500.jpg" },
+            { artist: "Dree Low x Adaam", title: "Skaka", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FW8q20W3u7aN9.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vVzhxMjBXM3U3YU45LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDgzNzE5fX19XX0_%26Signature%3DXsyuz1-k0Ab5ownyfnGXTgVCuYT-Ae2ctm4bmkaNBtgfbuKTpkePr3gpuVi09OMP43zTr0WFUBCHIYvAKPDUh24F2PshtAu2t4GSEg8zEjQe-iiCs5-lNnWigwsL-dS4TkR~dI3gmLE1HEkMQXfrCDPGzTK8QP9CQ2jWo4d3~tnvIZfXLKbubF1lLNXE35~IRkv09uo-NHiH8OgE5YofGhssD1KAOHDVIptWrYWNzqp8rqi4cEfV8-sJNQscZbXOLLKpJHO8JkeFJEy-sEGQUwgtp~VEA~kz1GDaTOs~P2ng7dWB62AOeffjAfpwZsk6rju7m4f7KZgt~ZLFCSY4hQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Osl%C3%A4ppta%20%26%20Annat%20-%20Dree%20Low%20X%20Adaam%20-%20Skaka%20(Osl%C3%A4ppt).mp3", cover: "https://i1.sndcdn.com/artworks-eDeP3jpXc9O27xqm-yIx2Ig-t500x500.jpg" },
+            { artist: "Einár x Dree Low", title: "Madi Banja", year: "2021", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FaEKd0n432dwX.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vYUVLZDBuNDMyZHdYLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDgzNzgwfX19XX0_%26Signature%3DIMKWIeaCt0~nLktcm3DOROnsygmCnFfzBCwE0BkZfg7fWMrPhSwsNBLEcsZuqsk92p4wwMw1EgxP3Mn2IRgpQrer2BBFvmlzU7-t7c3bNus-hYpfCgtPYE0pXMXjB8D1y0Ufezw-xtYf~JRQ-1jxwTdaHObH~UqJwAf~UN8Uf9GLpBrOq3VLJuhhStxUeBP40LJdC3mE6sdYwXyJ6xgKd1s4t3Ps1hKM18rdAG52H1YVP8dC8AnQ4x~oxl6MHVY3xftYgHWUK751cwSU4Vlfi-s2Y10YRZz8Ij6WOy-bPghhao3gh03nefT9HvbK6ecHlAak3Lf~IiafC9MadSx1eA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=osl%C3%A4ppta%202021%20-%20Einar%20Dree%20Low%20-%20Madi%20Banja%20(studio%20kvalite).mp3", cover: "https://i1.sndcdn.com/artworks-alobgWFi7dQMyPGF-jqEFhQ-t500x500.jpg" },
+            { artist: "Einár x Hamko", title: "Foundation", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F7xBJJS6ewKxv.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vN3hCSkpTNmV3S3h2LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDgzODE5fX19XX0_%26Signature%3DLQLzecPMRRPYtWP5MOvyIFH6bO8~s-1VYev2x8EHgENIZH-4Z7Ogp6IeWc992HBxwfRuDi7NNjxdZCIXtsCq7eP8yvzBCzGWo3HnAL5Ivaw2dRpJqgeccyCdavNqonUgNnPMze9XubnpeNTD65QGaKIGlCuEvX-j3sFcy6opjSEgGJLyBOO9b7CkOf2rArRqPnAy-dmWc3O87D1yLjZ0ZgPWJI4alvWbXEXnkXWKOpRmzHfrC12CUYKJ6442PI3LgdANKyybYnb9WhUGAR8TrrdOIdDzxfaVDu1gPNS6XgY0SMNPgO37uHYAK-NlnsOQ0SGULlCaHqiofMcb~LSIyw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Henke%20Fakking%20King%20-%20Ein%C3%A1r%20X%20Hamko%20-%20Foundation%20%7BOsl%C3%A4ppt).mp3", cover: "https://i1.sndcdn.com/artworks-9yXkGTR69cXC7rUN-PIc1DQ-t500x500.jpg" },
+            { artist: "Einár x Lelo", title: "Annan Gång", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FciBHLsGR1U4y.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vY2lCSExzR1IxVTR5LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDg0MDY4fX19XX0_%26Signature%3DL~dN6OXwMzWQOezVvjQpvaf8xKJ~USJCdl4Iknr8QLaBH4v9abIluNKSWkhJn0S7inY70zlKn-AZySddCS3VU77r2StrFl1N6XSSvdhJuL4YnBb8EFz-PXCLyQuipPX3qS0fZrQrIkwV7DNyatO-j6ZiI-lPdSSC5ZjTXrSiY57rSMa-plf3OdHH~vYlkhuY-Vf6tGlNlH2qX00gBJz~7ZyiJmpFwN9DTq8rjt1i8bq2~sh7vfDUuVRQtSGN1hh~BhbTfwTF6QfMZ8Kc9cOOuVxfGdroz5V95lTH~fDgY6TNXq0xfOLZ1NT4Apn5IARQB6kNusc2KR05DaI4HLGkoA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=%E2%9C%AF%20-%20Ein%C3%A1r%20x%20Lelo%20-%20Annan%20G%C3%A5ng%20(B%C3%A4st%20Kvalit%C3%A9)%20(Hela%20Osl%C3%A4ppt).mp3", cover: "https://i1.sndcdn.com/artworks-2O639dcpT3vfCEJV-BZNHKg-t500x500.jpg" },
+            { artist: "Dree Low x Einár", title: "SSM LS", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F0iXEmGONUQP8.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vMGlYRW1HT05VUVA4LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDg0MTk0fX19XX0_%26Signature%3DIqF3ZYm5oPvqdJ8bHRYzud02Wn8uCCqhTenxapJQr~toTcPD6Fy31zN7fxTRsnDG2JEYUngq~tQcCFhAhZ5PfhpdB2gVVXOyQt7y2Apqlfh0pOjb3ydSy9RBeMhz3D9w6hBeyOaKnE58FXLKfrxJz3kh1F9m6T2moZh-841mJ0yF9KX3zcAaA6vx~~kjYBHklH6z4tzwImdj7GHJ~poPff52-V7N8YLVaKybGrdBWlTijlvZSanpkZ8QCjgfsI2Skddw9rXNjCLQo7bG0RHqQJGpKaomeTAejmt4PyjBYNAXbrDcRT~Iky6zbQdFk3cRio5gDdKolbOo4n~3J8NEnw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Einar%20-%20Dree%20Low%20x%20Einar%20-%20SSM%20LS.mp3\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" },\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n            { artist: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"Einár, 5iftyy, Moewgli\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\", title: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"Pop Smoke 2 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\", year: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"2025\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\", url: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FVxRMnZ5OkHCY.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vVnhSTW5aNU9rSENZLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDg0MjA1fX19XX0_%26Signature%3DORo8f8vunm10~Y1AlBa70~0Tkey1PP8iofAo25FdR22ntOYB1rQHV3MkOVxoU1hH4175Rzr4jC~6vkAKrt4cx66EMFS69t54HnRv4fzEL2Mo7PrNUoJOpUnAynVfxC34UBVJBaiBnYzunpgEBDvnNW7yAAtlP4t7SmmOUxcDqzZyCk5EgvD3hk74jHmSbo1O-tzXUaMyPJLeTYh1oBBN9ie60dNL~t51MUahkfRtH7RNek5dkI-MZrbPiriQ7-ld~vJd8eVE78g30bqNZbBmMeXtmEY670fxJVcL2IqJ4o~aTMsonP5AD08exOnaICTX9T4WfEazufmgF9SuRor4rw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=VictorReiner%20-%20Ein%C3%A1r%2C%205iftyy%2C%20Moewgli%20-%20Pop%20Smoke%202.mp3", cover: "https://i1.sndcdn.com/artworks-j61i5Ia4f8cGITVO-FsXB7A-t500x500.jpg" },
+            { artist: "Einár, 23, 5iftyy", title: "Tragic", year: "2021", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FVmUYswacZOZs.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vVm1VWXN3YWNaT1pzLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDkzNjA3fX19XX0_%26Signature%3DXcUGM4zEGXAf6m-VekqhPp8KvmhnyCxx92SHlq5GhsN9fIdvWitNOr4Cp-hT4S0a6tRVvmWKSHxasroNORZQpIdKtGgGM-8RnVASq01apdW68vT2GWkyT~74ZjQ1q-eJkFICwgfKXGl2SSb1bbzVrTjMGqu8HbWBYOVdaZvKR9pfTgkn6dhYA53YCMiz6KCQqPEf4Botz7iEwH9~sbGuInYyv6ZN1-csPifzVBMyrGT4hJFaQ8KTzvl4clxW0nbH8cExyVEzWmA6zxhBmUHxVnWl9YrZjyYcXLd-VSIYPfXTxgka~RRai4H2FniDASTCpbX-eEXRP6V6Tbsy0jdB8w__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=VictorReiner%20-%20Ein%C3%A1r%2C%2023%2C%205iftyy%20-%20Tragic%20(osl%C3%A4ppt%202021).mp3", cover: "https://i1.sndcdn.com/artworks-lFRlOuJrec6CBnVl-oega5g-t500x500.jpg" },
+            { artist: "Dree Low x Einár", title: "Dag Hammarskjöld", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FqW1zIJAU64uF.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vcVcxeklKQVU2NHVGLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjAxNTM3fX19XX0_%26Signature%3DAmPPlxwEqOEjP~g-~9wJmSgU-7aViIfyX61DU6NUsbuZfWcakRIB3ue6iU~2NPtFtUQZAjk0viYLhqsgXCn-jeb6k5BGuF3asXDkoTcj0I8A0VMHGtl6TgCOV6rhAaBis9ajEquhMv1XCRJJnOmrDg6FVJyRzB3Tiy8dfRuCI09oO0rugWux5uAqKwwYVZN30QzK~vDRcanKLXyBcPEVSaSEGJsozKwqHDevFdQviE~vBSJLAJfLesGu~Mr08c7OhS8d0KTohn3O1saLNj18GeSvQX6Mt7GxaipMyJTtaaOsXxE70HnUd4a~g6cz~Rs7UY6Vhjgsz~PYkvRAmsKeCQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ghetto%20Music%20TV%20-%20DREE%20LOW%20x%20EINAR%20-%20DAG%20HAMMARSKJ%C3%96LD%20-.mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/DREE+LOW+x+EINAR+%22+DAG+HAMMARSKJ%C3%96LD+%22+-+-artwork.jpg" },
+            { artist: "Rvzeli x Einár ft. Ahdam", title: "Ung Rik", year: "2020", url: "https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Rvzeli%20Ein%C3%A1r%20-%20Ung%20Rik%20Feat%20Ahdam%20studio%20Versionhq%20-%20Rvzeli%20Ahdam%20studio%20Version.mp3", cover: "https://i1.sndcdn.com/artworks-fhfGgsT0hqrtJpwG-61j3RA-t500x500.jpg" },
+            { artist: "Sebastian Stakset ft. Einár", title: "Be För Mig", year: "2020", url: "https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Sebastian%20Stakset%20-%20Be%20F%C3%B6r%20Mig%20Feat%20Ein%C3%A1r%20-%20Ghetto%20Music%20Tv%20Ein%C3%A1r.mp3", cover: "https://i1.sndcdn.com/artworks-R0D1wPUJ3eGaIycX-FXQWeA-t500x500.jpg" },
+            { artist: "Einár x Owen x Thrife", title: "Stress", year: "2020", url: "https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Ein%C3%A1r%20X%20Owen%20X%20Thrife%20-%20Stress%20studioljud%20-%20Top%20Guyz%20Records.mp3", cover: "https://i1.sndcdn.com/artworks-R0D1wPUJ3eGaIycX-FXQWeA-t500x500.jpg" },
+            { artist: "Einár", title: "Sös", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FOzT5hyFwpEkb.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vT3pUNWh5RndwRWtiLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NTk5MjkzfX19XX0_%26Signature%3DAGb3Di4ojEULWoaTFcrqkuS9l1hjQ9iJfVC8vmOOw9AM2t6Td3s4DiAFXI1doqHWd71Y5y523UUPuW6Q41PpYEaFifRmhBPtPUzds94yF3R1W2eG0HPTQmGlg5Ww46yZALuEYP57l1pWVbtrezXP50BxbhgaTFVscKbeWm0Dq5OlY4Z9KTScV6RDjmY8CxLbb~GeS1x5-FhZEy08nXeP-4i8bvbAhVjMGn0j4F5V6tkCxvwc5cuT6GqJIpqDDSboueX8ktasjzYQX6f7kJzLK3ob5ERdBE3gVDIDUQeT7F7dttH4Gyv1pstm50izJRk0126l88bpcweRgLMSGwLcAQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ein%C3%A1r%20Osl%C3%A4ppta%20l%C3%A5tar%20-%20Ein%C3%A1r%20-%20S%C3%B6s%20(S%C3%96S).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Ein%C3%A1r+-+S%C3%B6s+%28S%C3%96S%29+-+-artwork.jpg" },
+            { artist: "Einár x Ricky Rich", title: "Louis Vuitton", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Flb0IQxvfb3re.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vbGIwSVF4dmZiM3JlLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NTk5NTI0fX19XX0_%26Signature%3DE74IYtH~3MAwqCClzmDQQnj9k4xDyjdukaWRJkvSlkKj3Ku5kEB9VQ4Z60lihoPUGOyGrrwzltbUICuFipJIn6p~8HKuPlHlhg3P1Iqkbr1rTLnFFRW6jrypatHFoaBAIbehISzFEGCf~ciIPqIbmkbFSbDRxA8ieDZ3ez5xLRHk5A7hUmWZpRXUDWUhNSOnthjTYwK3OyqOZCV~75klgFILNaLpeAx3QTjw5cVgf1plO7qgW9QrIFBp7dyU46H3Xp2s29t04Cnt8UBV70sWFsMBhZVCBnb5F4bS5Q1tl~TaqshpqCe4fkee149GaricOJANaGiBBlynbQykY3cJCQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Br%C3%A4nnstr%C3%B6m%20%F0%9F%95%8A%F0%9F%95%8A%F0%9F%95%8A21-10-2021%F0%9F%95%8A%F0%9F%95%8A%F0%9F%95%8A%20-%20Ein%C3%A1r%20X%20Ricky%20Rich%20-%20Louis%20Vuitton%20(osl%C3%A4ppt).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Ein%C3%A1r+X+Ricky+Rich+-+Louis+Vuitton+%28osl%C3%A4ppt%29+-+-artwork.jpg" },
+            { artist: "Einár", title: "Gangster", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FNRm37wmVefyW.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vTlJtMzd3bVZlZnlXLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NTk5ODAzfX19XX0_%26Signature%3DCBCnRCEGwRB-FR3trCW9Kyco8uLmTUzl2CMpCkTfaziW35S2DNWLG4b3NixsjXbYoix6SX0YxlTELjAZO-vfHzXa0X9CSX3ERGW8BSdVzfhaRM14Bi~h-OH5xYgUo3vz7d1ulbzk43FCmwUOkhHHbPnc1LMjKQNelY8PP2dq-SmK2PrM52wOVXfZlAY1riKknNg~I5gt1JZbkAVcwCK94O~2DMmO4~LvTsbAKHmFM9byBPV4oa~Jehsirednw~roBDuO6cR9p-0JXrkuMMN8Li99NuQ4IJFrQgUt1-ozxBss2L~OoriiwkVGas3c6Is0C8SPhp7jiq1vcuqu4Bk0uQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=SvenskaOsl%C3%A4ppta%20-%20Ein%C3%A1r%20-%20Gangster%20(Studio)%20(Osl%C3%A4ppt).mp3", cover: "https://i1.sndcdn.com/artworks-kuWjkZPHnxOHFzwY-az54qw-t1080x1080.jpg" },
+            { artist: "Sticky x MQ x 1.Cuz", title: "Balmain", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FFkCpxBCHNaVG.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vRmtDcHhCQ0hOYVZHLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjcwMTk1fX19XX0_%26Signature%3DIBhIlwytkksN-F~dGhnfKRXWv7GtPAAEynOQjzZc0xehTg~S3V1cPpJEVOl7dLpJ3U790PAUDNFRANYJ8gPNgPuRquZmL3WtdM4reylvFEuL78wD5coYHwGUM-mRkorHv~vzsaIVPPrgfirV8Xij5xY6NzhnmIOr8h-n9Fiymwe9xhJQLTb23Rg6edlo9POcsmrFIotzm1BdIKSK7ZubokrkhKYes~-eCKy0bWTCsLmlq1O-F97SrpwpMp9CvU0xV3KZxSqTBdxPUpda4b3jJhajMwu~zmLldaVxrScNCUgUecMFPYP4Hi1svL4hl93Y9rBDLOUNUYSRJJ3czNORXQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=NNSPlugz%20-%20Sticky%20X%20MQ%20X%201.Cuz%20-%20Balmain%20(osl%C3%A4ppt).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Sticky+X+MQ+X+1.Cuz+-+Balmain+%28osl%C3%A4ppt%29+-+-artwork.jpg" },
+            { artist: "1.Cuz", title: "Final", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Fz9iBhu1O4leU.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vejlpQmh1MU80bGVVLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjcwMDM5fX19XX0_%26Signature%3DBBrIyb0k-YRWJHCnk34M-mTIRo7YWu5~OqqNBdmzEUxNjwaRC6wQqAfoaXuIXR-ZTNQuLZD4pnfw1adNf1C81n~MTvNZrsdye3h~lV7n9pIPEb6pSbGqTCO7ZO3GQK20reBQO5JqvpgXMsXBTqS3RJKzYwEdO48~9r6W5hLIXz2Q9rDzxd6zOe0EyBIHikQ4X3gdkMVGraT94bdXWVfnLXq5vF9opmE95RYD45sYuZe9UuOCl~ElKArQnktRr8NYleMwJamH9aorhym8EyjBqrxsN1SFi-oGJgrC1~nYP0og8gMlVNLelW0OdtYX7VE2ER18CnOcqZB3gDSv-L9Mrg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=XxWarrior_King%20-%201.Cuz%20-%20Final%20(OSL%C3%84PPT).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/1.Cuz+-+Final+%28OSL%C3%84PPT%29+-+-artwork.jpg" },
+            { artist: "Saretti x 1.Cuz", title: "Melanin", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FvBzwmeGBpoG8.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vdkJ6d21lR0Jwb0c4LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjcwMzcxfX19XX0_%26Signature%3DJKk5K69ZLZNVfchJMADWmryva9pv2Mz544AWGgXZ5AhdHbWR8Blv8euV88laXQROV3XwAG3W2QWELTGWvAkmfnagIUgcml45GDnFbZ4O3Bt1N399TLdy3yg8W~vuEUJSg6pIr2rzmF-StDppIB1C4Fq0AZ7w68Gqoz0SQwyiYD3uZOVgNqcoyS2tLdmbWonvPiRQ3xxhAetkQ546k4bLhpGoRuVfHPVn9h8ogTGRVBl-TtJwxaE9iiE8LX0K1kQfl5~X40s9hTaCVkVu6d-9waslZIKRhk3l0sSkisFTMj1mx6KXSNzWCPO1J1RPv83JCrQWeIV4Pu523PTnmbv31A__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=%E2%9C%AF%20-%20Saretti%20x%201.Cuz%20-%20Melanin%20(osl%C3%A4ppt).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Saretti+x+1.Cuz+-+Melanin+%28osl%C3%A4ppt%29+-+-artwork.jpg" },
+            { artist: "Dree Low", title: "PIPPI", year: "2021", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F6hJjVPCDb1OK.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vNmhKalZQQ0RiMU9LLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjU3OTA2fX19XX0_%26Signature%3DVBdhrf85vl144-OOCk0QDyPiLzteFPAyQWC0GaoGzBPOaB-P161USEU-xKY3SNu2HeRiX9QxTTGZZZLX0qazQJ~XNoV13kkNOLTdrXxTUWC0QiX4dqd~YNK9zm5az6d-28L~9qxVJ4RrezYPHYT16QLiQYEOkXpDYI~ey9WJb2iCPEgLM8m2aghT1cmryCQlKWkvZ-fg~pceFma6P172pr2VZFmpXYu57049774R7jQBUckVv5yAdPbfB~sGlvVMEtJlqVZQJFLzLrtD-jE3ryMsBForrlne-Om~Up7InjyiB5bADP6Pod9Kg8-2vkitZlKe5oItINI5tTqctplVFw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Dree%20Low%20-%20PIPPI.mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/PIPPI+-+-artwork.jpg" },
+            { artist: "Dree Low ft. Einár, Z.E", title: "Dont Try", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FKeAoQqjkbJz7.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vS2VBb1FxamtiSno3LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjU3NzY4fX19XX0_%26Signature%3DLwJKxtSE2ZE4sIbSa920DLLIvGJi0BbpepmlYJvs~KCk~qcFfTr~g-GpgKDab3uuIFjFlqvjtkrzwDvMkfoE-ZZkUTBKbXQGpDeAvyrYjH8zbgqYUSg-yCtzqWsqQ8mmloldi3HjM01OL~WfO1M7cVy8Qwp1hhmUj8LTIk71FISwFb01O1hVg-sVwy6C9hA2vEIcNioz4ONoD5M3cZslTJZkhhqeWIunU2aBOi51Zijn4Tl1433Nf7Mbw8WgSrPAESn9flcf8n0cPLiP4yQlYgj38u7jTUkopY-EZLZr-9ZrX~dvEr~lRjqboMmX58prTLPFd-C3Nvwa3ThmfmlLxg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=suaz%20-%20Dree%20Low%20ft%20Ein%C3%A1r%20%26%20Z.E%20-%20Don%E2%80%99t%20Try%20(ej%20speedad%20version).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Dree+Low+ft+Ein%C3%A1r+%26+Z.E+-+Don%E2%80%99t+Try+%28ej+speedad+version%29+-+Dree+Low%2C+Owen-artwork.jpg" },
+            { artist: "Dree Low ft. Owen", title: "Dip Dip", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FYmWm3BFlJwSR.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vWW1XbTNCRmxKd1NSLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjU3NjY0fX19XX0_%26Signature%3Daa1mvLkc1A-qoFstdeCX-9BZZFhMKs0KmzGj0ik~nDbH2Wgs9BTcOZjFPRuU6fZRiAF2gUVuBGCl~idmZ5eLtEyDWksNbv7Fkzn-xSq6rKy0LY3aTCwzT5X3MjRY7Ps~FHLwAjUn4WFPG1E3qIHTZcJaUTbQmaabukFY0J1hXAvPPa5vUTodyKiGeKVkUkxvbfsuWQoOqnLsCklgsWb5tBEvyRKc6G02JncR~~D0bvX-C5aLL2hgPLUdv~iDo74D~DiQOT06~MZQMQYfdEy~xyX58wvkqc6NASHvEKZCYRgSaxCTIyAYUmNkmluQ9PHff2fJQ3tdOpcxT6ZvR7DZ3A__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=osl%C3%A4ppt%20-%20Dree%20Low%20Ft.%20Owen%20-%20Dip%20Dip.mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Dree+Low+Ft.+Owen+-+Dip+Dip+-+-artwork.jpg" },
+            { artist: "Einár x Dree Low", title: "Skitsnack", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FQtYmV2zDXJ2R.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vUXRZbVYyekRYSjJSLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjU3NTY1fX19XX0_%26Signature%3DCIWO1ldC-VKBh4rWsBNCStIFIUxl4pqf6ysqOhj~Dt9dMP2g~y-j7xgtwaAZJ0ceIqcjQ28hf4Kd1oFhxXsthCd7R0OQLfxgDHrjzvqGaYMnQa0kwB3JdxtSK9Hvle52biM9IR1Aljw8hNLU9~tSIAM1wfgA2NW6T4Rsze9MGU9tABg~n06tYeLK5YFYNRMk9m1bQeCGE5eLl8v~m7EN8GsGvJFnMPnZod-~LAx8ieJ32QJZkFIL0zBgxilNF~P4e9EjOKam3F3-PsUhDik1JyC3eiL6vUb79J6M00eFydFhltuUKXm4Jnc70o5dzseVgCyHgs0GzRUVjIixWJjEMA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=osl%C3%A4ppt%20-%20Einar%20X%20Dree%20Low%20-%20Skitsnack.mp3", cover: null },
+            { artist: "Einár", title: "Aina Får Alarm", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Fpe0NoBrno8AF.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vcGUwTm9Ccm5vOEFGLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjgyNDA1fX19XX0_%26Signature%3DYLTU8o7SAuDEDAPtLleDILLE~Ybyn2hfwIJVl9HMKtHSN2mi~SK62TdbuHE-LmUTFXFEYytlSYHQeMsN485v6rUVLPV2xrZQ2stVV28KV9Q4oIhq-z~UtR8PUvzuoZeEM669hM6O-yNimgsbBOtWVGZAVx7e87dXxTjJTWV3FKjEA3hiG80rftIm~ozt1sWtHfr3m829xLqwIwH6V3tc3Lu3CQDjlN2UysVuB3Zju9Oz0lVOWHU6h7AgEdfXh6NdKN-lUacM-jqYCewWe7Wb~NyeBCzEc4lwx5Yy54uELwndsqSyusGT2FkvF7BFx4foY8UQ~~GpODjIQwted-IC2g__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Borgen122%20-%20Einar%20-%20Aina%20F%C3%A5r%20Alarm%20(Osl%C3%A4ppt).mp3", cover: null },
+            { artist: "Einár", title: "Kaos", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FeDS5wOrgkHmv.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vZURTNXdPcmdrSG12LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjAwNDY1fX19XX0_%26Signature%3DTRR0Up5Ey4Ft4WppRdSqxLPY8CQGIVcXZnM5pULpGC2sETN52my9NFqZUwskImt~OqiPXxYAcm0uROTKdkIXiN2UHOoncgx1uu5yDA28MlWAbQ7uCC4q0jGgAwlpKQEZM5CwsYtlk6K69X0nXdfDxBwfmtEUaaDUD-XJCfcHmYgeASsaF826OcyCvIzm357Kl4DSCnv3kdXK6xryGFiLYUxDKwUNT~osptIkSxEg7FYAiMRUzPDfHMyrB2x5Cce0gX~VMdighDqRNOwstW8umanozkf7PhHy9001mRVIKBgUxV2~vzYBvmiczTAD0JxetRTqRQsZxWHU2mC9nSF9Lg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=z.ren%20-%20Ein%C3%A1r%20-%20Kaos%20(Osl%C3%A4ppt).mp3", cover: "https://i1.sndcdn.com/avatars-000482740527-qbxc0j-t1080x1080.jpg" },
+            { artist: "Einár", title: "Motiv", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F7zMCNfapfG7j.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vN3pNQ05mYXBmRzdqLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDgzOTY0fX19XX0_%26Signature%3DJjb6zfV~woxme-T0BIdlLiz4D9w4JbQH8jqHHBSqqJilZv2W7WuI-1x-2HSon6YjOJ9bb4xBTQglp~LTjjwE27GEkFaPD23gHdxs74ofcW5rMS6N~rdZPKnEcx8BUnR8S-IqdxBd9O2V4B9NF1Rtt0o3J-AhZW12OUgMOC9PyxS-RCsTzWlAQQGJ0lEBYH0rmRInWzKqfUY8bjUxX4EPd1gp1AJciu94fLq7EFgAc04BlBsKFnV-I0-BB3fET~Db64Zdj6tU71o9Db3Euaz6CHBMfS~5KO9960u9LG8yxYIOQgUyzUAgt4HC0xw9N7UrCYYyG5dBlD61uxWFsEDzFw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Myran%20-%20Ein%C3%A1r%20-%20Motiv%20(OSL%C3%84PPT).mp3", cover: "https://i1.sndcdn.com/artworks-8M8L284dHs6FQsQY-ABGQew-t500x500.jpg" },
+            { artist: "Einár", title: "Chernobyl", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FR5H3p2Oa9mGR.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vUjVIM3AyT2E5bUdSLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjAwMzQ5fX19XX0_%26Signature%3DV9TgLhwBnaK7y9p2WJOARZ465H2Iq4YbfzMPjrpoyEiNZFB7oBRNCCDGieg5UpTISS88os3kUvjTEgWjOhJZ5nYnmmJB~r69hkngJma9uiFIBGjOUJyKFWtS39yvgHO56rLDprqcw8KeA5iSWaM5WGju~ePIddSMJ4XJgrEznEADVt~7NaRNY6GhO2kzz9kI5OcUsNe2dtQzOZcIH8th3Efs98fnrnnfEwzoWqU552gDHR51yY71-NnyYa~VzEgWOtLLF6YfGyNIHEE038HRI9zn3FcvKIcwYzSvNiAFpBBaNMp6KPFrvP2BHjWfkEFMpAXZAB-AwQa9DKysj7W8bQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ghetto%20Emgras%F0%9F%8E%B6%20-%20Chernobyl%20-%20Einar.mp3", cover: "https://i1.sndcdn.com/artworks-KqcOMbZVlIOFKtfi-a8wTdw-t1080x1080.jpg" },
+            { artist: "Einár", title: "Intro", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F4ThtHAVDxbth.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vNFRodEhBVkR4YnRoLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjAwMzg1fX19XX0_%26Signature%3DczyPfIvkCcNbscs3UK~m-XsYyDIP99pjTOFxD-sAR3P9vBTvZ2gAwlvoHLkNHG06rnwcyLbmc2VqneH2qfvgjt8~~4~-d9byPOGyAv6jnAr4n9b0HgfZBLosiTwy5JjhJ84GZ3lQy8072OMRf2iqJ8fYNZ5vBlGSoUgiIqb0FfSkHclCTZmcDrAwdJW3PZ7weTuHYbWdHHyHQL8H5YBIRKQmEhh9UlOf1JjFa2TtG7q4J~BzCGbqu8zW4C34H7z5Lnc7wTHW4C-QRGz96FJKzloq1ki-fEAsrzICZYkjHjy7JEAjqh9fJazrGtUFKGvybdjS06gITHFZW4ndHvYEjA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=VM-2026%20-%20Ein%C3%A1r%20-%20Intro%20(osl%C3%A4ppt).mp3", cover: "https://i1.sndcdn.com/artworks-UYfwIxlXIsmAjw8X-aiePuQ-t1080x1080.jpg" },
+            { artist: "Einár", title: "Utanför", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F73fvpowd3qx6.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vNzNmdnBvd2QzcXg2LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjAwMDMwfX19XX0_%26Signature%3DU~D0hv8GxqTpg1acW60Sxv3aQIA9WaLwGdGmUFPzXxZQBOAfjcAkXjshNoUrRww-4MCJD6fM7w09HKmK43SlcGQWbzKSDBYtvXXIKuqSa1SPYXdJceO0kCKQch3DpWADsNP9gzAvAjJ5uc7D9~fDNiHgeq11zFi2x9NOICtKY-3amcXnkJjRvkqccd0JFMVN0qEWkpuIv454-KSI2fzCFShdD6yurEpxEsNGiXBf4~Dsn2f0dhCGVYgrCm1lt3TtFXd~GB6iiGsgm2u5I2v9SNcMPAKNr6AaDDYHltHlfuXLpEY~N8BnrTydkIDeH1XCOJiaV69tdQ2BDXPji1kVKA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=VM-2026%20-%20Ein%C3%A1r%20-%20Utanfo%CC%88r%20(osl%C3%A4ppt).mp3", cover: "https://i1.sndcdn.com/artworks-UYfwIxlXIsmAjw8X-aiePuQ-t1080x1080.jpg" },
+            { artist: "Einár", title: "Para", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FFtY3k4a6F75Q.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vRnRZM2s0YTZGNzVRLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjAwNTY0fX19XX0_%26Signature%3DLU~wQ3c0i~RvaJ6IOe1h2wZmin-cbz8lMbN0V-k3f4pktkgWDVITE0sFoooaQUhIUyHO-r01UFyLewfmbUQRGZ-0vYzF7ZwNNIMgUAjWBUC5Z3OSkgZBsy9276mjQW6oXV1BHDDiff0-zL1~KG76arDsQoo-STdYS-trZYOpNZgNKGzHp9GJEgl5iJLOb5G7kRjqDYHK89vlxd6A8jFDvB-6CP~87jOU8MGSCMyxi-j7BUrKQqyrZfcg7PuuzzyL~LYLRZ7LCqzMdgM4Zka3mcn~Is~oA0kDwBB1TrRqhNmiTgpL155sP3~ctNhtXDQm9FbLCjcOyOY~KkI3jqCQ6A__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Z%20.%20I%20.%20D%20-%20745%20-%20%F0%9F%94%9C%20%F0%9F%94%9B%20%F0%9F%94%9D%20-%20%F0%9F%99%89%20%F0%9F%99%88%20%F0%9F%99%8A%20-%20EIN%C3%81R%20-%20Para%20(Osl%C3%A4ppt).mp3", cover: "https://i1.sndcdn.com/avatars-000341624108-8hy2rq-t1080x1080.jpg" },
+            { artist: "Einár x Ozzy", title: "Det jag ville", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FzSFg35j35V8e.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20velNGZzM1ajM1VjhlLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjAwNDcwfX19XX0_%26Signature%3DdEaG3qYQ~kFu3-LRJtkcRAJyo~rmc~yCmsnFJHYVsQIF~9bDhFjNECtPflMlb0pIIWvJZ6sBhZPfa8dhGhyEq0nyrlOq1PwmijaGNuPU0Ir1xZ1Q2lgwfFIQ4hRZXUgRQ7jZcC8ij---VozMffHmBdh12G5aa3U-lFL6P-iWPJ1fk3GppC1QGj1h1sVlQkyh0RHW4MP3sjsvgu-ItQ-yiUf1MrrMO-WAZc8XPnY6VJ7IN~K~hiAsW81V0g~CAyT0ourPCfcHu2kJb3VluitZCqG7ohmYdWxO~vP08ik3aXaBPPhA05b-H0-WURt0Dfw3PuHWuJWabIJqG74xcy-Y1Q__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ortens%20Musik%20-%20Ein%C3%A1r%20x%20Ozzy%20-%20Det%20jag%20ville%20(Osl%C3%A4ppt).mp3", cover: "https://i1.sndcdn.com/artworks-k3vzdJXiYc8Et52H-uhIu5g-t1080x1080.jpg" },
+            { artist: "Einár ft. Dani M", title: "Old School", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FyjFkNcKwMlY6.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20veWpGa05jS3dNbFk2LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjAwMjE1fX19XX0_%26Signature%3DAOCMjUCjUZ5tOaQ9x8HXafuQvPTxl8s9oh~tiiGfdaluWQM5Zvz2BCSNqOorw4smNGoQv7Us2gtrpyj4UrccJ0xrC3sFaq3xD4tIjzQk3CMyU6UaSAMTn-aZEz-6J3bd6OVEU98cEfCvvSzJu2GNraw-4xX6qkI8DDK-41GLqfBvP9xL9sPIXbX-6Qy98fajcKFNmYgb9~fx4~wjKXd0ptuJ4I7ZaTprxUiqCJrA5GUWDBqoaZjBDj3UWJJ6EAtl2uGAepcd43CTIba8F2chfklFoj9j~TGJqkAddBRbxnTGqST4iXuGgs-9e6CdMs-baqY5Ny8S~qVbeqt6Y~hlLg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Einar%20-%20Old%20School%20%5BFeat.%20Dani%20M%5D.mp3", cover: "https://i1.sndcdn.com/artworks-mD33RPLBJ1Ad3qsJ-Higa6A-t1080x1080.jpg" },
+            { artist: "Einár ft. KD", title: "Vi E Kvar", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FUA1Y0Ss9SUli.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vVUExWTBTczlTVWxpLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjAwMjUzfX19XX0_%26Signature%3DWSpk4OYESt-eStcpBHgOLQ6uCDpA-77un~E-dwiFnvdlkRbncjnyDGqqaA1zWkN0o3n53ysu2nm8iqj3MGfSai00Mk0gQeFabNcX1ohUmpz1yYYjAFyb7SJC8aLlk84-gX4qmmPdk4IZxfgyuRNSLUy9RKzmShnh7aVSq-dRRvvLq1OEUcB41GznJq6QGUZbgYzz4CLLlgV0FhhXDDU5jpNYliMJqSc3DHwykVuyCmK~IKz76IKgff3Avu63Dy-GC8AHlcEmol~nw9rKtysyVUCP9-wHrWqDKFtdoVBjotJoZy7~-4v3dvmKASqLyTRR6zwmbWoqQKDwo5bZu3xlBw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Unreleased%20Songs%20-%20Rap%20Sverige%20-%20Einar%20-%20Vi%20E%20Kvar%20(ft.%20KD).mp3", cover: "https://i1.sndcdn.com/artworks-l5F4BRcylb7sqcLi-0gzQjw-t1080x1080.jpg" },
+            { artist: "Einár x Dree Low", title: "Min Nivå", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F6dU2M4aQNAjI.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vNmRVMk00YVFOQWpJLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjAwMjkyfX19XX0_%26Signature%3DPp3MZvs72RiOQgYo0~J42TLeQvGQ8c4ctfNoMUI-RNY2QaLNggzRxLdFH0BqmkOJYzL4RZrU1Kb7aFyoDxT7wNewChccYR8PQtpFxB~Kofta~hDw8R-wMabVVmrKs72zirQ6BgSeTgcSAmyTbV8ZZwI2L~DHRveQIHYmN44jr~mHzcBd76UdQ4EBrxh5CQwcwHSph1C1kIk2X3lk7vOHaH8r-8NyjHkZcOau1UzewzUGUDa0C8Q2rqbnSA7hXPFWV6VAAidpQsMBseDkSGcijSwbunne4WsNyCHO7wdpw6I6On49twWJ5YPnMQikvsEv7WxIT~jcYDNSqXiM-7bUOw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ghetto%20Music%20TV%20-%20EINAR%20x%20DREE%20LOW%20-%20MIN%20NIV%C3%85%20-.mp3", cover: "https://i1.sndcdn.com/artworks-000561511521-4ncz1d-t1080x1080.jpg" },
+            { artist: "Einár", title: "Behind Bars", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FoUnqEhGdna8d.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vb1VucUVoR2RuYThkLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjAxMzc3fX19XX0_%26Signature%3DGk1sNDoPEfDDdghi0lnrzjzx7spC6pV626ChYhnQ5a6~KToNdc0yVT9iauegarMZL3X9GpvCtA9er46J9Qy-P96hX1MqYLVVQOSKZOmeuqtkbq7htndZ-AJs8TMPREaF1r~b-Y~0y56jjCOvXzJfmeKUb-B9i1ukMSa~oo4K7Vi0SuCyzVxPjZp0qsr~JLU-5u~q-S6LXZ-xKUkNX79gzHGbqvFVlcnoqcP0CDW6GZvrEazgWJ8XFEeToZ4dCbFO2BGZpZ0yBchMw1MUuh-AlP10SjoJ-fl96a0mdC45rF9FIuRvpCGq19U5Chi7FDB8-gCuu~ShRHb9ZRa8AebGRA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ghetto%20Music%20TV%20-%20Einar%20-%20Behind%20Bars%20-.mp3", cover: "https://i1.sndcdn.com/artworks-000507615219-r1whu7-t500x500.jpg" },
+            { artist: "Nilo x Einár", title: "PAFF PASS", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FUzdFy7kgUnmf.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vVXpkRnk3a2dVbm1mLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NTk5Nzg0fX19XX0_%26Signature%3DIZw~lFP~JeSgDwT8AYZorLegzoEPhZhJ5hgThGvLzXasLX-eSvbMkG-snGucpnrdmJnquEzs7Zn9qbCtw4wo6UnQh-Mo3oivHn2Q1w4m8NU90~OXiXg5sqOhzY8R3a9D0U6GQSG6mJmKlWga7hFxIG~qRxnIX72Dox2EysMdPjlahxRxWBkWxF7NfE-CZC8DZ59ltw0vbYgO1GIYj5-2v7xbAyXmyuqKuCaM6HLTXf1N~nhUymjR6L3Ec4XsVuZJDLSQhm2~gZxB1eZlMFRs0OXtyKkeFWcptksprcCJLZ7cmlB9wvdj4ESY8pihH4ejC6EDhVR9iuOhd~axkIvquQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ghetto%20Music%20TV%20-%20NILO%20x%20EINAR%20-%20PAFF%20PASS%20-.mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/NILO+x+EINAR+%22+PAFF+PASS+%22+-+-artwork.jpg" },
+            { artist: "Einár", title: "Affären", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FRrhwHjz4EDlY.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vUnJod0hqejRFRGxZLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjgxOTcxfX19XX0_%26Signature%3DUCA4o9dsHPGB2kEsfYyuPTJ922ctPhZGGnT6mlSTNYtHtvCHtk4XuMsreFfF8KpnWjkt~hKU1CpCjtZq3NTvbnrqSQh0hVg3OcALXuGnM6wy48ThvW98lR5Q3OjLhwzy~AO~AQJ~qjGUCFlP9aGTrpsDrwBADCdWvWCgIcnaEX9nNFLFXsaEipKpB0KLyPSu2EgtBTVLo-P2ri3FvTqRoimwwOQ8-029x-C-om4Ak7xO4LYgKmzSy9kNIhY5PdXd2FImZqpyA6ni0FChTuIvWAou-K~siZgBPIVUCT-R3E78HuMw8VFpkLYjxAEjjLhB7SdC8nfpyTut7h42~gdHiA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Cheeko%20-%20Ein%C3%A1r%20-%20Aff%C3%A4ren%20(Osl%C3%A4ppt).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Ein%C3%A1r+-+Aff%C3%A4ren+%28Osl%C3%A4ppt%29+-+-artwork.jpg" },
+            { artist: "Einár", title: "Samma Gamla", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F45I6uNSc7VUq.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vNDVJNnVOU2M3VlVxLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NTk5ODg0fX19XX0_%26Signature%3DC6y3H6Z7bGAFu9j~8V7j2n12sfK5-v52VSI7AcdD-g8A-85wpn660XIqu7wPEMyXSBbvCIIdK6FwN4SRS2uiTUaBBeUtDVdN~qTdnzoSRclbiMlr-1IoYOn3xU~pehF0AqVr~w-ybE5BX2pxKFjp100vAfjoa1oNX1lZwenrPbQWQapSKJhaK26XCrWKmo3H9flSwr~WXMf0ZjUPtVTcve1N4jFKVCGY0frU1FKK0EjzUg3hCmf5tSeVgChMg0A91ysT7AsoTz5yKSUMMgCb990UBrpoWjQsIHyguG1XhNmNXjrTDLAlPRqu~hcYXPIs1xgA0NrnZvqLG3tKuj1txQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=AIMakerMan%20-%20Samma%20Gamla%20Vanliga%20-%20Einar(Bra%20Kvalitet).mp3", cover: "https://i1.sndcdn.com/artworks-ebp6hczE5pVtfugw-YDxjkQ-t1080x1080.jpg" },
+            { artist: "Einár x Euroo", title: "Schackmatt", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F1NjgVRPZRnNq.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vMU5qZ1ZSUFpSbk5xLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NTk5OTcxfX19XX0_%26Signature%3Dar1vzdEvgnnpQq4WbFv~N9MYu9TrzB7LtOxeG~TEF8N04gWcQ5s1MAKD9n-Xp7MedjRLNtOzwcRhhAr6n2TdSO-L8bhA6SlXD-obIZBjP2ZfS2f-JCjkOMyeeQCC7LRCgTSGNxejqhRAiXwmiuCpEl2fZBpuQoV~NQBQYahRZfexcx4TJwco2rF66Nqm4cuqlKgf9jZOde2KQN2UHFOXpr4zy2ocwTSMXDCay6e6yj7zTDGTE4WzT1lWM5s7-HsPhf5saQEusFNHFUOjiYtnupXwb-NUBO56AO46WAJntHmjtn-LU6FDmHo33js1CIWtfliKsLdRH7-qEXZ14y4XxA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Achooo%20-%20Ein%C3%A1r%20X%20Euroo%20-%20Shackmatt.mp3", cover: "https://i1.sndcdn.com/artworks-L5ngYksyMO0i07YS-juZzhw-t1080x1080.jpg" },
+            { artist: "Einár", title: "Nmr 1 Player", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FEvbl665uwESW.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vRXZibDY2NXV3RVNXLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjgyMjM1fX19XX0_%26Signature%3DZwVJM7dCFNDkXrYP1jUpDqtEWsdHBy25P7T7UBXSd76cKJPbcHoHJvyg9rct~jyZ~cNY2QO-8fQxEBAaLW4KZI-~rUFREe667tJJ4TYW32E-F7yC34u-yJnBiQL0fzkUYvvH8hqRhBT-awlBnO-g4K11NvbgNhsnzauauA8IKRdFoKvEvP-cZxFzDbGX8ky4FHhqNaAPFHIJ-P7ArYJhqVEQKsv-74rsNDRu~caqBietj7z95cZh1TVdQnP648x9pOLOVTpipBdaJrq3qR6StsDc-AJZ5o4~ymoX09MzYdnZbhYR1PG9qDUssvt8YabU2AKh3lfAdji12PAEo3Vrxw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Beverly%20hills%20-%20Einar%20-%20Nmr%201%20Player.mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Einar+-+Nmr+1+Player+-+Einar+-artwork.jpg" },
+            { artist: "Einár", title: "Soilzey", year: "2021", url: "", cover: null },
+            { artist: "Einár", title: "Lowkey", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FIAh48SpZDfHq.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vSUFoNDhTcFpEZkhxLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg1ODI4fX19XX0_%26Signature%3DfbHUSpegL2ka0Y0qKnJFPmUQvOxJdBAWNRWp7lR1805hcmHGxtgf9h42ZX7fA5FGe7H~FOovLS5juyU4xaxhjgx~v0Gub3fJR5k3rdUyTS10ITKgYZhMFUIkmbCFjh8rv9Lhz2wPkwG11UpSUSC-AcUOMB815b1Xm0vFF6RRXkWWzek~9E8~~BsbDI5KQAxLz4mGlKc~lziMkki4Jo92gLymsOx6B9BX5WAnNHCP49yS3VSAVmZUTbdoTPUEcGqQTpezE4YJh45KvkHu7XPJ3jkAh0YmS-dWhsdnHkmwCkmOAH5WIY~N1LcTeWVXhn2dmUAlpYzo9hDEDf3c-OsgGA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=%F0%9F%95%8A%EF%B8%8F%F0%9F%95%8A%EF%B8%8F%20-%20Ein%C3%A1r%20-%20Lowkey%20(teaser).mp", cover: null },
+            { artist: "Einár", title: "Tony Montana", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FXYj0YaDK4izd.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vWFlqMFlhREs0aXpkLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg1Njc3fX19XX0_%26Signature%3Ddwi~Dscqdkc9CXOMUJvHnXrs3WMtx~PL0p-FzKBwBadRtzQaQHhZxnK~RpLhW9443ZaF6rRpK-Z1-fZeh~SHLIw2sN00dFtNjlO6wg9QTaXYOetcsrWSPQ1WGewlkxpESliv~tW8kZaKV0j9bMTBNzonUq8hYecWBn1bwcazDx5ctNbIEP~rYtLf9Thb-mjVnTESOw74zeXW5NqAJcrkWpaHJGYcIk01SSG~NHDagdOQs540vdD87~SbDF-CJThjv9Ll3WZlmQ~4vJ8Wd3agqMoPPOP~dRYXlHIjYlHWnvJKFuF70xeeUZqsas-UJi5sCUBhZIKn1vX-RVzxwu94zw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=%F0%9F%95%8A%EF%B8%8F%F0%9F%95%8A%EF%B8%8F%20-%20Ein%C3%A1r%20-%20Tony%20Montana%20(Teaser).mp3", cover: null },
+            { artist: "Einár x 1.Cuz", title: "Backa Bort", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FDJirj9rIkH8D.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vREppcmo5cklrSDhELjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg1Njk0fX19XX0_%26Signature%3DS7509qRlCCsKNcfUxsJzLh2GOWWqRUb~P6eY0vGlAdwy6tEPMIwIZh7SwAWttxgeRfTb872fKQzjgkbjDvGQufqLLTOGCJxZyeWTQwCPzTKQn2OPiI0NSEAR1YBBJnYXyq0EH1iYVyQbXAxSDJIrxlpePKQukKa2iAd4wu4gBa-gRDYDMEMAYKSUBDiYyK5zGRBXLDx3dreu8sR0euBfkWGWd8PN4-6eBI~CGvR35MWtTSPeZrbtla7lXhBaoHVEAmWA0YrM6Ts0ISTyiFze9eyBSmVD3RpaZBkZ5BAomYohykiRa8l5FKtlVouucfespM5LxT1wKV6GgoFMTRsYAw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=%F0%9F%95%8A%EF%B8%8F%F0%9F%95%8A%EF%B8%8F%20-%20Ein%C3%A1r%20x%201.Cuz%20-%20Backa%20Bort%20(Yei%20Gonzalez).mp3", cover: null },
+            { artist: "Einár", title: "Humble", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FIG23hFdiwybM.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vSUcyM2hGZGl3eWJNLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg3MzQyfX19XX0_%26Signature%3DWx6Gh6WWZ1D7z9lvHgz9lW0CDxDPbJ4M4lZs3KAHl8RHaNXlEMcoPGkN1Kp-GpCLgaEoRxhg0GQcqki-hhgc7nRbj5RNH7FrTJlbBnEr~SV9sUPWb2QJESPAYs7KQiyblFGnssQxZbnH3ab4A2DjVB5OD0w~HTH-vTic-zNU-OiaytzSBmfJ9FMgjGEptdBYxTobxFkZNsos20NjS6lH5Awg8HL2JVhLd62ckp1Aq2zVPmiW5pqROk9OviSvqDlGaizW4O~dUOQ4FFN6aHcAnwo-scog2UnhtqJGyRLzlJ0L73dHcRbTtPWO0WIyPdta-iaRBLc9zkGI4aXuFCipUw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=GM%20TV%20-%20Ein%C3%A1r%20-%20Humble.mp3", cover: null },
+            { artist: "Einár", title: "Hörlurar", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FhoY1gEkNqlB3.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vaG9ZMWdFa05xbEIzLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg3MjczfX19XX0_%26Signature%3DPLGeMcm4J41OIFIhhP~8POL-MphZHzpnjCCNmALuLarFmQAudcIqUj~nvoQtV~JRhBudY3DCuxDEUM7hQ4OOyneo~CwKVy2QxEvqScggiuCMrQgdi-yye-DkZA0rnEw~BuSH-l9XAx91HvVYWHmIvAz~LazmPmxSZ-FM~bylULEvKSJDnRMOXwIMyv3vHqbehqsMoIBuvMtPPEj-TyYkpGwf0B9UUcMh3Rc~2aw4PbIWXsBzfl-GiqXxU0sEQ0BIfxoeyL3Iez50CFOsOezaWWk7Zto613UNODIDZ8fLIXlBq7xLAJuj6eSJJC~xjheMpRD-nV24sAFIdmmbwYURqA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Robban%20-%20EINAR%20-%20H%C3%96RLURAR.mp3", cover: null },
+            { artist: "Einár x Euroo", title: "Southside", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FAC5u3wh5OdfX.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vQUM1dTN3aDVPZGZYLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg3MTQyfX19XX0_%26Signature%3DDPmfDkNhhEbG-r4z4kjUBrOGwf0b8N4Ttn9E-8kUAQM0buPyZzDq3yMc9iL6lpijdthDbOBFxcedHQpnOvdSUyEbk5RYXYH8bW16mF1SHQ55Ek8Kl9kCcSvluINDYiwKjfQgg7xTDM-cgo-dZAh-5n6omYc0S8yxTuvRR0hO-S31gHtezVVd0ypwvsfyZcEUUSRjhkiRE2VqpoVqKepeHHcjVGaxyF4R6rw7pQnZLT1ogtf90eLZxmxHb-RQDGEVLciZNSTANDLdMjDIa1fgitrDWiZqeeCc6dzdtGCATq5Up9pGeSCdf2VzIjmNEi4AaK10PoZ~Nd5Sd3ZHundtng__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ghetto%20Musik%20-%20Einar%20x%20Euroo%20-%20Southside.mp3", cover: null },
+            { artist: "Einár x K27", title: "Wow", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FM0NjKydUy3pR.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vTTBOakt5ZFV5M3BSLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg2MTcxfX19XX0_%26Signature%3DILHwTO7VIswr5RvNxSiG1nzFl5l3G2SaKvtcpty51ghrUp4jojDEb9E7O~Oopco7fjqq8xIPDzLJzljyXQL85gJZN7hWlkgmMl5~0dWRi3mijvdmiP2F5yVT7UXhk7pOg5GvWqQRids6UHc0w17vWv7Ik5PLZGkgqLo84hX2fEjPOnR~~qv9rCOVXgT3rpNeBSA9sOpXf5~H53fMwxj2yV4hT1WEENZl0BdTg25xAQzcUUfnSB63W-~Ags-a4xetl5K6dA7ixptVF28vpInlzulzs6QllNnyKy2n-BgwphYQjyNBUTta6JYzsi8EQ-87mGMNWguelaAOr3W5ddyNIw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=ThePlug%20-%20Einar%20x%20K27-%20Wow.mp3", cover: null },
+            { artist: "Einár", title: "Baklawa", year: "2023", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FZ85mwJkWNFIu.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vWjg1bXdKa1dORkl1LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg2MTU2fX19XX0_%26Signature%3DHoSRcIhEG4YXITMNdDL8UVNTVSl6ecJHmp6nHrXg4MOthY-UNU~AOBDESlfus2pgIAFZg84vDaZu8K6o~SLVxMUrlvAAXqF~In07vtU~xCVM~-80GWLyA4RC7DlHv9uV29C4nWWjLDilP3eNYcdoO9ZvUqOz8UM34-x-7KB7LYN5wciOG3PRpohdGZvYU458X62CbF9ZA2xV2lYlc23whz7JRYohqqaOPnC8PL3zC9tH7AsGBHZl3cusS1OpmKsD6oa9OkzmZ5kzFtNLbuyc8ZsXQUXUeh8ggSi7q7vCnD8mx~-EJDo8hZO75q3WiBfvlUt2IRfLo6ju4DCSbjCAsg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Raffe%20-%20Ein%C3%A1r%20-%20Baklawa%20(ny%202023).mp3", cover: null },
+            { artist: "Einár", title: "Fucked 4 Real", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FTID7DAHButdu.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vVElEN0RBSEJ1dGR1LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg3MjM4fX19XX0_%26Signature%3DCwk-8w9MqKNtWwplnNS8f2bX12v1uQvvQUGAk9-4P7Yv9NjpDM0-M6Of5JTQTdLc2x0qyb9FX0Aoi-nKFQNYGeI04BjHSnC3QeiAqmo4TZG1-Z8ujn5jAWj7-MckWfJv~saix~PjzwuJgAjhZ4O-0ak-Ip6nKUXtduny1s4w4zxx-bHpLSiHe8qo~qAPeS9ahHtET18O41eNrRppPerdBfEyhcIm0g6O1W8c1kz34cjtvVuVVabaqnS-QJlnwj7tS19jKTM7ixpKnMyympYi-6dXCKTFnnTRqQPC~DouRVZb9wFrT1a3CgcIWsTL6fbnPoW6VbkRP5m9jftT9fd~0w__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=fuvua%20-%20Einar-Fucked%204%20Real.mp3", cover: null },
+            { artist: "Einár", title: "Poppa 3", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F9dTUUcPmUOGU.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vOWRUVVVjUG1VT0dVLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg3MDk4fX19XX0_%26Signature%3DEX-fLsImAINSNRPUOA76N3qsswjifl4IBLzQrZNS4EcRpmFVCovYoBPqxS0T79zA~T7qWVN7ddGNhkR-ANx-GEzO6VUkL9UPs3SsAcBE3HxQWcepdXHTn8EudVzEoZFOG6klP79tlCtrGK1a8dVuvyr04H-ifySTSGE0Pg3PYBfvji~bqn3Y-qWBITLLEsZaP3iX2CtCubXbTlbeKPrG1QkXiN3OP7jHqaVnHklfFYFHxr9OoJKdm-4Kql-JlQG2J1vAo7DdTuS9xpS7deWF3y9pwmRrXYxVC6Ia46Up-XYm6FqO225lDz-8ucLAub3vOWElQO9bvYx6S1SJxtezlQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Lil%20Jelly%20TV%20-%20EINAR%20-%20Poppa%203.mp3", cover: null },
+            { artist: "Einár", title: "Latch", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FJ62ixCJo3VGb.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vSjYyaXhDSm8zVkdiLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg2OTQ1fX19XX0_%26Signature%3DCk2xZOE5XOthb-8Hara6Sw95xpURnxbgfeGXOxdBcusX4Vs~UobbCODj8ZCB5mYGsfozOTi0BsICGnYiIQfWdTnP9A4R5w~rtNT8KPrwRyPM8a9ik~rb~pkv~Ev0h1gQsKvQKaSy9WhT50JQsLpwH~MQ1zsFkbKcBg~oQ2tpCqBe8hfrPV26uLt0stJqczfrDp6oRO9klQx1FhLuPBdpo6r3obd325QdxHR1wPee0E9cKIXbIN8clHR2aO7xdN0Si4wmum~b7y854RzFoSYn77bDz0C~k~3Z8bq2KtzHBjq1frYoJL6YcYq-z8QxtnY8~V1gPdinaYjaH8a~8~2gPA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Erka%20-D%20-%20Einar%20-%20Latch.mp3", cover: null },
+            { artist: "Einár", title: "Karma", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Fqb3aQG9fKbem.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vcWIzYVFHOWZLYmVtLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg2OTk4fX19XX0_%26Signature%3DNLVitrNzvX0QCtorWgKfWCb-Y6u~gjKc~C-Iid0HiDY1Nxu5sFRxN7Z1NySaWHlrhVGJAnlqcuBujV5X0iO~KLJbRzeW6APFSIeQXnAg768PKjdlTWdAi07WzI6W3OO4dD7rJkwQjj00F8ssyHFsLnO32gGUuOt9~H8ygDy9~~3rIoGAdUy53DWVit8z3Tqof8qMCXKJSnMwbWYEoJNRlNcEud3XGPxxhyKxTA-KNjbX~Dg5CfkrhEPlYxI-1gqX-ztQboexfOMZ3z1OnTl5GjFJvYzHgydOSIDnhwm8zzMCgwxsxk7Ou5sNgGR1DX41FqRNVGeUamTKIQtxbqfQAg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=William%20-%20Einar%20-%20Karma%20(dunder%20kvalite).mp3", cover: null },
+            { artist: "Einár", title: "Matematik", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FzLRMVC8YIJm5.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vekxSTVZDOFlJSm01LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg2ODM2fX19XX0_%26Signature%3DG2PQfyNfu7vf2~UTzg93cKUAzIefqiuvhKSZUCih7qHJrmvpDdjZzmB0fcAihYCnK5kJ2FmbatWc3uHr~c6WKnVyk-Uay~kZMUPWWWRtznFfXugP1stxCtat2RSj3hZCdmrruHca7qhTXReMNScTU-NPIlsBhnyZyMceOZXnIeYmFrxoj9E6Tyr1dj8PJ9BnH2HUePugT4iBifUFJFChB3zutZ5AhI1I~qb9m6szx~j-xsjuL~lzQQPbejQbO1y992IerL4d5hfdjKaFUU-hyNj2WZjlwwLRKGv2jpvtDn8uMgCaOMurPF6whNMpPGxKAXE9bp2GSJydGr4dDJXE9w__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Zzz%20-%20Ein%C3%A1r%20-%20Matematik%20(Osl%C3%A4ppt).mp3", cover: null },
+            { artist: "Einár x Dilly D", title: "No Hook", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Fh0ql92dhLj6l.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vaDBxbDkyZGhMajZsLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg2ODIzfX19XX0_%26Signature%3DcKD02mwYrODlXvyB4Q1sHqtGXxltuAKVz3fUSq9qYima4~0TPOD31IW3sFFmSY~b1w2Rracv6Yp34iZPOd54xkVRnWGWDV9VhuvqJaMNsuLKQ~3uSC77tQslEifQNkxlvNHEP7INd90KzdYii7tMoxtahdEO7elFxq0MlquRrOqAXdV7HpmQIKNclxcJevGDh81nHDxz2KoUYkNMxK0isOQHGI8qpk0vKcPlTc91QITgh1VPMGYEqpqoeMd0F16B5XgBfZqA4AggIL8iV7XZiCFYh2wa0SCsT2EVaERzzMEelgsteOeBFbsBjdUF~6ZpHNfKIWsEialLz-8Kry-tgQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=dillyDlgtm%20-%20Dilly%20D%20X%20Einar%20-%20No%20Hook%20(Master).mp3", cover: null },
+            { artist: "Einár x Icekiid", title: "See You Later", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F48SEm2V4toBC.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vNDhTRW0yVjR0b0JDLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg2NzEyfX19XX0_%26Signature%3DBfvcUKzN5KxanRydXGIYE26oBg882d9wbFvVeQhk05jepe~RPCc8TKvUuLVaS3wUHuC~X~VkTZuH76o1vIoNhNGn0QtlzMhA6kJrg0NVlbVSVNk7ESLKzZgOsMAk6~pCIqlO2oWPqVRSBAR1eo1LsotzRX1Qz0C9wfSmK9J~kIGV0TDTykRFwWxpMerDbjbeDmIsGIFHjlZPkXbESN0oQXvkqncfGGZ6rHeTjh5baCwOr2Z59CWqJwkog3TLzfeNK3fzVhtit93treACjk7IfYgVQa7aexPVup6UVCRyv0BRg4Mb1Vc-f8~gvql6N9ffjJLo-ZcNFkyR49b9lfgYcA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Rebola%20-%20Ein%C3%A1r%20x%20Icekiid%20-%20See%20You%20Later%20(HELA%20OSL%C3%84PPT)(B%C3%A4sta%20Kvalit%C3%A9).mp3", cover: null },
+            { artist: "Einár", title: "100 Mannen", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F9C4QlVpp9HH3.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vOUM0UWxWcHA5SEgzLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg2NjcxfX19XX0_%26Signature%3DbWPXbXhbUqAAtLlz-Mc0541ZmAWuVdJtNUzeaem9NyE6uDkzPRsiGesiwuNZ4Tu06Ju~NYwD2Idt88acLtdl5wUQeZYMRRK8sohvArYGWNjhkstj1SfXY3I0wJKZo6F4QZqlhS8Re0N8IgdgqwsGO3hyWWqxw1w033tki8LSLc2xSBk7Zzu5T9k1hMq7hpb4CewvhrAGFDUaLgNynvuLXwlFitHnlRuV-axV7vNMyN9g3uZhAOpFoMGs0isIYq-z6uysiklzOIa28wMrKk19LCJu82EnHXhBQaWylRc-NeE~SAlnmVtlMgYNAnHCEyuAD8rCXSQbsqs4SAswISZCkA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ghetto%20Music%20TV%20-%20EINAR%20-%20100%20MANNEN%20-.mp3", cover: null },
+            { artist: "Einár x Montana", title: "En För Min Ort", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F9F29lThtWtW7.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vOUYyOWxUaHRXdFc3LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDkzNjQzfX19XX0_%26Signature%3DC95BiIxZKVNQIFwTnYE6z4dlJeXoYg~dVS60nigPnCuRF0cE5cdt5tBXfpgdcy5subVE8SVkSLDXuaadQPlM3KDAav8vYApp4I-Nx8KOsfRK9yU4BB4~5-Khe00Bt7vd08n7Nhnmv2OZ4pPJwTLMceYxGL6OPmy05DMXWvVVhbcY~SzS-wIi9rUnZckmvTn4uajDrcCQJhlyxH6ThIWhFiLL~2SCPXWxIm0B3oZnt2QQ6HOzb1paTGG9ua7tcL8ZURYRD0ZLzb7ldyrn0QBEamZM8-qjikpK-vylzAGoZHN4ziRQ2tlAwcqXYTzh3itBahWfy~XT3f9BQmqlOWKrUg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=TheRealRappers%20-%20Einar%20-%20fo%CC%88r%20stor%20fo%CC%88r%20landet.mp3", cover: "https://i1.sndcdn.com/artworks-Hhn9QQJ3oyvNhbAq-CR6Kbg-t500x500.jpg" },
+            { artist: "Einár x MPL", title: "Galning", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FfgUzE6dkvdUd.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vZmdVekU2ZGt2ZFVkLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg2NTEzfX19XX0_%26Signature%3DNm-bXB8KrSVe6Rz0~TxzLCQyHLw8xzhV85yL6KtXtj7bCrCEXlZClgCsNT-Y63h2hfkpmklKdFppfTi2OOPl-S84xw09zW-xn4n3qzTzksWTaJBc-mvuJP3w-0EVvzg~GMnIIUO9vL39BZnTW64UbRxHian2PSZ6W3lu4mOM3P1Yonqvzc69V6CbS1O8gp6AVuUqgblke4YH0XXsjfwjL9mn9jNjA4c5q1xe2c1d501DJpk934SKBvgN~AzlvBImHvZWwXpahgRsGoR0W7lrqBiI-VlNrLsUjXrHKiGS1WHNL5UBeohEygrVaVVqY36-rH1q0LQrc-ivhGg~OkU9LEQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=TCK%20-%20Einar%20X%20MPL%20-%20galning.mp3", cover: null },
+            { artist: "Einár x MPL", title: "Sett Nånting", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FYLNlJdcfdfI2.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vWUxObEpkY2ZkZkkyLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg2NTE1fX19XX0_%26Signature%3DHCd9vMj89-3XsPU41ZJcIeL2mx-rlMr7puZw-~-bf6OdbfHHCXJ2MpQw~cznH7gEW8lGJnzYY32Tg3b86Q1IyLePN4yqyJXYzsMQOHl--XY2CJ3doQ86onbWfQPGnnTDOKOMQu7m3ql1lTch2lK8yPHwXPMRDaQNbLzKE4vfGoayVXa8PqehJ1aome3co3hy90vjvnl90jNpwdAFIJStsNQorYwT8MXhBbryO18GIvS0vh0Mdq4LDmWRHie~Z8Ezv2JyDrJu47bHrAD2JpXSS~mmJNHIVp7jabLasxv12oWNw~BLECdzn0G3R6Au-0VM05~GebBvi4c1nROblUOOnQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=osl%C3%A4ppta%20l%C3%A5tar%20s%C3%A4llsyntaste%20-%20EINAR%20X%20MPL%20-%20Sett%20N%C3%A5nting%20-%201.mp3", cover: null },
+            { artist: "Adaam x Einár", title: "Ta Av Masken", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FZDKEdl0GGFVZ.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vWkRLRWRsMEdHRlZaLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg2MzU2fX19XX0_%26Signature%3DScF6EhOjHZvbIscVKoD3rgMlfS9Adwc6rDp3zoNmnbBvw7OkmwzGH9L85xVVYWV6jbr5iYXrf7jrFVZMmNCSbOiXzUgkCPmPZgIUV0XjNHLHokSSZvKBop-A-xoEmFotkgNWtwCshFWC7khxjPeXsXfwM7ykCyLtvx~O2PHNEd4CoMqUY4U2FrEB9ZTnSgJljyNgeG7w3dviiCNJGpgGaAvLL7XUIlPMg0rtJZZg~SvKCPHeI2Grx0WTBbauwzQ9Yl4fZ-lnpWq8rJ7xUwtAKIniktdVRuEzr98aJ0HO6IQUvGcycDAFW9U5GWhSzfHx~NqfWc1Kqrb~zSi3um8wiA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Kaka%20Daro%20-%20Adaam%20x%20Einar%20-%20Ta%20Av%20Masken.mp3", cover: null },
+            { artist: "Einár", title: "Till Toppen", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FFSmOTGlVdrcF.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vRlNtT1RHbFZkcmNGLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg2MzYyfX19XX0_%26Signature%3DLAMSQVmmTw-ogp8uraBzFIN6sAlOTMIK~ljKAT6dRvEJQArREdTWmVyvPPxt7E-jnROzk-26lvAlPA5OYAEgc5weFTArzoNcbifM5N~PNwWj2VJaxZ7Qz67TfK7PV4xhSKv9Nv-LKvsvQmfb15HUm0tdLq6JshyehS4WudfTQIYXu7TS2R55mxZ3xw-i6cXcBESNr91WvAG4hFUZnsOjTrICbxdH2ZIWHn9qaS0UttEM2R7Ekd8x9hLUrQVbaBV2ujcesanAkR4Hx2cpiUi0zrZxVn5Yo1yANhBgZzD0lBpBN6EM8PZjjajAeei7XzkbbI8ZICUppLX2lOJDS7LD7w__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Luke%20-%20Einar%20-%20Till%20toppen.mp3", cover: null },
+            { artist: "Einár", title: "Mina Vänner", year: "2024", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Fh8jBg6PlN4U9.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vaDhqQmc2UGxONFU5LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg1OTQxfX19XX0_%26Signature%3DAhXTQj314FyuvqCtFNaOpcwqK0D-l4PbhPufyv6dyl9YpkeKe~tzb6S-c5yot09OduONAsQVPvn0pI5USAcf3lTq1zQNYVWMvd~MxinFoKvJWXfW2nNRM9zdmhU5b9a5HuyfKvyP1HIMiexq9LYOSLBIpN58Oa61ttkwN9QgWbCUxVWA1iUzUfatj2fG36bD7IJl8k9ODoX27IeFFusnMXdun~ARC6~AeJUwjfkgpJ4FEYsxQaa6BvLEFTQ2ZvwAfmiNEUVw0rAQ4Sx4on2UG~Bh5PNxn5wtCfAsnfhDsyg8pS09zpTk5W7FAaQP6rvC1ZNRI03Npk35FQBpiCSOJw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Best%20of%20osl%C3%A4ppt%20-%20Einar%20-%20mina%20va%CC%88nner%20(hela%20osla%CC%88ppt%202024).mp3", cover: null },
+            { artist: "Einár", title: "Purple Haze", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FNGmDkz40bLzT.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vTkdtRGt6NDBiTHpULjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg1NTYwfX19XX0_%26Signature%3DbMk4gHDCwWFiGv4L2eszDVzWipuZ32zMS1dqQCkOUcBmsL-2SN-jXFaqOGeKDeCNDeiXnnh-7-RXAWfH9CUWild3UULUmkqbuTHt8RGyFiTNAqSmMP8QdduttODFxiYvPGyLS6J-05cJXBz0UwTsjc-ke5NOSYRk8RRarTTJvlajfgOQKbGd34fOuufkX5WEdtiEhxfCry6JTPVvskZCcXxbGBkrHT19onsdbD4VNWMBLvE4T8Io335s9vWYZyYQPWjo4D6fNa8nYxah6f-sQnuMmGSHTXDkXS6Na2rcfe8T0XSmdZRTSjogTOQ1VikYAmhl52tNqkVwH~T84hTugg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ein%C3%A1r%20Osl%C3%A4ppt%20-%20Ein%C3%A1r%20-%20Purple%20Haze%20(FreeStyle).mp3", cover: null },
+            { artist: "Einár x Adaam", title: "Fatta Snabbt", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Fr0RiOdQDZFqC.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vcjBSaU9kUURaRnFDLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3Njg1NTc0fX19XX0_%26Signature%3DWSHU2r2llqiT6aAh5-Cu9yXDRn17RtpWU-xzCjk0B2dvpZS5QVja9rYcOwL3A5Jk1SwVBsqs2VWRRo8ImB2SlYrdae9FiSSCTI28F0beTzYq6veJiYqSImj6BKUL6zinGDrxxLtBPMp1k8fuHMtq8I3sYWErVNisRNcU1bVhC5E44aftjVZULWF24a3F2xF0Z3wkg3k~3coPybEC6MYviS7Zf5n2VQ7LAgsGeHSy3nBNp3WfHcqHkZHdSVzslNQRw~IOecuitcJLXzzfr1e68necOCI3k9om4bUiBfClgabk~q87BAnPffd7rS59ztBhWUPz3kyOhCF3Nei~EqPbPQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Renchzi%20-%20Einar%2C%20Adaam-fatta%20snabbt(osl%C3%A4ppt).mp3", cover: null },
+            { artist: "Einár", title: "Mord Efter Mord", year: "2020", url: "", cover: null },
+            { artist: "Einár x Ozzy", title: "Va Händish", year: "2020", url: "", cover: null },
+            { artist: "Einár", title: "Här Ute", year: "2020", url: "", cover: null },
+            { artist: "Einár", title: "24sju", year: "2020", url: "", cover: null },
+            { artist: "Dree Low", title: "Audi V2", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FLfc1QGP0lwO9.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vTGZjMVFHUDBsd085LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjgyMTUyfX19XX0_%26Signature%3DWumq7IxmYGlKGsHuxfZFjWalcHO7JMtpuy9XkEPkXCSHzknKdZRg3AHJZ2RMRor90NQfjfodoasJYoAMs75zsIusO0N9wayiepmaz71y7qeBLtvo9aIG7~n0gq5P9aRWVR~YMQPPLrCsuFsaj~STKxtQFReWwyczvqKtmUe-I6bEz16Z54j2wLd11zafDl82mkmW6FRipdmyyTc~3UY4cup74BhHBHVinrjFSimb09dMs~WGsCyQvrFF3zH7eJaz2UXeF9O2p1jNkwKhVUk~avM4l809Wk6bYAU~dzwng~~h9LIrLqTpMdd1F4gZqCAeLv7oeTHylFGvPvyJnIWQYQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Svensk%20HipHop%20TV%20-%20Dree%20Low%20-%20Audi%20V2%20(b%C3%A4ttre%20kvalit%C3%A9).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Dree+Low+-+Audi+V2+%28b%C3%A4ttre+kvalit%C3%A9%29+-+-artwork.jpg" },
+            { artist: "1.Cuz x Sticky", title: "Stupid", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FSP2ofnCkGcdv.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vU1Ayb2ZuQ2tHY2R2LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjcwMjg1fX19XX0_%26Signature%3DNV9XOhURLvLMnA9TZdYbq8k7Aqa9qTq6xIkWmBWJWnXtAigW9YBT9FKjnfnuTv8jAl7yR0tVeife0swuB7JYobW9bm3rCL~hrFz9Z6gOJSh31CtEGe~WITfrinaxsR0TpAvPBT3TxsXwo2ADUH-EIS7BuE1hheERtLyTtGIZa7fRoBT14scbvDQ6PsGSU-3gJ8itaau786imC43-IXLmQQI4mvlk4P5O2yAWT2jMFsHN0VmdFcWzs69QjvtTKey7~zSTRdfnjc14JfrtF~XslPDk4euns6aKicCzwjyEb3dC-vGhGJTumRLItwhpF575wdVJaR71FM2pS7KCObaC~g__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=hss.com%20-%201cuz%20X%20Sticky%20-%20Stupid%20(Osla%CC%88ppt).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/1cuz+X+Sticky+-+Stupid+%28Osla%CC%88ppt%29+-+-artwork.jpg" },
+            { artist: "Shacki x 1.Cuz", title: "Pricka dom", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FTf9YD9a5Zsgk.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vVGY5WUQ5YTVac2drLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjcwMDc5fX19XX0_%26Signature%3DdruTgvuSAn0k7vH4cwegJyAS2ZIVRT7FIWWL-j0BJuOw0~P00oIOS8LtLdRjVwtsLnNMK80aw5T7uWBNrMNwg-dG1e9TG6oyl85KHDA9TxKai28WvjmEt1lYQGKIl4tyKkJllNevzLQLDwiBgCgVKNxKfPMY5BFKayb0h50r9g26b7ohEWyr2UHfIoN7I1rER57w6Y640nfX2MRJLxeZ6mp46c3AYdRqsXkqvWFNCibHNypYIEOf9uUBWWfbwzdlg98iKxVwfBVNRyfVugr2DwxqFHbSZl5HR52pOHoDq1JBEYltHIB3rbkMYj6fth3jUAEN8Kcn4nDH5fxqGF9flw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=ww%20Drill%20-%20Shacki%20X%201.Cuz%20-%20Pricka%20dom%20(osl%C3%A4ppt).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Shacki+X+1.Cuz+-+Pricka+dom+%28osl%C3%A4ppt%29+-+-artwork.jpg" },
+            { artist: "Einár", title: "Varför", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F4goeHjJFKKFZ.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vNGdvZUhqSkZLS0ZaLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDg0MTEyfX19XX0_%26Signature%3DIJWWjlJpXMDurxRUzmexhSqrAa3MHBemBOg6ZNbpaoEIHoMIXHUUBTJEG7cDemDmeM6lrYepHnnHUJH7NPzOJpfDVk871TbrcGPxbHPAu1xlydP4aIHUrGKi46QxK7MAOok0yX982IvjLyhzLZBxpF2aTEWwd7ohv5Tj~uioO80VnV6DQCLtSW~D8T4HeXNd7jyQyDB1OalXoGSXyCUbNL456tVCsColEAxfS8bOQrCTESJhFevkV39OXD9onn8k2vn4XlH40VWaQ8NSwPQmE-C-vSuLE~qvq5o7xS2fqWOcn-OnkzQMHXuWTPWwp~gGZtLAsKm65jBV-Ogf8DwaOw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=worldwide%20-%20Einar%20-%20Varf%C3%B6r%20(%20Official%20sound%20).mp3", cover: "https://i1.sndcdn.com/artworks-w2pVSERTFkzFV9Z9-qbo3zg-t500x500.jpg" },
+            { artist: "Einár", title: "Kilos", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FIKUasdh7ABuv.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vSUtVYXNkaDdBQnV2LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NTk5Mjg2fX19XX0_%26Signature%3DVg961lWwvg0Nco-ZrsqB9EdPb1xLIfXxJBw280CAoEq1ZqITwkypr6NNmHASy5yQuIPoqPPF79wlsXZRbpclAzdrRQx3Jn7xt4oKYBIB0-sz0nDqqphGuSwMI-3xUIBG3lFVV6F31jqZCAayK6I8ZkFd9rpc3L3x1tTfyMPX3FQsAi6lXDNbQPGWikpQ3eQ3mkI5JbXREDysco~T1SCK5YcF10VCM7hR1is3mISG~LX2hbEKqgkOmPqy7cfBXZyJQeCGD31oMIupKMOtFd8brziSlhqShQ~W0XUfgwJMxe~tY7fDwzjXbVK1eYtka0PgL3MGXeIhtQCGoRE1Qk-ueQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ortens%20Musik%20-%20EINAR%20-%20KILOS%20-.mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Eina%CC%81r+-+Kilos+%28OSL%C3%84PPT%29+-+-artwork.jpg" },
+            { artist: "Einár x Adaam", title: "Ha Ha Ha", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Frot3Gocyn9Mg.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vcm90M0dvY3luOU1nLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDk0MTg1fX19XX0_%26Signature%3DSfoVf-EvvltGW~nU7ORoPVvKrcFBZZEfb-6XuhpdjvR6AhffMCKhLEmwlizS4cxOYO8nmuHhSFI6fKgz9-OzeRwM4Y0oiZgZWIbwao1cAuEOBkOYrvuOj-c51vEH2CDOGJODdWwHWgojq2jcqg9rS6G4oyhFUA0~grUrlAUwqJOpxmHUTTKAWauaSHYzVn2kmGo2GX36QbQqbp4W2Zcnn4EKz8NO6JOi6hVNBr60OxLNmVj1SKs~1Jwe0cEOF6Jv9Xd6cb6UfVwbVkXrfO-mSReq5Mg2eCqXm-PikNshMBUiWijgJuTClslRUTED0asd1D-EHxwHWPTGUkN4TTky3w__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Rebola%20-%20Ein%C3%A1r%20x%20ADAAM%20-%20Ha%20Ha%20Ha%20-%20Fuck%20Fame%20(HELA%20OSL%C3%84PPT).mp3", cover: "https://i1.sndcdn.com/artworks-9xShHS2l5hrP5yS9-MvEUyQ-t500x500.jpg" },
+            { artist: "Jireel x Einár", title: "Wifi", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2Fe3MGnO4GHsLq.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vZTNNR25PNEdIc0xxLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjcwNTgxfX19XX0_%26Signature%3Df80Uj~G6O23n-j4tYb4qD3fPLErVGX67qxJJ-I4-jrRCgvE1~Looif4TYfJbi-gmutweRQiAsd~SxcqeX7Hi-CY7jzMngkDig3RExQrmf8AYUaZlTOfScLF0PNhkBMtUm~nOcKc7W36ezxpmRJjDW92jhVMPIr9ul4O~wOYBP9od6G316Az7BR-Tg4m~7r0NK5RJqR690NA1MDCs9xl3H~u0SR8nx2BuoTklSxJ1dGG0j9tgztaaupZZDFhejgixtpZkYVQI~I1A6~49XBtb8WYcAoZmN7OtkOAKi1tBhUbOKHi4TNIJ8z2c1Vh78GPXlarhFLGpmTRV3tJdeh5yKw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=SAYZ%20-%20Jireel%20%26%20Einar%20-%20Wifi%20(UNRELEASED)%20X%20Prod%20SAYZ.mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Jireel+%26+Einar+-+Wifi+%28UNRELEASED%29+X+Prod+SAYZ+-+Jireel-artwork.jpg" },
+            { artist: "Asme", title: "Inatt", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FFdauQTjS0xTk.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vRmRhdVFUalMweFRrLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjcwNjI3fX19XX0_%26Signature%3DFUIzUa2igEgju0~wld1p07If4Orv~nmmWaGECH0oSawR0FSGbTOiypV4JisVQBjlXIEAMyxBixZDxTUCBXGbohZwn-QeKNDFiagc9a7QOe1HLlkpxdciGUgBicynq9IVO2Fpt6gmy6tvVWmBq6CnB2ZvXBHW-NXljCU1siWPE4AmOGvmL3y4UFKw3djv2YIgSGhB2wJdH8hZ-Ze9sLputBJ2DJAnL19BBlSLVy8HyKTjmb362TltdRkg4WsO0iK0Y6U18YNAV~HL4Vo3xsEzfwU1pBB3E08hXTZ1F-1lem32WAbDMsQtQ~aKlx6r4SqhoxUsW0QP44PDxT3Nb5qtwQ__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=RENA%20VERSIONERNA%20-%20Asme%20-%20Inatt%20(%20osl%C3%A4ppt%20).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/Asme+-+Inatt+%28+osl%C3%A4ppt+%29+-+RENA+VERSIONERNA-artwork.jpg" },
+            { artist: "K27", title: "Canada", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F217iuoIHXI0r.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vMjE3aXVvSUhYSTByLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDk0MTQ3fX19XX0_%26Signature%3DbNjZyQItmegz3sCGwVB0U74zk7ZmchrHgP5hw3fYYAWQ2u66ogMd3CHECcZGfHi4scFS0eduFTUczwlfAm8~9LnWK~95XKNUyV7R6SCE9~dq0-kgQr19OxojOuIv-szVW7vXoGpInJ4F7eZleY5P83d2t4B0JuBKGaC9gk7UTdQZejtxqxTC6el75dyj4Fb2vWA6OOhF3KGVZT9yTeZ2P1uH8~421MQvxEXAxrblb~Ky8zLu4r18NZrOnjQn41nB08r4pDBoF5Pbh4DFm-LJyS~9q7bvyh1TDmxfSNQwHHOOh~apUhbxADSfbVax9RcLtTMK9AJnld1njpcmRWmhqA__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=oslapptashit%20-%20K27-Canada%20Osl%C3%A4ppt(B%C3%A4sta%20Kvalit%C3%A9)insta-%40oslapptashit.mp3", cover: "https://i1.sndcdn.com/artworks-000478228524-nfudq3-t500x500.jpg" },
+            { artist: "Einár, 5iftyy, Moewgli", title: "Pop Smoke 2", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FVxRMnZ5OkHCY.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vVnhSTW5aNU9rSENZLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDg0MjA1fX19XX0_%26Signature%3DORo8f8vunm10~Y1AlBa70~0Tkey1PP8iofAo25FdR22ntOYB1rQHV3MkOVxoU1hH4175Rzr4jC~6vkAKrt4cx66EMFS69t54HnRv4fzEL2Mo7PrNUoJOpUnAynVfxC34UBVJBaiBnYzunpgEBDvnNW7yAAtlP4t7SmmOUxcDqzZyCk5EgvD3hk74jHmSbo1O-tzXUaMyPJLeTYh1oBBN9ie60dNL~t51MUahkfRtH7RNek5dkI-MZrbPiriQ7-ld~vJd8eVE78g30bqNZbBmMeXtmEY670fxJVcL2IqJ4o~aTMsonP5AD08exOnaICTX9T4WfEazufmgF9SuRor4rw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=VictorReiner%20-%20Ein%C3%A1r%2C%205iftyy%2C%20Moewgli%20-%20Pop%20Smoke%202.mp3", cover: null },
+            { artist: "Einár", title: "Gucci Philipp Plein", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FwLD1204ZnXX3.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vd0xEMTIwNFpuWFgzLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDg0MTEyfX19XX0_%26Signature%3DT1~kq0nIgoLZSdVrwTs3Glj1sHTe8jrYtKEKC2tVE5RfPl-a7g6RyequMt-2efwK3vzIXCrpEYiX8kwMGjltCQcPDzOF0cd91EkkJGXaY3AEGIE3fbN6fIzr3yit9TNO6KdlrC66ccL7RCEtSh6BllZvK28jh4ukr3V1p1dajVH4yhfeUuEZD~dHYxywzHS1~Ia0YiKTpEcqTtQYawdlGwyka9GIm7jmssNNNDMLdrYP7u82O~pzpBxO-5PF50DuHugTUJgj1ykmCs872Hi4HKk9OJP0qKNYfKrY-Ctew~DdtI~9Xk0ZUd-n0nxa2zc1bWu8EUXSpv8OZQ9EP1~gbg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=rappen1%20-%20Einar%20-%20Gucci%20%26%20Philipp%20Plein%20(ft.%20Moewgli%20%26%205iftyy)%20(OSL%C3%84PPT).mp3", cover: "https://i1.sndcdn.com/artworks-j9K6FEB8hNoUz3KW-dYuniw-t500x500.jpg" },
+            { artist: "Owen", title: "Diskret", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F6qpcnGZMoFIy.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vNnFwY25HWk1vRkl5LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDkzNjA1fX19XX0_%26Signature%3DCMyXJhDMuFjzowxuE5ZLoQJHhdSxRbWO9AciBvd81KfqATfFGXV2sGbhi8KLrXr-WNqRu4wNe9Lq6SITofPmC79TGLsbnstfdYDWkDPBHboB-FCVjJsAo41HN6~dKhM5ZjvxrG9DA3Ov56Vc3FjIzKQgy8pV7DSe-75jCPmP7NW7P3fKmDJS7w3fbY9cUh~fctBKk2uHxbeIYaoTVKl6spiB0I3lIZL8-fST7X6F~Am7OjI1bsyRaWotQHt1DQW4-UO1MkWug6TYcvo4gkNyjDd0y68YnGBTSvQ-bhsDTRG7QBSjNpRF0fpwk1UvqYy~63tkSRMKJ9ACW35g5WvAng__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=H4yye%20-%20Owen%20-%20Diskret.mp3", cover: "https://i1.sndcdn.com/artworks-u36R8J5clRkag0l4-BsUg9Q-t500x500.jpg" },
+            { artist: "Einár ft. Hamko", title: "Hasta La Vista", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F8I9Hy0CiE58R.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vOEk5SHkwQ2lFNThSLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDgzNzk3fX19XX0_%26Signature%3DFlfcOVnaS~CoPgKJKPa1aRgwqC4-fn6YU0G1uAO1bTEQc0KfYm9u6USV6q1ksPmFgFOr9JWrT1gR1a5EdmR~4adUn~KH~vfBYQtHE2XnRG4-1FjDuaKtHwbQvUdNSKsDjMWeoLDdkr0W-gfBvoZGhzthiJfbycFytQkMPKdsxZfmkG43-Q5c9z7uXxs~R4e5eFgiK7XHlJHlLRmUhf4cFpCkS6e5QT3bgYYF12MNdDMgQK2hxBBy3xtngLCdzk6NWVlm94SrjmySPq5b0jbs3ZYCoE1Mal9kdoKesggreYnudYGUIvnouMK1kZvjxctiEaVUPbLliAH-mTxAWoldWw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=LV%20-%20Ein%C3%A1r%20Feat.%20Hamko%20-%20Hasta%20La%20Vista%20(Official%20Audio).mp3", cover: "https://i1.sndcdn.com/artworks-000588291278-jaob2z-t500x500.jpg" },
+            { artist: "1.Cuz x Adel", title: "Vroom Vroom", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FWDUXprzrG8lP.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vV0RVWHByenJHOGxQLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NjcwNTYzfX19XX0_%26Signature%3DQoxnq50he~X67IhW4Zt7WrcpFivlZ-cRVWIpDDr3hbhbSc1VGklKU0WIvVYs-0sG-xBj0kzHtngPiiIfLAQZEh6e3LkCtFTofGbWwUorGHHx9f2R6MtkM8G71B8zWTB5hfTTthotGdFeyYtavpwLvR0I0vQThMw~FbSdSr5zVnnbDNIeURfUTrPgH7FRKJng6CN~0VWqhRGo7qwAdrNccGcwn2xk4njbgepTWED6FITcN3cXs-xWxOJNKc~KEIlZfov-9VDfJp0weALZ1TMFvr7qvCpembVtu0EC0QXDYajNl1j98kS4V9JJJ~D588EcselepvwHU~5VgYzq14E2ew__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Ghetto%20Music%20TV%20-%201.cuz%20x%20Adel%20-%20Vroom%20Vroom%20(Osl%C3%A4ppt).mp3", cover: "https://scloudplaylistdownloader.app/api/force_download.php?url=https://scloudplaylistdownloader.app/api/composer/ffmpeg/saved/1.cuz+x+Adel+-+Vroom+Vroom+%28Osl%C3%A4ppt%29+-+-artwork.jpg" },
+            { artist: "Einár x 5iftyy", title: "Vila", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2FUJzNEB0ma5wK.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vVUp6TkVCMG1hNXdLLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDkzNTc3fX19XX0_%26Signature%3DIgzwQcSoHBf5RK7ha3SBxj9ILLZaXm67OF5Xqok3J6LiO0y~ws5a58Lwk5C-icCcvvstwXWYB67w0utIXbIAdsQ3dVHxfdp68VHVyAvDxzpMzw5qkUlbUjwC0NpLFFuz4xFRCXmVAGTgluM9Mvuh18EP2F4KnuSloKc9jc1Z6O3rY3jSOpOc-YQMHDgRp5jBq7u34tiXmJEYjCm3denbG-1E5BNU8MttqhcDq6NmziDMDm0hhDldbFEz~W4S-Pn~OsVwz5CmVh17N9wg3AGlmWPE59LbJib9UnSaU7W-fsml4lj5iSCR9H0c3CGLuvymDjmoJ3HW99UPQ4OtI5-xZg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Osl%C3%A4ppta%20%26%20Annat%20-%20Eina%CC%81r%20x%205iftyy%20-%20Vila%20-OSL%C3%84PPT-%20(Studiokvalit%C3%A9).mp3", cover: "https://i1.sndcdn.com/artworks-MVxzWauNkBoNSjn8-BIttQA-t500x500.jpg" },
+            { artist: "Dree Low ft. Einár", title: "För Stora Namn", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F9F29lThtWtW7.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vOUYyOWxUaHRXdFc3LjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NDkzNjQzfX19XX0_%26Signature%3DC95BiIxZKVNQIFwTnYE6z4dlJeXoYg~dVS60nigPnCuRF0cE5cdt5tBXfpgdcy5subVE8SVkSLDXuaadQPlM3KDAav8vYApp4I-Nx8KOsfRK9yU4BB4~5-Khe00Bt7vd08n7Nhnmv2OZ4pPJwTLMceYxGL6OPmy05DMXWvVVhbcY~SzS-wIi9rUnZckmvTn4uajDrcCQJhlyxH6ThIWhFiLL~2SCPXWxIm0B3oZnt2QQ6HOzb1paTGG9ua7tcL8ZURYRD0ZLzb7ldyrn0QBEamZM8-qjikpK-vylzAGoZHN4ziRQ2tlAwcqXYTzh3itBahWfy~XT3f9BQmqlOWKrUg__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=TheRealRappers%20-%20Einar%20-%20fo%CC%88r%20stor%20fo%CC%88r%20landet.mp3", cover: "https://i1.sndcdn.com/artworks-Hhn9QQJ3oyvNhbAq-CR6Kbg-t500x500.jpg" },
+            { artist: "Einár", title: "Meckar upp en kush", year: "2020", url: "https://www.sctomp3.org/api/stream?url=https%3A%2F%2Fcf-media.sndcdn.com%2F2mVqObEBnLe3.128.mp3%3FPolicy%3DeyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLW1lZGlhLnNuZGNkbi5jb20vMm1WcU9iRUJuTGUzLjEyOC5tcDMqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3NTk5NzIwfX19XX0_%26Signature%3DRsTD0YQ3bx0Vpk17G9-9NTqXEEVeMTgGIkfI7NlXs8hsVPG5oubiaIDzWSbUU26r6yJxi~tGbKDsQfF6jd7AHVt3mGCJfumq2m5ki7REk-wrl6a4wUPhkL7k~zJwXXEP-EG-uvO03HzdMg3h9ZGtr1HhusDIf4HeZ6LNVIouvB~tOY~FDlNrvGmiNfc3TTmPsqGs9k0Eo6Q7~lUku7E~xzZjc7rGLE6nwzKbnqwcEfG86UBRYfL5vt2xi3MJ3jny~ubgFtXj6qu~VuB6A~C~oBJaOol4D2b0zbBEB6BO3AQQiuNqs6-BGjRh1Nl9oe-uMDRCZP-BwTLcF6Z0nqN1Dw__%26Key-Pair-Id%3DAPKAI6TU7MMXM5DG6EPQ&filename=Andr%C3%A9s%20Faraldo%20-%20Ein%C3%A1r%20-%20Meckar%20upp%20en%20kush%20(ft%20-%20Thrife).mp3", cover: null },
+            { artist: "TBA", title: "Coming Soon 1", year: "2025", url: "", cover: null },
+            { artist: "TBA", title: "Coming Soon 2", year: "2025", url: "", cover: null },
+            { artist: "TBA", title: "Coming Soon 3", year: "2025", url: "", cover: null }
+        ];
+
+let currentTracks = tracks.filter(t => t && t.title);
+let queue = [];
+
+/* Firebase Realtime Database – klistra in din URL (utan avslutande /) */
+let FIREBASE_DB = '';
+/* ===== BYT TILL DIN NGROK/RENDER-URL SÅ ALLA ENHETER FUNKAR ===== */
+let STATS_API = '';
+/* Exempel: let STATS_API = ''; */ // bakåtkompat
+let playCounts = {};
+
+let statsLastError = '';
+
+function statsKey(url, artist, title) {
+  if (url && String(url).trim()) return String(url).trim();
+  return ((artist || '').trim() + '|' + (title || '').trim()).toLowerCase();
+}
+function nameKey(artist, title) {
+  return ((artist || '').trim() + '|' + (title || '').trim()).toLowerCase();
+}
+
+function indexPlayEntry(map, key, info) {
+  if (!key || !info) return;
+  map[key] = info;
+}
+
+function getPlayCount(url, artist, title) {
+  const u = url && String(url).trim();
+  if (u && playCounts[u] && playCounts[u].plays != null) return Number(playCounts[u].plays) || 0;
+  const nk = ((artist || '').trim() + '|' + (title || '').trim()).toLowerCase();
+  if (nk !== '|' && playCounts[nk] && playCounts[nk].plays != null) return Number(playCounts[nk].plays) || 0;
+  const t = (title || '').trim().toLowerCase();
+  if (t && playCounts[t] && playCounts[t].plays != null) return Number(playCounts[t].plays) || 0;
+  // scan all entries by title match
+  if (t) {
+    for (const info of Object.values(playCounts)) {
+      if (info && String(info.title || '').trim().toLowerCase() === t && info.plays != null) {
+        return Number(info.plays) || 0;
+      }
+    }
+  }
+  return 0;
+}
+
+
+function fmtPlays(n) { return ''; }
+
+function rebuildPlayIndex(tracksObj) {
+  const map = {};
+  const src = tracksObj || {};
+  for (const [key, info] of Object.entries(src)) {
+    if (!info) continue;
+    const entry = {
+      artist: info.artist || '',
+      title: info.title || '',
+      plays: Number(info.plays) || 0
+    };
+    indexPlayEntry(map, key, entry);
+    if (entry.artist || entry.title) {
+      indexPlayEntry(map, nameKey(entry.artist, entry.title), entry);
+    }
+  }
+  playCounts = map;
+}
+
+
+
+async function fetchPlayStats() { return; return;
+  if (!STATS_API) {
+    if (typeof render === 'function') render();
+    return;
+  }
+  try {
+    const res = await fetch(STATS_API.replace(/\/$/, '') + '/api/stats', {
+      cache: 'no-store',
+      mode: 'cors'
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    const raw = (data && data.tracks) || {};
+    const map = {};
+    Object.keys(raw).forEach((key) => {
+      const info = raw[key];
+      if (!info) return;
+      const entry = {
+        artist: info.artist || '',
+        title: info.title || '',
+        plays: Number(info.plays) || 0
+      };
+      map[key] = entry;
+      if (typeof nameKey === 'function' && (info.artist || info.title)) {
+        map[nameKey(info.artist, info.title)] = entry;
+      }
+    });
+    playCounts = map;
+    if (typeof render === 'function') render();
+  } catch (e) {}
+}
+
+
+async function detectClientGeo() {
+  if (cachedClientGeo) return cachedClientGeo;
+  try {
+    const res = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
+    if (res.ok) {
+      const d = await res.json();
+      if (d && (d.country_name || d.country)) {
+        cachedClientGeo = {
+          country: d.country_name || d.country || '',
+          country_code: d.country_code || d.country || '',
+          city: d.city || ''
+        };
+        return cachedClientGeo;
+      }
+    }
+  } catch (e) {}
+  try {
+    const res = await fetch('https://ip-api.com/json/?fields=status,country,countryCode,city', { cache: 'no-store' });
+    if (res.ok) {
+      const d = await res.json();
+      if (d && d.status === 'success') {
+        cachedClientGeo = {
+          country: d.country || '',
+          country_code: d.countryCode || '',
+          city: d.city || ''
+        };
+        return cachedClientGeo;
+      }
+    }
+  } catch (e) {}
+  cachedClientGeo = { country: '', country_code: '', city: '' };
+  return cachedClientGeo;
+}
+
+async function reportPlay() { return; return;
+  if (!STATS_API || (!title && !url)) return;
+  try {
+    let geo = { country: '', city: '' };
+    if (typeof detectClientGeo === 'function') {
+      try { geo = await detectClientGeo(); } catch (e) {}
+    }
+    const res = await fetch(STATS_API.replace(/\/$/, '') + '/api/play', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        artist: artist || '',
+        title: title || '',
+        url: url || '',
+        country: (geo && geo.country) || '',
+        city: (geo && geo.city) || ''
+      })
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data && data.plays != null) {
+      const entry = { artist: artist || '', title: title || '', plays: Number(data.plays) || 0 };
+      const k = data.track_key || (url && String(url).trim()) || ((artist || '') + '|' + (title || '')).toLowerCase();
+      playCounts[k] = entry;
+      const nk = ((artist || '').trim() + '|' + (title || '').trim()).toLowerCase();
+      if (nk !== '|') playCounts[nk] = entry;
+      if (title) playCounts[String(title).trim().toLowerCase()] = entry;
+      if (typeof render === 'function') render();
+    }
+  } catch (e) {
+    console.warn('reportPlay', e);
+  }
+}
+
+
+async function fetchPlayStats() {
+  if (!STATS_API) {
+    if (typeof render === 'function') render();
+    return;
+  }
+  try {
+    const res = await fetch(STATS_API.replace(/\/$/, '') + '/api/stats', { cache: 'no-store', mode: 'cors' });
+    if (!res.ok) return;
+    const data = await res.json();
+    const raw = (data && data.tracks) || {};
+    const map = {};
+    Object.keys(raw).forEach((k) => {
+      const info = raw[k];
+      if (!info) return;
+      const entry = { artist: info.artist || '', title: info.title || '', plays: Number(info.plays) || 0 };
+      map[k] = entry;
+      if (typeof nameKey === 'function' && (info.artist || info.title)) {
+        map[nameKey(info.artist, info.title)] = entry;
+      }
+    });
+    playCounts = map;
+    if (typeof render === 'function') render();
+  } catch (e) {}
+}
+
+let currentFilter = 'all';
+let currentSearch = '';
+let currentView = 'all';
+let currentPlaying = null;
+let isSeeking = false;
+let currentBlobUrl = null;
+let playToken = 0;
+let userWantsPlaying = false;
+let shuffle = false;
+let currentSort = 'default';
+let shuffleBag = [];
+let shuffleRecentArtists = [];
+let shuffleRecentUrls = [];
+let repeatMode = 0;
+let isMuted = false;
+let lastVolume = 0.85;
+let searchTimer = null;
+let isExpanded = false;
+let playHistory = [];
+let currentSinkId = 'default';
+let theme = 'dark';
+let playbackRate = 1;
+let liked = new Set();
+let recent = [];
+let sleepTimerId = null;
+let sleepEndsAt = 0;
+
+try {
+  const saved = JSON.parse(localStorage.getItem('us_settings') || '{}');
+  if (typeof saved.volume === 'number') lastVolume = saved.volume;
+  if (typeof saved.shuffle === 'boolean') shuffle = saved.shuffle;
+  if (typeof saved.repeatMode === 'number') repeatMode = saved.repeatMode;
+  if (saved.theme === 'light' || saved.theme === 'dark') theme = saved.theme;
+  if (typeof saved.playbackRate === 'number') playbackRate = saved.playbackRate;
+  if (Array.isArray(saved.liked)) liked = new Set(saved.liked);
+  if (Array.isArray(saved.recent)) recent = saved.recent.slice(0, 50);
+} catch(e){}
+
+const grid = document.getElementById('trackGrid');
+const searchInput = document.getElementById('searchInput');
+const filterContainer = document.getElementById('filterContainer');
+const viewTabs = document.getElementById('viewTabs');
+const playerTitle = document.getElementById('playerTitle');
+const playerArtist = document.getElementById('playerArtist');
+const playerArt = document.getElementById('playerArt');
+const playerHeart = document.getElementById('playerHeart');
+const messageContainer = document.getElementById('messageContainer');
+const trackCountEl = document.getElementById('trackCount');
+const artistCountEl = document.getElementById('artistCount');
+const currentTimeDisplay = document.getElementById('currentTime');
+const durationTimeDisplay = document.getElementById('durationTime');
+const timeSlider = document.getElementById('timeSlider');
+const playPauseBtn = document.getElementById('playPauseBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const shuffleBtn = document.getElementById('shuffleBtn');
+const repeatBtn = document.getElementById('repeatBtn');
+const volumeSlider = document.getElementById('volumeSlider');
+const muteBtn = document.getElementById('muteBtn');
+const queueBtn = document.getElementById('queueBtn');
+const queuePanel = document.getElementById('queuePanel');
+const queueList = document.getElementById('queueList');
+const queueCount = document.getElementById('queueCount');
+const expandBtn = document.getElementById('expandBtn');
+const player = document.getElementById('player');
+const castPanel = document.getElementById('castPanel');
+const castBtn = document.getElementById('castBtn');
+const closeCastBtn = document.getElementById('closeCastBtn');
+const castDeviceList = document.getElementById('castDeviceList');
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsPanel = document.getElementById('settingsPanel');
+const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+const themeDarkBtn = document.getElementById('themeDarkBtn');
+const themeLightBtn = document.getElementById('themeLightBtn');
+const rateLabel = document.getElementById('rateLabel');
+const sleepBanner = document.getElementById('sleepBanner');
+const audio = new Audio();
+audio.preload = 'none';
+audio.volume = lastVolume;
+audio.playbackRate = playbackRate;
+if (volumeSlider) volumeSlider.value = lastVolume;
+if (rateLabel) rateLabel.textContent = playbackRate + '×';
+
+const coverCache = new Map();
+
+function saveSettings() {
+  try {
+    localStorage.setItem('us_settings', JSON.stringify({
+      volume: audio.volume, shuffle, repeatMode, theme, playbackRate,
+      liked: [...liked], recent
+    }));
+  } catch(e){}
+}
+
+function applyTheme(t) {
+  theme = t;
+  document.body.classList.toggle('light', t === 'light');
+  themeDarkBtn.classList.toggle('active', t === 'dark');
+  themeLightBtn.classList.toggle('active', t === 'light');
+  const meta = document.getElementById('themeColorMeta');
+  if (meta) meta.setAttribute('content', t === 'light' ? '#f4f0ff' : '#07060c');
+  saveSettings();
+}
+applyTheme(theme);
+
+function setPlaybackRate(r) {
+  playbackRate = r;
+  audio.playbackRate = r;
+  if (rateLabel) rateLabel.textContent = r + '×';
+  document.querySelectorAll('#rateRow button').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.dataset.rate) === r);
+  });
+  saveSettings();
+}
+setPlaybackRate(playbackRate);
+
+function clearSleepTimer() {
+  if (sleepTimerId) { clearTimeout(sleepTimerId); sleepTimerId = null; }
+  sleepEndsAt = 0;
+  sleepBanner.classList.remove('on');
+  document.querySelectorAll('#sleepRow button').forEach(b => {
+    b.classList.toggle('active', b.dataset.sleep === '0');
+  });
+}
+function setSleepTimer(minutes) {
+  clearSleepTimer();
+  if (!minutes) return;
+  sleepEndsAt = Date.now() + minutes * 60 * 1000;
+  sleepBanner.textContent = 'Sleep · ' + minutes + ' min';
+  sleepBanner.classList.add('on');
+  document.querySelectorAll('#sleepRow button').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.sleep, 10) === minutes);
+  });
+  sleepTimerId = setTimeout(() => {
+    userWantsPlaying = false;
+    audio.pause();
+    playPauseBtn.textContent = '▶';
+    clearSleepTimer();
+    showMessage('Sleep timer – uppspelning pausad', 'success');
+    updateMediaSession(currentPlaying);
+    render();
+  }, minutes * 60 * 1000);
+  showMessage('Sleep timer: ' + minutes + ' min', 'success');
+}
+
+function toggleLike(url) {
+  if (!url) return;
+  if (liked.has(url)) liked.delete(url);
+  else liked.add(url);
+  saveSettings();
+  updatePlayerHeart();
+  render();
+}
+function updatePlayerHeart() {
+  if (!playerHeart) return;
+  const on = currentPlaying && liked.has(currentPlaying.url);
+  playerHeart.textContent = on ? '♥' : '♡';
+  playerHeart.classList.toggle('on', !!on);
+}
+function pushRecent(url) {
+  if (!url) return;
+  recent = [url, ...recent.filter(u => u !== url)].slice(0, 40);
+  saveSettings();
+}
+
+function addToQueue(track) {
+  queue.push({ ...track });
+  renderQueue();
+  showMessage('I kö: ' + track.title, 'success');
+}
+function removeFromQueue(index) {
+  if (index >= 0 && index < queue.length) { queue.splice(index, 1); renderQueue(); }
+}
+function clearQueue() {
+  queue = [];
+  renderQueue();
+  showMessage('Kö rensad', 'success');
+}
+function getFiltered() {
+  const q = (currentSearch || '').trim().toLowerCase();
+  let list = currentTracks.filter(t => t && t.title);
+  if (currentView === 'liked') {
+    list = list.filter(t => liked.has(t.url));
+  } else if (currentView === 'recent') {
+    const map = new Map(currentTracks.map(t => [t.url, t]));
+    list = recent.map(u => map.get(u)).filter(Boolean);
+  } else {
+    list = list.filter(t => {
+      if (currentFilter && currentFilter !== 'all' && !t.artist.toLowerCase().includes(currentFilter.toLowerCase())) return false;
+      return true;
+    });
+  }
+  if (q) list = list.filter(t => (t.artist + ' ' + t.title + ' ' + t.year).toLowerCase().includes(q));
+  return applySort(list);
+}
+function trackKey(t) {
+  return (t && t.url) ? t.url : ((t && t.artist) || '') + '|' + ((t && t.title) || '');
+}
+
+function fisherYates(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function buildShuffleBag(list, excludeUrl) {
+  const pool = (list || []).filter(t => t && (t.url || t.title) && trackKey(t) !== excludeUrl);
+  if (!pool.length) return [];
+
+  const recentSet = new Set(shuffleRecentUrls.slice(-Math.min(12, Math.max(3, Math.floor(pool.length * 0.35)))));
+  const fresh = pool.filter(t => !recentSet.has(trackKey(t)));
+  const stale = pool.filter(t => recentSet.has(trackKey(t)));
+  let bag = fisherYates(fresh).concat(fisherYates(stale));
+
+  if (bag.length > 2) {
+    const out = [];
+    const left = [...bag];
+    let lastArtist = (currentPlaying && currentPlaying.artist) || (shuffleRecentArtists[shuffleRecentArtists.length - 1]) || '';
+    while (left.length) {
+      let idx = left.findIndex(t => (t.artist || '') !== lastArtist);
+      if (idx < 0) idx = 0;
+      const prefer = left.findIndex((t, i) => (t.artist || '') !== lastArtist && !recentSet.has(trackKey(t)));
+      if (prefer >= 0) idx = prefer;
+      const pick = left.splice(idx, 1)[0];
+      out.push(pick);
+      lastArtist = pick.artist || '';
+    }
+    bag = out;
+  }
+  return bag;
+}
+
+function ensureShuffleBag() {
+  const list = getFiltered().filter(t => t && t.url);
+  const exclude = currentPlaying ? trackKey(currentPlaying) : '';
+  if (!shuffleBag.length) {
+    shuffleBag = buildShuffleBag(list, exclude);
+  } else {
+    
+    const valid = new Set(list.map(trackKey));
+    shuffleBag = shuffleBag.filter(t => valid.has(trackKey(t)) && trackKey(t) !== exclude);
+    if (!shuffleBag.length) shuffleBag = buildShuffleBag(list, exclude);
+  }
+}
+
+function rememberShufflePlay(track) {
+  if (!track) return;
+  const k = trackKey(track);
+  shuffleRecentUrls = [...shuffleRecentUrls.filter(u => u !== k), k].slice(-40);
+  if (track.artist) {
+    shuffleRecentArtists = [...shuffleRecentArtists, track.artist].slice(-15);
+  }
+}
+
+function pickSmartFromQueue() {
+  if (!queue.length) return null;
+  if (!shuffle || queue.length === 1) return queue.shift();
+
+  const lastArtist = (currentPlaying && currentPlaying.artist) || '';
+  const recent = new Set(shuffleRecentUrls.slice(-8));
+  let bestIdx = 0;
+  let bestScore = -1e9;
+  for (let i = 0; i < queue.length; i++) {
+    const t = queue[i];
+    let s = Math.random() * 2;
+    if (t.artist && t.artist === lastArtist) s -= 8;
+    if (recent.has(trackKey(t))) s -= 5;
+    s -= i * 0.15;
+    if (s > bestScore) { bestScore = s; bestIdx = i; }
+  }
+  return queue.splice(bestIdx, 1)[0];
+}
+
+function getNextTrack() {
+  if (queue.length > 0) {
+    return pickSmartFromQueue();
+  }
+
+  const list = getFiltered();
+  if (!list.length) return null;
+
+  if (repeatMode === 1 && currentPlaying) return currentPlaying;
+
+  if (shuffle) {
+    const playable = list.filter(t => t && t.url);
+    if (!playable.length) return null;
+    ensureShuffleBag();
+    if (!shuffleBag.length) {
+      if (repeatMode === 2) {
+        shuffleBag = buildShuffleBag(playable, currentPlaying ? trackKey(currentPlaying) : '');
+      } else {
+        return null;
+      }
+    }
+    
+    let idx = 0;
+    if (currentPlaying && currentPlaying.artist && shuffleBag.length > 1) {
+      const alt = shuffleBag.findIndex(t => (t.artist || '') !== currentPlaying.artist);
+      if (alt >= 0) idx = alt;
+    }
+    const next = shuffleBag.splice(idx, 1)[0] || shuffleBag.shift();
+    return next || null;
+  }
+
+  let idx = 0;
+  if (currentPlaying) {
+    idx = list.findIndex(t => trackKey(t) === trackKey(currentPlaying));
+    idx = idx < 0 ? 0 : idx + 1;
+  }
+  if (idx >= list.length) {
+    if (repeatMode === 2) return list[0];
+    return null;
+  }
+  return list[idx];
+}
+function getPrevTrack() {
+  if (playHistory.length > 0) return playHistory.pop();
+  const list = getFiltered();
+  if (!list.length) return null;
+  let idx = 0;
+  if (currentPlaying) {
+    idx = list.findIndex(t => t.url === currentPlaying.url);
+    idx = idx <= 0 ? (repeatMode === 2 ? list.length - 1 : 0) : idx - 1;
+  }
+  return list[idx];
+}
+function playNextTrack() {
+  const next = getNextTrack();
+  if (!next) {
+    timeSlider.value = 0;
+    currentTimeDisplay.textContent = '0:00';
+    playPauseBtn.textContent = '▶';
+    isSeeking = false;
+    currentPlaying = null;
+    userWantsPlaying = false;
+    render();
+    renderQueue();
+    showMessage('Slut på låtar', 'success');
+    return;
+  }
+  if (currentPlaying) playHistory.push(currentPlaying);
+  playTrack(next.url, next.artist, next.title, next.cover);
+}
+function playPrevTrack() {
+  const prev = getPrevTrack();
+  if (!prev) return;
+  playTrack(prev.url, prev.artist, prev.title, prev.cover);
+}
+
+function updateMediaSession(track) {
+  if (!('mediaSession' in navigator) || !track) return;
+  try {
+    const art = track.cover ? [
+      { src: track.cover, sizes: '300x300', type: 'image/jpeg' },
+      { src: track.cover, sizes: '512x512', type: 'image/jpeg' }
+    ] : [];
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: track.title || 'Osläppt spår',
+      artist: track.artist || 'UnreleasedSweden',
+      album: 'UnreleasedSweden',
+      artwork: art
+    });
+    navigator.mediaSession.playbackState = audio.paused ? 'paused' : 'playing';
+  } catch(e){}
+}
+function setupMediaSessionHandlers() {
+  if (!('mediaSession' in navigator)) return;
+  try {
+    navigator.mediaSession.setActionHandler('play', () => {
+      userWantsPlaying = true; audio.play().catch(()=>{});
+      playPauseBtn.textContent = '⏸'; updateMediaSession(currentPlaying); render();
+    });
+    navigator.mediaSession.setActionHandler('pause', () => {
+      userWantsPlaying = false; audio.pause();
+      playPauseBtn.textContent = '▶'; updateMediaSession(currentPlaying); render();
+    });
+    navigator.mediaSession.setActionHandler('previoustrack', playPrevTrack);
+    navigator.mediaSession.setActionHandler('nexttrack', playNextTrack);
+    navigator.mediaSession.setActionHandler('seekto', (d) => {
+      if (d.seekTime != null && audio.duration) { audio.currentTime = d.seekTime; updateTimeline(); }
+    });
+  } catch(e){}
+}
+function updatePositionState() {
+  if (!('mediaSession' in navigator) || !audio.duration || !isFinite(audio.duration)) return;
+  try {
+    navigator.mediaSession.setPositionState({
+      duration: audio.duration,
+      playbackRate: audio.playbackRate || 1,
+      position: Math.min(audio.currentTime || 0, audio.duration)
+    });
+  } catch(e){}
+}
+
+document.addEventListener('visibilitychange', () => {
+  updateMediaSession(currentPlaying);
+  if (document.hidden && userWantsPlaying && audio.src && audio.paused) {
+    audio.play().catch(()=>{});
+  }
+  if (!document.hidden) {
+    playPauseBtn.textContent = audio.paused ? '▶' : '⏸';
+    render();
+  }
+});
+
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function formatTime(sec) {
+  if (!isFinite(sec) || sec < 0) return '0:00';
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return m + ':' + String(s).padStart(2, '0');
+}
+function showMessage(text, type) {
+  const el = document.createElement('div');
+  el.className = 'message' + (type === 'success' ? ' success' : type === 'error' ? ' error' : '');
+  el.textContent = text;
+  messageContainer.innerHTML = '';
+  messageContainer.appendChild(el);
+  clearTimeout(showMessage._t);
+  showMessage._t = setTimeout(() => el.remove(), 3500);
+}
+function revokeBlob() {
+  if (currentBlobUrl) { try { URL.revokeObjectURL(currentBlobUrl); } catch(e){} currentBlobUrl = null; }
+}
+function updateTimeline() {
+  if (!audio || !audio.src) return;
+  var d = (typeof getSeekDuration === 'function') ? getSeekDuration() : audio.duration;
+  var c = audio.currentTime || 0;
+  if (durationTimeDisplay) durationTimeDisplay.textContent = (d && isFinite(d) && d > 0) ? formatTime(d) : '0:00';
+  if (isSeeking) return;
+  if (timeSlider && d && isFinite(d) && d > 0) {
+    timeSlider.value = String(Math.min(100, Math.max(0, (c / d) * 100)));
+  }
+  if (currentTimeDisplay) currentTimeDisplay.textContent = formatTime(c);
+}
+function hashColor(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = str.charCodeAt(i) + ((h << 5) - h);
+  return `hsl(${Math.abs(h) % 360}, 55%, 42%)`;
+}
+function coverImgHtml(t, size) {
+  if (t.cover) {
+    return `<img class="track-cover" src="${escapeHtml(t.cover)}" alt="" width="${size}" height="${size}" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.style.display='flex');"><div class="track-cover placeholder" style="display:none;background:${hashColor(t.artist)};width:${size}px;height:${size}px">${escapeHtml((t.artist||'?').charAt(0))}</div>`;
+  }
+  return `<div class="track-cover placeholder" style="background:${hashColor(t.artist||'')};width:${size}px;height:${size}px">${escapeHtml((t.artist||'?').charAt(0))}</div>`;
+}
+function updatePlayerCover(track) {
+  if (!playerArt) return;
+  if (!track) { playerArt.innerHTML = '♪'; return; }
+  if (track.cover) {
+    if (!coverCache.has(track.cover)) { const img = new Image(); img.src = track.cover; coverCache.set(track.cover, img); }
+    playerArt.innerHTML = `<img src="${escapeHtml(track.cover)}" alt="" decoding="async" onerror="this.parentElement.textContent='♪'">`;
+  } else {
+    playerArt.innerHTML = `<div class="track-cover placeholder" style="width:100%;height:100%;background:${hashColor(track.artist||'')};border-radius:6px">${escapeHtml((track.artist||'?').charAt(0))}</div>`;
+  }
+}
+
+function renderQueue() {
+  queueCount.textContent = queue.length ? `(${queue.length})` : '';
+  if (!queue.length) {
+    queueList.innerHTML = '<div class="queue-empty">Kön är tom.</div>';
+    return;
+  }
+  queueList.innerHTML = queue.map((t, i) => {
+    const isCurrent = currentPlaying && currentPlaying.url === t.url;
+    const cover = t.cover
+      ? `<img src="${escapeHtml(t.cover)}" alt="" loading="lazy" onerror="this.style.display='none'">`
+      : `<div class="q-placeholder" style="background:${hashColor(t.artist)}">${escapeHtml((t.artist||'?').charAt(0))}</div>`;
+    return `<div class="queue-item${isCurrent ? ' current' : ''}" data-idx="${i}">
+      ${cover}
+      <div class="q-info"><div class="q-title">${escapeHtml(t.title)}</div><div class="q-artist">${escapeHtml(t.artist)}</div></div>
+      <button class="q-remove" data-idx="${i}" title="Ta bort">×</button>
+    </div>`;
+  }).join('');
+}
+
+function render() {
+  const filtered = getFiltered();
+  if (trackCountEl) trackCountEl.textContent = String(currentTracks.length);
+  if (artistCountEl) artistCountEl.textContent = String(new Set(currentTracks.map(t => t.artist)).size);
+
+  const showFilters = currentView === 'all';
+  filterContainer.style.display = showFilters ? '' : 'none';
+  document.getElementById('filterLabel').style.display = showFilters ? '' : 'none';
+
+  if (!filtered.length) {
+    const msg = currentView === 'liked' ? 'Inga gillade låtar.' :
+      currentView === 'recent' ? 'Inget spelat än' : 'Inget hittat';
+    if (grid) grid.innerHTML = `<div class="empty-state"><div class="icon">♪</div><h3>${msg}</h3></div>`;
+    updatePlayerHeart();
+    return;
+  }
+
+  const header = `<div class="track-list-header"><div>#</div><div></div><div>Titel</div><div>År</div><div></div><div></div></div>`;
+  const rows = filtered.map((t, i) => {
+    const isPlaying = currentPlaying && currentPlaying.url === t.url;
+    const btnIcon = isPlaying && !audio.paused ? '⏸' : '▶';
+    const heart = t.url && liked.has(t.url) ? '♥' : '♡';
+    const heartOn = t.url && liked.has(t.url) ? ' on' : '';
+    const isSoon = /coming\s*soon/i.test(t.title || '');
+    return `<div class="track-row${isPlaying ? ' playing' : ''}${isSoon ? ' soon' : ''}" data-url="${escapeHtml(t.url || '')}" data-artist="${escapeHtml(t.artist)}" data-title="${escapeHtml(t.title)}" data-cover="${escapeHtml(t.cover || '')}">
+      <div class="idx">${isPlaying && !audio.paused ? '♪' : (i + 1)}</div>
+      <div>${coverImgHtml(t, 44)}</div>
+      <div class="track-info">
+        <div class="title">${escapeHtml(t.title)}</div>
+        <div class="artist artist-line">${escapeHtml(t.artist)}</div>
+        <div class="plays-line">${fmtPlays(getPlayCount(t.url, t.artist, t.title))}</div>
+      </div>
+      <div class="track-year">${escapeHtml(t.year)}</div>
+      <div><button class="heart-btn${heartOn}" data-url="${escapeHtml(t.url)}" title="Gilla">${heart}</button></div>
+      <div class="track-actions">
+        ${isSoon
+          ? `<button class="play-btn" title="Coming Soon" data-url="" data-artist="${escapeHtml(t.artist)}" data-title="${escapeHtml(t.title)}" data-cover="">⏳</button>`
+          : `<button class="play-btn" title="Spela" data-url="${escapeHtml(t.url)}" data-artist="${escapeHtml(t.artist)}" data-title="${escapeHtml(t.title)}" data-cover="${escapeHtml(t.cover || '')}">${btnIcon}</button>
+        <button class="add-queue-btn" title="Lägg i kö" data-url="${escapeHtml(t.url)}" data-artist="${escapeHtml(t.artist)}" data-title="${escapeHtml(t.title)}" data-cover="${escapeHtml(t.cover || '')}">＋</button>`}
+      </div>
+    </div>`;
+  }).join('');
+  if (grid) grid.innerHTML = header + rows;
+
+  shuffleBtn.classList.toggle('active', shuffle);
+  repeatBtn.classList.toggle('active', repeatMode > 0);
+  repeatBtn.textContent = repeatMode === 1 ? '🔂' : '🔁';
+  muteBtn.textContent = (isMuted || audio.volume === 0) ? '🔇' : '🔊';
+  updatePlayerHeart();
+}
+
+  async function playTrack(url, artist, title, cover) {
+  if (!url || !String(url).trim()) {
+    showMessage('Coming soon – ingen fil än.', 'error');
+    return;
+  }
+  const track = { url, artist, title, cover: cover || null };
+  const found = currentTracks.find(t => t.url === url) || queue.find(t => t.url === url);
+  if (found) Object.assign(track, found);
+
+  currentPlaying = track;
+  if (typeof rememberShufflePlay === 'function') rememberShufflePlay(track);
+  if (typeof shuffle !== 'undefined' && shuffle && shuffleBag && shuffleBag.length) {
+    const k = typeof trackKey === 'function' ? trackKey(track) : (track.url || track.title);
+    shuffleBag = shuffleBag.filter(t => (typeof trackKey === 'function' ? trackKey(t) : (t.url || t.title)) !== k);
+  }
+  if (typeof pushRecent === 'function') pushRecent(url);
+  const token = ++playToken;
+  isSeeking = false;
+  if (timeSlider) timeSlider.value = 0;
+  if (currentTimeDisplay) currentTimeDisplay.textContent = '0:00';
+  if (durationTimeDisplay) durationTimeDisplay.textContent = '0:00';
+  if (playerTitle) playerTitle.textContent = title;
+  if (playerArtist) playerArtist.textContent = artist;
+  if (typeof updatePlayerCover === 'function') updatePlayerCover(track);
+  if (typeof updatePlayerHeart === 'function') updatePlayerHeart();
+  if (playPauseBtn) playPauseBtn.textContent = '⏳';
+  showMessage('Laddar ' + title + '…', 'success');
+  userWantsPlaying = true;
+  render();
+  if (typeof renderQueue === 'function') renderQueue();
+
+  const src = (typeof resolveTrackUrl === 'function') ? resolveTrackUrl(url) : url;
+
+  // 1) Blob first = full file in memory = seek/scrub works (as before)
+  try {
+    const res = await fetch(src, { mode: 'cors', credentials: 'omit', cache: 'force-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const blob = await res.blob();
+    if (token !== playToken) return;
+    if (typeof revokeBlob === 'function') revokeBlob();
+    currentBlobUrl = URL.createObjectURL(blob);
+    audio.src = currentBlobUrl;
+    audio.playbackRate = (typeof playbackRate !== 'undefined') ? playbackRate : 1;
+    try { audio.preload = 'auto'; } catch (e) {}
+    await audio.play();
+    if (token !== playToken) return;
+    if (playPauseBtn) playPauseBtn.textContent = '⏸';
+    showMessage('Spelar: ' + artist + ' – ' + title, 'success');
+    if (typeof updateMediaSession === 'function') updateMediaSession(currentPlaying);
+    if (typeof updatePositionState === 'function') updatePositionState();
+    if (typeof updateTimeline === 'function') updateTimeline();
+    if (typeof reportPlay === 'function') reportPlay(artist, title, url);
+    render();
+    return;
+  } catch (err1) {
+    console.warn('Blob play failed, trying direct', err1);
+  }
+
+  // 2) Direct stream fallback
+  try {
+    if (typeof revokeBlob === 'function') revokeBlob();
+    audio.src = src;
+    audio.playbackRate = (typeof playbackRate !== 'undefined') ? playbackRate : 1;
+    try { audio.preload = 'auto'; } catch (e) {}
+    await audio.play();
+    if (token !== playToken) return;
+    if (playPauseBtn) playPauseBtn.textContent = '⏸';
+    showMessage('Spelar: ' + artist + ' – ' + title, 'success');
+    if (typeof updateMediaSession === 'function') updateMediaSession(currentPlaying);
+    if (typeof updateTimeline === 'function') updateTimeline();
+    if (typeof reportPlay === 'function') reportPlay(artist, title, url);
+    render();
+    return;
+  } catch (err2) {
+    console.warn('Direct play failed', err2);
+  }
+
+  if (playPauseBtn) playPauseBtn.textContent = '▶';
+  showMessage('Kunde inte spela – länken kan vara utgången.', 'error');
+}
+
+function togglePlay() {
+  if (!audio.src) { showMessage('Ingen låt vald först'); return; }
+  if (audio.paused) {
+    userWantsPlaying = true;
+    audio.play().catch(() => showMessage('Kunde inte spela upp'));
+    playPauseBtn.textContent = '⏸';
+  } else {
+    userWantsPlaying = false;
+    audio.pause();
+    playPauseBtn.textContent = '▶';
+  }
+  updateMediaSession(currentPlaying);
+  render();
+}
+function getSeekDuration() {
+  var d = audio.duration;
+  if (d && isFinite(d) && d > 0) return d;
+  try {
+    if (audio.seekable && audio.seekable.length > 0) {
+      var end = audio.seekable.end(audio.seekable.length - 1);
+      if (end && isFinite(end) && end > 0) return end;
+    }
+  } catch (e) {}
+  return 0;
+}
+function seekTo(percent) {
+  if (!audio.src) return false;
+  var duration = getSeekDuration();
+  if (!duration || duration <= 0) return false;
+  var pct = Math.min(100, Math.max(0, parseFloat(percent) || 0));
+  var newTime = (pct / 100) * duration;
+  if (newTime >= duration) newTime = Math.max(0, duration - 0.25);
+  if (newTime < 0) newTime = 0;
+  var wasPlaying = !audio.paused && userWantsPlaying;
+  try {
+    // Do not reload src — only move playhead
+    if (wasPlaying) {
+      try { audio.pause(); } catch (e) {}
+    }
+    audio.currentTime = newTime;
+    if (currentTimeDisplay) currentTimeDisplay.textContent = formatTime(newTime);
+    if (timeSlider) timeSlider.value = String(pct);
+    if (wasPlaying) {
+      var p = audio.play();
+      if (p && typeof p.catch === 'function') p.catch(function () {});
+    }
+    return true;
+  } catch (e) {
+    console.warn('seek failed', e);
+    if (wasPlaying) {
+      try { audio.play(); } catch (e2) {}
+    }
+    return false;
+  }
+}
+
+async function refreshAudioOutputs() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+    castDeviceList.innerHTML = '<div class="cast-hint">AirPlay eller systemets ljud.</div>';
+    return;
+  }
+  try {
+    await navigator.mediaDevices.getUserMedia({ audio: true }).then(s => s.getTracks().forEach(t => t.stop())).catch(()=>{});
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const outputs = devices.filter(d => d.kind === 'audiooutput');
+    if (!outputs.length) {
+      castDeviceList.innerHTML = '<div class="cast-hint">Inga extra utgångar.</div>';
+      return;
+    }
+    castDeviceList.innerHTML = outputs.map(d => {
+      const label = d.label || ('Högtalare (' + d.deviceId.slice(0,6) + ')');
+      const isActive = d.deviceId === currentSinkId;
+      return `<div class="cast-device${isActive ? ' active' : ''}" data-id="${escapeHtml(d.deviceId)}"><span>🔊</span><span>${escapeHtml(label)}</span></div>`;
+    }).join('');
+  } catch (err) {
+    castDeviceList.innerHTML = '<div class="cast-hint">Kunde inte hämta enheter.</div>';
+  }
+}
+async function setAudioOutput(deviceId) {
+  if (!audio.setSinkId) { showMessage('Webbläsaren stöder inte byte av ljudutgång', 'error'); return; }
+  try {
+    await audio.setSinkId(deviceId);
+    currentSinkId = deviceId;
+    showMessage('Ljudutgång bytt', 'success');
+    refreshAudioOutputs();
+  } catch (err) { showMessage('Kunde inte byta ljudutgång', 'error'); }
+}
+
+settingsBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  settingsPanel.classList.toggle('open');
+  settingsBtn.classList.toggle('active', settingsPanel.classList.contains('open'));
+  if (settingsPanel.classList.contains('open')) {
+    queuePanel.classList.remove('open');
+    castPanel.classList.remove('open');
+  }
+});
+closeSettingsBtn.addEventListener('click', () => {
+  settingsPanel.classList.remove('open');
+  settingsBtn.classList.remove('active');
+});
+themeDarkBtn.addEventListener('click', () => applyTheme('dark'));
+themeLightBtn.addEventListener('click', () => applyTheme('light'));
+document.getElementById('rateRow')?.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-rate]');
+  if (b) setPlaybackRate(parseFloat(b.dataset.rate));
+});
+document.getElementById('sleepRow')?.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-sleep]');
+  if (b) setSleepTimer(parseInt(b.dataset.sleep, 10));
+});
+
+viewTabs.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-view]');
+  if (!b) return;
+  viewTabs.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  currentView = b.dataset.view;
+  shuffleBag = [];
+  render();
+});
+
+filterContainer.addEventListener('click', (e) => {
+  if (e.target.tagName === 'BUTTON') {
+    filterContainer.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    currentFilter = e.target.dataset.filter;
+    shuffleBag = [];
+    render();
+  }
+});
+searchInput.addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { currentSearch = searchInput.value; render(); }, 120);
+});
+document.getElementById('addTrackBtn')?.addEventListener('click', () => {
+  const artist = document.getElementById('newArtist').value.trim();
+  const title = document.getElementById('newTitle').value.trim();
+  const year = document.getElementById('newYear').value.trim();
+  const url = document.getElementById('newUrl').value.trim();
+  if (!artist || !title || !year || !url) { showMessage('Fyll i alla fält'); return; }
+  currentTracks.push({ artist, title, year, url });
+  ['newArtist','newTitle','newYear','newUrl'].forEach(id => document.getElementById(id).value = '');
+  render();
+  showMessage('"' + title + '" tillagd', 'success');
+});
+grid.addEventListener('click', (e) => {
+  const heart = e.target.closest('.heart-btn');
+  if (heart && heart.dataset.url) { toggleLike(heart.dataset.url); e.stopPropagation(); return; }
+  const addBtn = e.target.closest('.add-queue-btn');
+  if (addBtn) {
+    addToQueue({
+      url: addBtn.dataset.url,
+      artist: addBtn.dataset.artist,
+      title: addBtn.dataset.title,
+      cover: addBtn.dataset.cover || null
+    });
+    e.stopPropagation();
+    return;
+  }
+  const playBtn = e.target.closest('.play-btn');
+  if (playBtn) {
+    playTrack(playBtn.dataset.url || '', playBtn.dataset.artist, playBtn.dataset.title, playBtn.dataset.cover);
+    return;
+  }
+  const row = e.target.closest('.track-row');
+  if (row) {
+    playTrack(row.dataset.url || '', row.dataset.artist, row.dataset.title, row.dataset.cover);
+  }
+});
+playerHeart.addEventListener('click', () => {
+  if (currentPlaying) toggleLike(currentPlaying.url);
+});
+queueList.addEventListener('click', (e) => {
+  const removeBtn = e.target.closest('.q-remove');
+  if (removeBtn) { removeFromQueue(parseInt(removeBtn.dataset.idx, 10)); return; }
+  const item = e.target.closest('.queue-item');
+  if (item) {
+    const idx = parseInt(item.dataset.idx, 10);
+    if (queue[idx]) {
+      const track = queue.splice(idx, 1)[0];
+      playTrack(track.url, track.artist, track.title, track.cover);
+      renderQueue();
+    }
+  }
+});
+document.getElementById('clearQueueBtn').addEventListener('click', clearQueue);
+document.getElementById('closeQueueBtn').addEventListener('click', () => queuePanel.classList.remove('open'));
+queueBtn.addEventListener('click', () => {
+  queuePanel.classList.toggle('open');
+  if (queuePanel.classList.contains('open')) {
+    castPanel.classList.remove('open');
+    settingsPanel.classList.remove('open');
+    settingsBtn.classList.remove('active');
+    renderQueue();
+  }
+});
+shuffleBtn.addEventListener('click', () => {
+  shuffle = !shuffle;
+  shuffleBtn.classList.toggle('active', shuffle);
+  if (shuffle) {
+    shuffleBag = [];
+    ensureShuffleBag();
+    showMessage('Shuffle på', 'success');
+  } else {
+    shuffleBag = [];
+    showMessage('Shuffle av', 'success');
+  }
+  saveSettings();
+  render();
+});
+repeatBtn.addEventListener('click', () => {
+  repeatMode = (repeatMode + 1) % 3;
+  repeatBtn.classList.toggle('active', repeatMode > 0);
+  repeatBtn.textContent = repeatMode === 1 ? '🔂' : '🔁';
+  saveSettings();
+  showMessage(['Repeat av', 'Repeat en låt', 'Repeat alla'][repeatMode], 'success');
+});
+volumeSlider.addEventListener('input', () => {
+  audio.volume = parseFloat(volumeSlider.value);
+  isMuted = audio.volume === 0;
+  muteBtn.textContent = isMuted ? '🔇' : '🔊';
+  lastVolume = audio.volume || lastVolume;
+  saveSettings();
+});
+muteBtn.addEventListener('click', () => {
+  if (isMuted || audio.volume === 0) {
+    audio.volume = lastVolume || 0.85;
+    volumeSlider.value = audio.volume;
+    isMuted = false;
+  } else {
+    lastVolume = audio.volume;
+    audio.volume = 0;
+    volumeSlider.value = 0;
+    isMuted = true;
+  }
+  muteBtn.textContent = isMuted ? '🔇' : '🔊';
+  saveSettings();
+});
+expandBtn.addEventListener('click', () => {
+  isExpanded = !isExpanded;
+  player.classList.toggle('expanded', isExpanded);
+  expandBtn.textContent = isExpanded ? '✕' : '⛶';
+});
+castBtn.addEventListener('click', () => {
+  castPanel.classList.toggle('open');
+  if (castPanel.classList.contains('open')) {
+    queuePanel.classList.remove('open');
+    settingsPanel.classList.remove('open');
+    settingsBtn.classList.remove('active');
+    refreshAudioOutputs();
+  }
+});
+closeCastBtn.addEventListener('click', () => castPanel.classList.remove('open'));
+castDeviceList.addEventListener('click', (e) => {
+  const item = e.target.closest('.cast-device');
+  if (item) setAudioOutput(item.dataset.id);
+});
+document.addEventListener('click', (e) => {
+  const t = e.target;
+  if (castPanel && !castPanel.contains(t) && t !== castBtn && !t.closest('#mobileCastBtn')) {
+    castPanel.classList.remove('open');
+  }
+  if (settingsPanel && !settingsPanel.contains(t) && t !== settingsBtn && !(settingsBtn && settingsBtn.contains(t)) && !t.closest('#mobileSettingsBtn')) {
+    settingsPanel.classList.remove('open');
+    if (settingsBtn) settingsBtn.classList.remove('active');
+  }
+});
+
+// Seek slider: preview while dragging, commit only on release (avoids restart)
+(function setupSeekSlider() {
+  if (!timeSlider) return;
+  var dragging = false;
+  var previewPct = 0;
+
+  function previewOnly() {
+    if (!audio.src) return;
+    previewPct = parseFloat(timeSlider.value) || 0;
+    var d = getSeekDuration();
+    if (d > 0 && currentTimeDisplay) {
+      currentTimeDisplay.textContent = formatTime((previewPct / 100) * d);
+    }
+  }
+
+  function commit() {
+    if (!audio.src) {
+      dragging = false;
+      isSeeking = false;
+      return;
+    }
+    var pct = parseFloat(timeSlider.value);
+    if (isNaN(pct)) pct = previewPct;
+    var ok = seekTo(pct);
+    dragging = false;
+    isSeeking = false;
+    // keep label honest after seek
+    setTimeout(function () {
+      isSeeking = false;
+      if (typeof updateTimeline === 'function') updateTimeline();
+    }, 80);
+    return ok;
+  }
+
+  timeSlider.addEventListener('pointerdown', function () {
+    if (!audio.src) return;
+    dragging = true;
+    isSeeking = true;
+  });
+  timeSlider.addEventListener('mousedown', function () {
+    if (!audio.src) return;
+    dragging = true;
+    isSeeking = true;
+  });
+  timeSlider.addEventListener('touchstart', function () {
+    if (!audio.src) return;
+    dragging = true;
+    isSeeking = true;
+  }, { passive: true });
+
+  // IMPORTANT: do NOT set audio.currentTime on every input (restarts streams)
+  timeSlider.addEventListener('input', function () {
+    if (!audio.src) return;
+    dragging = true;
+    isSeeking = true;
+    previewOnly();
+  });
+
+  timeSlider.addEventListener('change', commit);
+  timeSlider.addEventListener('mouseup', commit);
+  timeSlider.addEventListener('pointerup', commit);
+  timeSlider.addEventListener('pointercancel', function () {
+    dragging = false;
+    isSeeking = false;
+  });
+  timeSlider.addEventListener('touchend', commit);
+  timeSlider.addEventListener('keyup', function (e) {
+    if (['ArrowLeft','ArrowRight','Home','End'].indexOf(e.key) >= 0) {
+      isSeeking = true;
+      commit();
+    }
+  });
+})();
+
+audio.addEventListener('loadedmetadata', updateTimeline);
+audio.addEventListener('durationchange', updateTimeline);
+audio.addEventListener('timeupdate', () => { if (!isSeeking) updateTimeline(); updatePositionState(); });
+audio.addEventListener('play', () => {
+  playPauseBtn.textContent = '⏸';
+  updateMediaSession(currentPlaying);
+  render();
+});
+audio.addEventListener('pause', () => {
+  if (document.hidden && userWantsPlaying && audio.src) {
+    setTimeout(() => {
+      if (userWantsPlaying && audio.paused) audio.play().catch(()=>{});
+    }, 100);
+    return;
+  }
+  if (playPauseBtn.textContent !== '⏳') playPauseBtn.textContent = '▶';
+  if (!document.hidden) userWantsPlaying = false;
+  updateMediaSession(currentPlaying);
+  render();
+});
+audio.addEventListener('ended', () => {
+  timeSlider.value = 0;
+  currentTimeDisplay.textContent = '0:00';
+  isSeeking = false;
+  playNextTrack();
+});
+audio.addEventListener('error', () => {
+  if (playPauseBtn.textContent === '⏳') return;
+  if (isSeeking) { isSeeking = false; return; }
+  // Don't auto-skip on transient stream glitches while user is scrubbing
+  if (userWantsPlaying && audio.src && audio.currentTime > 0.5) {
+    try { audio.play().catch(function(){}); return; } catch (e) {}
+  }
+  showMessage('Fel – hoppar till nästa', 'error');
+  setTimeout(() => playNextTrack(), 600);
+});
+
+playPauseBtn.addEventListener('click', togglePlay);
+prevBtn.addEventListener('click', playPrevTrack);
+nextBtn.addEventListener('click', playNextTrack);
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+  else if (e.key === 'ArrowLeft') playPrevTrack();
+  else if (e.key === 'ArrowRight') playNextTrack();
+  else if (e.key === 'm' || e.key === 'M') muteBtn.click();
+  else if (e.key === 'l' || e.key === 'L') {
+    if (currentPlaying) toggleLike(currentPlaying.url);
+  }
+});
+
+const mobileQueueBtn = document.getElementById('mobileQueueBtn');
+const mobileCastBtn = document.getElementById('mobileCastBtn');
+const mobileSettingsBtn = document.getElementById('mobileSettingsBtn');
+const mobileLikedBtn = document.getElementById('mobileLikedBtn');
+if (mobileQueueBtn) mobileQueueBtn.addEventListener('click', () => {
+  queuePanel.classList.toggle('open');
+  if (queuePanel.classList.contains('open')) {
+    castPanel.classList.remove('open');
+    settingsPanel.classList.remove('open');
+    settingsBtn.classList.remove('active');
+    renderQueue();
+  }
+});
+if (mobileCastBtn) mobileCastBtn.addEventListener('click', () => {
+  castPanel.classList.toggle('open');
+  if (castPanel.classList.contains('open')) {
+    queuePanel.classList.remove('open');
+    settingsPanel.classList.remove('open');
+    settingsBtn.classList.remove('active');
+    refreshAudioOutputs();
+  }
+});
+if (mobileSettingsBtn) mobileSettingsBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  settingsPanel.classList.toggle('open');
+  settingsBtn.classList.toggle('active', settingsPanel.classList.contains('open'));
+  if (settingsPanel.classList.contains('open')) {
+    queuePanel.classList.remove('open');
+    castPanel.classList.remove('open');
+  }
+});
+if (document.getElementById('mobileShareBtn')) document.getElementById('mobileShareBtn').addEventListener('click', () => { if (typeof shareCurrentTrack === 'function') shareCurrentTrack(); });
+if (mobileLikedBtn) mobileLikedBtn.addEventListener('click', () => {
+  viewTabs.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+  const likedBtn = viewTabs.querySelector('[data-view="liked"]');
+  if (likedBtn) likedBtn.classList.add('active');
+  currentView = 'liked';
+  render();
+  const gridEl = document.getElementById('trackGrid');
+  if (gridEl) window.scrollTo({ top: gridEl.offsetTop - 80, behavior: 'smooth' });
+});
+
+const sortSelect = document.getElementById('sortSelect');
+if (sortSelect) {
+  sortSelect.addEventListener('change', () => {
+    currentSort = sortSelect.value;
+    if (currentSort === 'popular') fetchPlayStats().then(() => render());
+    else render();
+  });
+}
+
+function applySort(list) {
+  const arr = [...list];
+  if (currentSort === 'popular') {
+    arr.sort((a, b) => {
+      const pb = getPlayCount(b.url, b.artist, b.title);
+      const pa = getPlayCount(a.url, a.artist, a.title);
+      if (pb !== pa) return pb - pa;
+      return (a.title || '').localeCompare(b.title || '', 'sv');
+    });
+  } else if (currentSort === 'title') arr.sort((a,b) => (a.title||'').localeCompare(b.title||'', 'sv'));
+  else if (currentSort === 'artist') arr.sort((a,b) => (a.artist||'').localeCompare(b.artist||'', 'sv') || (a.title||'').localeCompare(b.title||'', 'sv'));
+  else if (currentSort === 'year-new') arr.sort((a,b) => String(b.year||'').localeCompare(String(a.year||''), 'sv'));
+  else if (currentSort === 'year-old') arr.sort((a,b) => String(a.year||'').localeCompare(String(b.year||''), 'sv'));
+  return arr;
+}
+
+async function shareCurrentTrack() {
+  if (!currentPlaying) { showMessage('Ingen låt vald först'); return; }
+  const t = currentPlaying;
+  const url = new URL(location.href);
+  url.searchParams.set('track', t.title || '');
+  url.searchParams.set('artist', t.artist || '');
+  const text = t.artist + ' – ' + t.title + ' | UnreleasedSweden';
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: t.title, text, url: url.toString() });
+      showMessage('Delat!', 'success');
+      return;
+    }
+  } catch(e) {
+    if (e && e.name === 'AbortError') return;
+  }
+  try {
+    await navigator.clipboard.writeText(text + '\n' + url.toString());
+    showMessage('Länk kopierad!', 'success');
+  } catch(e) {
+    showMessage('Kunde inte dela', 'error');
+  }
+}
+const shareBtn = document.getElementById('shareBtn');
+if (shareBtn) shareBtn.addEventListener('click', shareCurrentTrack);
+
+(function deepLink() {
+  try {
+    const p = new URLSearchParams(location.search);
+    const title = p.get('track');
+    const artist = p.get('artist');
+    if (!title) return;
+    setTimeout(() => {
+      const found = currentTracks.find(t =>
+        t.title && t.title.trim().toLowerCase() === title.trim().toLowerCase() &&
+        (!artist || (t.artist||'').toLowerCase().includes(artist.toLowerCase()))
+      ) || currentTracks.find(t => t.title && t.title.toLowerCase().includes(title.toLowerCase()));
+      if (found && found.url) playTrack(found.url, found.artist, found.title, found.cover);
+    }, 500);
+  } catch(e) {}
+})();
+
+setupMediaSessionHandlers();
+render();
+renderQueue();
+fetchPlayStats();
+
+
+
+console.log('UnreleasedSweden', currentTracks.length);
+</script>
+</body>
+</html> 
+ 
