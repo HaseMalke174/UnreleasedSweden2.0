@@ -1222,7 +1222,9 @@ let queue = [];
 
 /* Firebase Realtime Database – klistra in din URL (utan avslutande /) */
 let FIREBASE_DB = '';
-let STATS_API = (window.STATS_API || 'http://127.0.0.1:5050').replace(/\/$/, ''); // bakåtkompat
+/* ===== BYT TILL DIN NGROK/RENDER-URL SÅ ALLA ENHETER FUNKAR ===== */
+let STATS_API = (window.STATS_API || localStorage.getItem('us_stats_api') || 'http://127.0.0.1:5050').replace(/\/$/, '');
+/* Exempel: let STATS_API = 'https://xxxx.ngrok-free.app'; */ // bakåtkompat
 let playCounts = {};
 
 let statsLastError = '';
